@@ -1,0 +1,30 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# heavy / third-party
+work/
+datasets/
+literature/
+
+# noisy pilot runs (final runs are kept)
+reports/pilot_*/
+reports/smoke_injected/
+
+# one-off debug scripts
+debug_*.py
+inspect*.py
+
+# latex / build artifacts
+*.aux
+*.log
+*.out
+*.toc

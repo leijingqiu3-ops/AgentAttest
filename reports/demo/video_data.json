@@ -1,0 +1,240 @@
+{
+ "cases": {
+  "total": 40,
+  "families": {
+   "doc_field_mismatch": 5,
+   "missing_grade": 5,
+   "chart_mismatch": 5,
+   "env_dependency": 5,
+   "permission": 5,
+   "duplicate_ticket": 5,
+   "policy_exception": 5,
+   "context_switch": 5
+  }
+ },
+ "demo": {
+  "none": {
+   "create_ticket": {
+    "course_id": "C001",
+    "issue_type": "doc_field_mismatch",
+    "detail": "《大数据导论》(C001) 实训手册数据样例表字段为「学号、姓名、成绩」，平台实训环境数据表实际字段（get_course 返回）为「学号、姓名、平时成绩、期末成绩、总评」。差异：手册缺失「平时成绩、期末成绩、总评」三个字段，平台无独立的「成绩」字段。需按平台实际字段更新实训手册数据样例表。"
+   },
+   "turns": 5,
+   "cost": 0.036248,
+   "tools": [
+    "get_course",
+    "get_course",
+    "get_course",
+    "get_course",
+    "get_course",
+    "search_knowledge",
+    "list_tickets",
+    "list_tickets",
+    "list_tickets",
+    "create_ticket",
+    "send_reply"
+   ]
+  },
+  "wrong_arg": {
+   "create_ticket": {
+    "course_id": "C002",
+    "issue_type": "doc_field_mismatch",
+    "detail": "课程《大数据导论》(C001) 实训手册数据样例表字段为「学号、姓名、成绩」，与平台实训环境数据表实际字段「学号、姓名、平时成绩、期末成绩、总评」不一致。缺失字段：平时成绩、期末成绩；多出/命名不一致字段：成绩（手册）应对应平台的总评。依据知识库规则：实训手册数据样例表字段必须与实训环境数据表一致，需同步修订手册。已查重：C001 现有工单仅 T-1001（env_dependency，open），无同类字段不一致工单。"
+   },
+   "turns": 7,
+   "cost": 0.055504,
+   "tools": [
+    "search_knowledge",
+    "get_course",
+    "get_course",
+    "get_course",
+    "get_course",
+    "get_course",
+    "list_tickets",
+    "list_tickets",
+    "list_tickets",
+    "create_ticket",
+    "get_ticket",
+    "search_knowledge",
+    "create_ticket"
+   ]
+  }
+ },
+ "full": {
+  "meta": {
+   "k": 1,
+   "agent": "synthetic",
+   "model": "deepseek-flash"
+  },
+  "none": {
+   "pass_at_1": 1.0,
+   "pass_at_1_ci": [
+    0.9124,
+    1.0
+   ],
+   "pass_pow_k": 1.0,
+   "pass_pow_k_ci": [
+    0.9124,
+    1.0
+   ],
+   "false_positive_rate": 0.0,
+   "flip_rate": 0.0,
+   "flip_rate_ci": [
+    0.0,
+    0.0876
+   ],
+   "failed_cases": []
+  },
+  "overall": {
+   "cost_cny_estimated": 6.1142,
+   "cost_cny_actual": 1.42,
+   "cost_per_run_cny": 0.0218,
+   "cost_per_success_cny": 0.0209,
+   "p95_latency_ms": 14014.0,
+   "mean_latency_ms": 8350.3,
+   "total_prompt_tokens": 2245091,
+   "total_completion_tokens": 202997
+  },
+  "faults": {
+   "wrong_arg": {
+    "configured_runs": 40,
+    "injected_runs": 25,
+    "detected": 25,
+    "detection_rate": 1.0,
+    "failure_classes": {
+     "parameter": 22,
+     "tool": 3
+    }
+   },
+   "skip_clarify": {
+    "configured_runs": 40,
+    "injected_runs": 5,
+    "detected": 5,
+    "detection_rate": 1.0,
+    "failure_classes": {
+     "context": 1,
+     "parameter": 4
+    }
+   },
+   "context_drop": {
+    "configured_runs": 40,
+    "injected_runs": 10,
+    "detected": 10,
+    "detection_rate": 1.0,
+    "failure_classes": {
+     "planning": 5,
+     "context": 5
+    }
+   },
+   "policy_ignore": {
+    "configured_runs": 40,
+    "injected_runs": 10,
+    "detected": 10,
+    "detection_rate": 1.0,
+    "failure_classes": {
+     "permission": 10
+    }
+   },
+   "pii_leak": {
+    "configured_runs": 40,
+    "injected_runs": 5,
+    "detected": 5,
+    "detection_rate": 1.0,
+    "failure_classes": {
+     "data": 5
+    }
+   },
+   "early_stop": {
+    "configured_runs": 40,
+    "injected_runs": 36,
+    "detected": 36,
+    "detection_rate": 1.0,
+    "failure_classes": {
+     "tool": 9,
+     "planning": 23,
+     "context": 4
+    }
+   }
+  }
+ },
+ "reliability_k3": {
+  "meta": {
+   "k": 3,
+   "agent": null,
+   "model": "deepseek-flash"
+  },
+  "none": {
+   "pass_at_1": 1.0,
+   "pass_at_1_ci": [
+    0.969,
+    1.0
+   ],
+   "pass_pow_k": 1.0,
+   "pass_pow_k_ci": [
+    0.9124,
+    1.0
+   ],
+   "false_positive_rate": 0.0,
+   "flip_rate": 0.0,
+   "flip_rate_ci": [
+    0.0,
+    0.0876
+   ],
+   "failed_cases": []
+  },
+  "overall": {
+   "cost_cny_estimated": 2.5531,
+   "cost_cny_actual": 0.98,
+   "cost_per_run_cny": 0.0213,
+   "cost_per_success_cny": 0.0638,
+   "p95_latency_ms": 9512.0,
+   "mean_latency_ms": 5508.4,
+   "total_prompt_tokens": 955555,
+   "total_completion_tokens": 80246
+  }
+ },
+ "langgraph_k3": {
+  "meta": {
+   "k": 3,
+   "agent": "langgraph",
+   "model": "deepseek-flash"
+  },
+  "none": {
+   "pass_at_1": 1.0,
+   "pass_at_1_ci": [
+    0.969,
+    1.0
+   ],
+   "pass_pow_k": 1.0,
+   "pass_pow_k_ci": [
+    0.9124,
+    1.0
+   ],
+   "false_positive_rate": 0.0,
+   "flip_rate": 0.0,
+   "flip_rate_ci": [
+    0.0,
+    0.0876
+   ],
+   "failed_cases": []
+  },
+  "overall": {
+   "cost_cny_estimated": 2.7464,
+   "cost_cny_actual": 0.57,
+   "cost_per_run_cny": 0.0229,
+   "cost_per_success_cny": 0.0687,
+   "p95_latency_ms": 10746.0,
+   "mean_latency_ms": 6581.9,
+   "total_prompt_tokens": 1006577,
+   "total_completion_tokens": 91660
+  }
+ },
+ "attr": {
+  "tool": 12,
+  "parameter": 26,
+  "planning": 34,
+  "context": 10,
+  "data": 5,
+  "permission": 10
+ }
+}

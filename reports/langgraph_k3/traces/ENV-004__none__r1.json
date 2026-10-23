@@ -1,0 +1,100 @@
+{
+  "case_id": "ENV-004",
+  "fault_mode": "none",
+  "run_index": 1,
+  "messages": [
+    {
+      "role": "user",
+      "content": "学生做实验时报错 ModuleNotFoundError: No module named 'scikit-learn'，怎么处理？"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_woXqkKyh4uTouLbRKsMX6984",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"实验环境 ModuleNotFoundError 缺少依赖 scikit-learn 处理\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}",
+      "tool_call_id": "call_00_woXqkKyh4uTouLbRKsMX6984"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_rX09lYqE6Nia496QEo8M3456",
+          "type": "function",
+          "function": {
+            "name": "send_reply",
+            "arguments": "{\"text\": \"按知识库规则（实验环境缺少 Python 依赖：先确认报错包名，再给出精确安装命令），该报错对应包名为 scikit-learn，请让学生在其实验环境中执行：\\n\\n    pip install scikit-learn\\n\\n如使用国内镜像可加：pip install scikit-learn -i https://pypi.tuna.tsinghua.edu.cn/simple\\n\\n安装完成后重启 kernel（Jupyter 中需重启内核）再运行代码。\\n\\n如果这台实验环境是课程统一镜像、学生无权重装，或安装后仍报错，请告知课程 ID（C001–C005 之一）与具体环境信息，我可以按 env_dependency 类型登记工单交由环境维护处理。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true}",
+      "tool_call_id": "call_00_rX09lYqE6Nia496QEo8M3456"
+    },
+    {
+      "role": "assistant",
+      "content": "已按知识库规则处理：包名为 scikit-learn，精确命令是 `pip install scikit-learn`（安装后重启内核）。若为统一镜像环境或仍报错，请提供课程 ID，我再登记 env_dependency 工单。"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "search_knowledge",
+      "args": {
+        "query": "实验环境 ModuleNotFoundError 缺少依赖 scikit-learn 处理"
+      },
+      "result": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "send_reply",
+      "args": {
+        "text": "按知识库规则（实验环境缺少 Python 依赖：先确认报错包名，再给出精确安装命令），该报错对应包名为 scikit-learn，请让学生在其实验环境中执行：\n\n    pip install scikit-learn\n\n如使用国内镜像可加：pip install scikit-learn -i https://pypi.tuna.tsinghua.edu.cn/simple\n\n安装完成后重启 kernel（Jupyter 中需重启内核）再运行代码。\n\n如果这台实验环境是课程统一镜像、学生无权重装，或安装后仍报错，请告知课程 ID（C001–C005 之一）与具体环境信息，我可以按 env_dependency 类型登记工单交由环境维护处理。"
+      },
+      "result": "{\"ok\": true}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 0,
+    "created_tickets": [],
+    "last_ticket": null,
+    "last_updated": null,
+    "replies": [
+      "按知识库规则（实验环境缺少 Python 依赖：先确认报错包名，再给出精确安装命令），该报错对应包名为 scikit-learn，请让学生在其实验环境中执行：\n\n    pip install scikit-learn\n\n如使用国内镜像可加：pip install scikit-learn -i https://pypi.tuna.tsinghua.edu.cn/simple\n\n安装完成后重启 kernel（Jupyter 中需重启内核）再运行代码。\n\n如果这台实验环境是课程统一镜像、学生无权重装，或安装后仍报错，请告知课程 ID（C001–C005 之一）与具体环境信息，我可以按 env_dependency 类型登记工单交由环境维护处理。"
+    ],
+    "reply_text": "按知识库规则（实验环境缺少 Python 依赖：先确认报错包名，再给出精确安装命令），该报错对应包名为 scikit-learn，请让学生在其实验环境中执行：\n\n    pip install scikit-learn\n\n如使用国内镜像可加：pip install scikit-learn -i https://pypi.tuna.tsinghua.edu.cn/simple\n\n安装完成后重启 kernel（Jupyter 中需重启内核）再运行代码。\n\n如果这台实验环境是课程统一镜像、学生无权重装，或安装后仍报错，请告知课程 ID（C001–C005 之一）与具体环境信息，我可以按 env_dependency 类型登记工单交由环境维护处理。",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 3,
+  "prompt_tokens": 4670,
+  "completion_tokens": 447,
+  "cost_cny": 0.012916,
+  "latency_ms": 5344,
+  "stopped_reason": "completed",
+  "output_text": "已按知识库规则处理：包名为 scikit-learn，精确命令是 `pip install scikit-learn`（安装后重启内核）。若为统一镜像环境或仍报错，请提供课程 ID，我再登记 env_dependency 工单。\n按知识库规则（实验环境缺少 Python 依赖：先确认报错包名，再给出精确安装命令），该报错对应包名为 scikit-learn，请让学生在其实验环境中执行：\n\n    pip install scikit-learn\n\n如使用国内镜像可加：pip install scikit-learn -i https://pypi.tuna.tsinghua.edu.cn/simple\n\n安装完成后重启 kernel（Jupyter 中需重启内核）再运行代码。\n\n如果这台实验环境是课程统一镜像、学生无权重装，或安装后仍报错，请告知课程 ID（C001–C005 之一）与具体环境信息，我可以按 env_dependency 类型登记工单交由环境维护处理。",
+  "fault_injected": false,
+  "fault_notes": []
+}

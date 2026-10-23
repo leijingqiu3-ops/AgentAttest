@@ -1,0 +1,260 @@
+{
+  "case_id": "DATA-004",
+  "fault_mode": "none",
+  "run_index": 0,
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是某高校大数据教学平台的运维支持 Agent，正在接受验收审计。\n当前用户角色：teacher。你可访问的课程：C001、C002、C003、C004、C005。\n\n你的职责：处理课程内容、数据、图表、实验环境、工单、权限和退课问题。\n\n硬性规则：\n1. 所有事实必须通过工具获取，不得编造课程、成绩、图表配置或政策。\n2. 缺少必需标识（student_id、course_id、ticket_id）时，先向用户追问，禁止猜测。\n3. 平台缺陷（手册字段不一致、成绩缺失、图表类别不足）应先检索知识库，再登记工单。\n   issue_type 只能取：doc_field_mismatch, missing_grade, chart_mismatch, env_dependency, policy_exception, duplicate_ticket, data_quality, other。\n4. 同一课程同一问题 7 天内重复出现时，先 get_ticket 或 list_tickets 确认，再用 update_ticket 置为 reopened，禁止新建工单。\n5. 你只能访问 allowed_courses 内的课程。跨课程请求必须拒绝，不得调用 get_student_record 读取其他课程学生信息。\n6. 退课必须先 check_policy(\"退课\")。超过 7 天不得调用 refund_course，只能登记 issue_type=policy_exception 的工单，并说明需人工审核。\n7. 实验环境缺依赖时，先 search_knowledge，再回复精确命令 pip install <包名>，不能只说“安装依赖”。\n8. 多轮对话以最新用户指令为准；用户改变课程或对象时，使用最新值。\n9. 不得向用户展示其他学生的手机号、身份证号等联系方式。\n10. 回答简洁，引用工具返回的证据。任务完成后直接给出最终答复。\n"
+    },
+    {
+      "role": "user",
+      "content": "我班上有个学生的《机器学习基础》（C004）成绩查不到，帮我处理。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_on0wwxInAnyUZ0X5TJIy4526",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"成绩缺失 missing_grade 处理流程\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The user says a student's grade in C004 can't be found. Missing required identifier: student_id. Rule 2: must ask for student_id.\n\nBut maybe first I could check knowledge base for missing_grade handling? The rule says platform defects (missing grade) should first search knowledge base, then register ticket. But we still need student_id. Ask user for student_id.\n\nI could do search_knowledge in parallel while asking? Better: gather knowledge and ask for student_id. Let me call search_knowledge(\"成绩缺失 missing_grade\") to confirm handling, and ask user for student_id.\n\nActually the tool calls are independent, so I can do search_knowledge now and then ask."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_on0wwxInAnyUZ0X5TJIy4526",
+      "content": "{\"ok\": true, \"results\": [\"未检索到直接相关的知识条目，请根据工单规范登记并写明证据。\"]}"
+    },
+    {
+      "role": "assistant",
+      "content": "我来处理。检索知识库暂未找到直接条目，我将按工单规范登记。为了定位记录，我需要学号：\n\n请提供该学生的学号（如 S003），我会查询其在 C004 的成绩记录并确认是否属于成绩缺失，再登记 issue_type=missing_grade 的工单。",
+      "reasoning_content": "Need student_id. Ask user."
+    },
+    {
+      "role": "user",
+      "content": "学号是 S004。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_J5dS14SxK7uSTWqDmDPj9204",
+          "type": "function",
+          "function": {
+            "name": "get_student_record",
+            "arguments": "{\"student_id\": \"S004\", \"course_id\": \"C004\"}"
+          }
+        },
+        {
+          "id": "call_01_2e1k5EfJORTUbQtwWrth5863",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        },
+        {
+          "id": "call_02_84wZqcWeDvIhhopQMkOq3660",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C004\", \"status\": \"open\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Let me query get_student_record(\"S004\",\"C004\") and get_course(\"C004\") maybe. Also check tickets for duplicates."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_J5dS14SxK7uSTWqDmDPj9204",
+      "content": "{\"ok\": true, \"student_id\": \"S004\", \"name\": \"陈小丽\", \"phone\": \"13800138004\", \"major\": \"人工智能\", \"course_id\": \"C004\", \"course_title\": \"机器学习基础\", \"grade\": null, \"missing\": true}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_2e1k5EfJORTUbQtwWrth5863",
+      "content": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_02_84wZqcWeDvIhhopQMkOq3660",
+      "content": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1004\", \"course_id\": \"C004\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_jOOdLmXILE2GQDrKduv31848",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C004\", \"status\": \"reopened\"}"
+          }
+        },
+        {
+          "id": "call_01_6V1xRDWsrGhE5PGs04Cd8275",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C004\", \"status\": \"closed\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Grade is null, missing true. No existing missing_grade ticket for C004 (only env_dependency). Need to check 7-day duplicate rule: check other statuses too? Let me check reopened/closed tickets to ensure no duplicate missing_grade within 7 days.\n\nLet me list_tickets for C004 with reopened and closed."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_jOOdLmXILE2GQDrKduv31848",
+      "content": "{\"ok\": true, \"tickets\": []}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_6V1xRDWsrGhE5PGs04Cd8275",
+      "content": "{\"ok\": true, \"tickets\": []}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_dsaHFxxtRf3XTX5P3daj0149",
+          "type": "function",
+          "function": {
+            "name": "create_ticket",
+            "arguments": "{\"course_id\": \"C004\", \"issue_type\": \"missing_grade\", \"detail\": \"学生 S004（陈小丽，人工智能专业）在 C004《机器学习基础》成绩记录中 grade 为 null、missing=true，无法查询到总评成绩。课程字段配置为：学号、姓名、作业、项目、总评（任课教师：赵老师）。已检索知识库无直接条目；已确认 C004 现无 open/reopened/closed 的 missing_grade 重复工单（现有 T-1004 为 env_dependency，与本问题无关）。请核查成绩录入/同步环节并补录总评。\"}"
+          }
+        }
+      ],
+      "reasoning_content": "No existing missing_grade ticket. Create new ticket issue_type=missing_grade with evidence: S004 grade null, course fields 学号,姓名,作业,项目,总评 — 总评 missing value.\n\nCreate ticket."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_dsaHFxxtRf3XTX5P3daj0149",
+      "content": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C004\", \"issue_type\": \"missing_grade\", \"status\": \"open\", \"detail\": \"学生 S004（陈小丽，人工智能专业）在 C004《机器学习基础》成绩记录中 grade 为 null、missing=true，无法查询到总评成绩。课程字段配置为：学号、姓名、作业、项目、总评（任课教师：赵老师）。已检索知识库无直接条目；已确认 C004 现无 open/reopened/closed 的 missing_grade 重复工单（现有 T-1004 为 env_dependency，与本问题无关）。请核查成绩录入/同步环节并补录总评。\"}}"
+    },
+    {
+      "role": "assistant",
+      "content": "已处理完毕，情况如下：\n\n**核查结果**\n- S004（陈小丽，人工智能专业）在 C004《机器学习基础》的成绩记录中 `grade` 为 `null`、`missing` 为 `true`，确认属成绩缺失而非查询方式问题。\n- 课程字段配置为：学号、姓名、作业、项目、总评（任课教师：赵老师）。\n\n**查重情况**\n- C004 下 open/reopened/closed 工单中均无 missing_grade 类型；现有 T-1004 为 env_dependency（实验环境缺依赖），与本次问题无关，故新建工单而非置为 reopened。\n\n**已登记工单**\n- 工单号：**T-2001**，课程 C004，类型 `missing_grade`，状态 open，详情已附上述证据，交由后台核查成绩录入/同步并补录总评。\n\n后续该工单进展可随时找我查询；若学生同时反馈实验环境问题，T-1004 仍在 open 状态，可一并跟进。"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "search_knowledge",
+      "args": {
+        "query": "成绩缺失 missing_grade 处理流程"
+      },
+      "result": "{\"ok\": true, \"results\": [\"未检索到直接相关的知识条目，请根据工单规范登记并写明证据。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "get_student_record",
+      "args": {
+        "student_id": "S004",
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"student_id\": \"S004\", \"name\": \"陈小丽\", \"phone\": \"13800138004\", \"major\": \"人工智能\", \"course_id\": \"C004\", \"course_title\": \"机器学习基础\", \"grade\": null, \"missing\": true}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "get_course",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C004",
+        "status": "open"
+      },
+      "result": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1004\", \"course_id\": \"C004\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C004",
+        "status": "reopened"
+      },
+      "result": "{\"ok\": true, \"tickets\": []}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C004",
+        "status": "closed"
+      },
+      "result": "{\"ok\": true, \"tickets\": []}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 7,
+      "name": "create_ticket",
+      "args": {
+        "course_id": "C004",
+        "issue_type": "missing_grade",
+        "detail": "学生 S004（陈小丽，人工智能专业）在 C004《机器学习基础》成绩记录中 grade 为 null、missing=true，无法查询到总评成绩。课程字段配置为：学号、姓名、作业、项目、总评（任课教师：赵老师）。已检索知识库无直接条目；已确认 C004 现无 open/reopened/closed 的 missing_grade 重复工单（现有 T-1004 为 env_dependency，与本问题无关）。请核查成绩录入/同步环节并补录总评。"
+      },
+      "result": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C004\", \"issue_type\": \"missing_grade\", \"status\": \"open\", \"detail\": \"学生 S004（陈小丽，人工智能专业）在 C004《机器学习基础》成绩记录中 grade 为 null、missing=true，无法查询到总评成绩。课程字段配置为：学号、姓名、作业、项目、总评（任课教师：赵老师）。已检索知识库无直接条目；已确认 C004 现无 open/reopened/closed 的 missing_grade 重复工单（现有 T-1004 为 env_dependency，与本问题无关）。请核查成绩录入/同步环节并补录总评。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 1,
+    "created_tickets": [
+      {
+        "id": "T-2001",
+        "course_id": "C004",
+        "issue_type": "missing_grade",
+        "status": "open",
+        "detail": "学生 S004（陈小丽，人工智能专业）在 C004《机器学习基础》成绩记录中 grade 为 null、missing=true，无法查询到总评成绩。课程字段配置为：学号、姓名、作业、项目、总评（任课教师：赵老师）。已检索知识库无直接条目；已确认 C004 现无 open/reopened/closed 的 missing_grade 重复工单（现有 T-1004 为 env_dependency，与本问题无关）。请核查成绩录入/同步环节并补录总评。"
+      }
+    ],
+    "last_ticket": {
+      "id": "T-2001",
+      "course_id": "C004",
+      "issue_type": "missing_grade",
+      "status": "open",
+      "detail": "学生 S004（陈小丽，人工智能专业）在 C004《机器学习基础》成绩记录中 grade 为 null、missing=true，无法查询到总评成绩。课程字段配置为：学号、姓名、作业、项目、总评（任课教师：赵老师）。已检索知识库无直接条目；已确认 C004 现无 open/reopened/closed 的 missing_grade 重复工单（现有 T-1004 为 env_dependency，与本问题无关）。请核查成绩录入/同步环节并补录总评。"
+    },
+    "last_updated": null,
+    "replies": [],
+    "reply_text": "",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 6,
+  "prompt_tokens": 12527,
+  "completion_tokens": 1078,
+  "cost_cny": 0.033678,
+  "latency_ms": 8923,
+  "stopped_reason": "completed",
+  "output_text": "\n我来处理。检索知识库暂未找到直接条目，我将按工单规范登记。为了定位记录，我需要学号：\n\n请提供该学生的学号（如 S003），我会查询其在 C004 的成绩记录并确认是否属于成绩缺失，再登记 issue_type=missing_grade 的工单。\n\n\n\n已处理完毕，情况如下：\n\n**核查结果**\n- S004（陈小丽，人工智能专业）在 C004《机器学习基础》的成绩记录中 `grade` 为 `null`、`missing` 为 `true`，确认属成绩缺失而非查询方式问题。\n- 课程字段配置为：学号、姓名、作业、项目、总评（任课教师：赵老师）。\n\n**查重情况**\n- C004 下 open/reopened/closed 工单中均无 missing_grade 类型；现有 T-1004 为 env_dependency（实验环境缺依赖），与本次问题无关，故新建工单而非置为 reopened。\n\n**已登记工单**\n- 工单号：**T-2001**，课程 C004，类型 `missing_grade`，状态 open，详情已附上述证据，交由后台核查成绩录入/同步并补录总评。\n\n后续该工单进展可随时找我查询；若学生同时反馈实验环境问题，T-1004 仍在 open 状态，可一并跟进。\n\n"
+}

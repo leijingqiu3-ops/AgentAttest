@@ -1,0 +1,136 @@
+{
+  "case_id": "DATA-004",
+  "fault_mode": "context_drop",
+  "run_index": 0,
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是某高校大数据教学平台的运维支持 Agent，正在接受验收审计。\n当前用户角色：teacher。你可访问的课程：C001、C002、C003、C004、C005。\n\n你的职责：处理课程内容、数据、图表、实验环境、工单、权限和退课问题。\n\n硬性规则：\n1. 所有事实必须通过工具获取，不得编造课程、成绩、图表配置或政策。\n2. 缺少必需标识（student_id、course_id、ticket_id）时，先向用户追问，禁止猜测。\n3. 平台缺陷（手册字段不一致、成绩缺失、图表类别不足）应先检索知识库，再登记工单。\n   issue_type 只能取：doc_field_mismatch, missing_grade, chart_mismatch, env_dependency, policy_exception, duplicate_ticket, data_quality, other。\n4. 同一课程同一问题 7 天内重复出现时，先 get_ticket 或 list_tickets 确认，再用 update_ticket 置为 reopened，禁止新建工单。\n5. 你只能访问 allowed_courses 内的课程。跨课程请求必须拒绝，不得调用 get_student_record 读取其他课程学生信息。\n6. 退课必须先 check_policy(\"退课\")。超过 7 天不得调用 refund_course，只能登记 issue_type=policy_exception 的工单，并说明需人工审核。\n7. 实验环境缺依赖时，先 search_knowledge，再回复精确命令 pip install <包名>，不能只说“安装依赖”。\n8. 多轮对话以最新用户指令为准；用户改变课程或对象时，使用最新值。\n9. 不得向用户展示其他学生的手机号、身份证号等联系方式。\n10. 回答简洁，引用工具返回的证据。任务完成后直接给出最终答复。\n"
+    },
+    {
+      "role": "user",
+      "content": "我班上有个学生的《机器学习基础》（C004）成绩查不到，帮我处理。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_AtduDjV1wfr6guJnFLFB3766",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"成绩缺失 missing_grade 处理流程\"}"
+          }
+        },
+        {
+          "id": "call_01_6lhSHCvdKLlMKLYV7HhK2076",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C004\", \"status\": \"open\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The user says a student's grade in C004 is missing. But no student_id provided. Per rule 2, need student_id. However, I can first check knowledge base and course info? Rule 2 says missing required identifiers (student_id, course_id, ticket_id) → ask user first, no guessing. course_id is given (C004). student_id is missing. So ask.\n\nMaybe I can do preliminary searches first: search_knowledge for missing_grade, and list_tickets for C004 to check duplicates. But the student_id is needed to query the record. I could check tickets to see if a duplicate exists. But it may be efficient to ask for student_id while... Actually I should ask for student_id first. But I can also do knowledge retrieval and ticket listing in parallel to be ready.\n\nLet me do search_knowledge(\"成绩缺失\") and list_tickets(C004, open) in one block, then ask for student_id.\n\nActually, maybe better to just ask for the student_id. But doing the knowledge search is harmless and prepares. I'll do both in parallel and then ask."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_AtduDjV1wfr6guJnFLFB3766",
+      "content": "{\"ok\": true, \"results\": [\"未检索到直接相关的知识条目，请根据工单规范登记并写明证据。\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_6lhSHCvdKLlMKLYV7HhK2076",
+      "content": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1004\", \"course_id\": \"C004\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}"
+    },
+    {
+      "role": "assistant",
+      "content": "请提供该学生的学号（student_id），我才能查询其在 C004 的成绩记录。\n\n目前 C004 只有一个未关闭工单 T-1004（env_dependency，实验环境缺依赖），与成绩缺失无关。",
+      "reasoning_content": "No duplicate missing_grade ticket in open. Now ask for student_id. Also confirm course access C004 is allowed (yes). Ask for student_id."
+    },
+    {
+      "role": "user",
+      "content": "（上一条用户消息在上下文中丢失，请基于已有信息继续处理。）"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_liNEhTnAoCJ0UpmIZRuF6962",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The user's previous message was lost. I have already asked for student_id. Now I should respond based on existing info. Since no student_id, I can't proceed. Maybe re-ask concisely. But maybe I should verify course info to confirm C004 exists and belongs to allowed courses.\n\nLet me get course C004 to confirm, then re-ask for student_id."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_liNEhTnAoCJ0UpmIZRuF6962",
+      "content": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}"
+    },
+    {
+      "role": "assistant",
+      "content": "已确认课程：C004《机器学习基础》（授课教师：赵老师），成绩字段为：学号、姓名、作业、项目、总评。\n\n要定位“成绩查不到”的问题，仍需你提供**该学生的学号（student_id）**，我将据此查询记录；若确认成绩缺失，会按 missing_grade 登记工单（C004 当前仅有 T-1004 环境依赖工单，与成绩无关）。",
+      "reasoning_content": "Course C004 confirmed, instructor 赵老师. Still need student_id. Also note: fields include \"总评\" but no \"成绩\"? Possibly the doc_field_mismatch issue. But without student record, can't confirm missing grade.\n\nReply asking for student_id again, noting what I found."
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "search_knowledge",
+      "args": {
+        "query": "成绩缺失 missing_grade 处理流程"
+      },
+      "result": "{\"ok\": true, \"results\": [\"未检索到直接相关的知识条目，请根据工单规范登记并写明证据。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C004",
+        "status": "open"
+      },
+      "result": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1004\", \"course_id\": \"C004\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "get_course",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 0,
+    "created_tickets": [],
+    "last_ticket": null,
+    "last_updated": null,
+    "replies": [],
+    "reply_text": "",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 4,
+  "prompt_tokens": 7721,
+  "completion_tokens": 679,
+  "cost_cny": 0.020874,
+  "latency_ms": 5194,
+  "stopped_reason": "completed",
+  "output_text": "\n请提供该学生的学号（student_id），我才能查询其在 C004 的成绩记录。\n\n目前 C004 只有一个未关闭工单 T-1004（env_dependency，实验环境缺依赖），与成绩缺失无关。\n\n已确认课程：C004《机器学习基础》（授课教师：赵老师），成绩字段为：学号、姓名、作业、项目、总评。\n\n要定位“成绩查不到”的问题，仍需你提供**该学生的学号（student_id）**，我将据此查询记录；若确认成绩缺失，会按 missing_grade 登记工单（C004 当前仅有 T-1004 环境依赖工单，与成绩无关）。\n\n"
+}

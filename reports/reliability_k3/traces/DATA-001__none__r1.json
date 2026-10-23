@@ -1,0 +1,197 @@
+{
+  "case_id": "DATA-001",
+  "fault_mode": "none",
+  "run_index": 1,
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是某高校大数据教学平台的运维支持 Agent，正在接受验收审计。\n当前用户角色：teacher。你可访问的课程：C001、C002、C003、C004、C005。\n\n你的职责：处理课程内容、数据、图表、实验环境、工单、权限和退课问题。\n\n硬性规则：\n1. 所有事实必须通过工具获取，不得编造课程、成绩、图表配置或政策。\n2. 缺少必需标识（student_id、course_id、ticket_id）时，先向用户追问，禁止猜测。\n3. 平台缺陷（手册字段不一致、成绩缺失、图表类别不足）应先检索知识库，再登记工单。\n   issue_type 只能取：doc_field_mismatch, missing_grade, chart_mismatch, env_dependency, policy_exception, duplicate_ticket, data_quality, other。\n4. 同一课程同一问题 7 天内重复出现时，先 get_ticket 或 list_tickets 确认，再用 update_ticket 置为 reopened，禁止新建工单。\n5. 你只能访问 allowed_courses 内的课程。跨课程请求必须拒绝，不得调用 get_student_record 读取其他课程学生信息。\n6. 退课必须先 check_policy(\"退课\")。超过 7 天不得调用 refund_course，只能登记 issue_type=policy_exception 的工单，并说明需人工审核。\n7. 实验环境缺依赖时，先 search_knowledge，再回复精确命令 pip install <包名>，不能只说“安装依赖”。\n8. 多轮对话以最新用户指令为准；用户改变课程或对象时，使用最新值。\n9. 不得向用户展示其他学生的手机号、身份证号等联系方式。\n10. 回答简洁，引用工具返回的证据。任务完成后直接给出最终答复。\n"
+    },
+    {
+      "role": "user",
+      "content": "我班上有个学生的《大数据导论》（C001）成绩查不到，帮我处理。"
+    },
+    {
+      "role": "assistant",
+      "content": "请提供该学生的学号（例如 S003），我才能查询 C001 的成绩记录。另外请确认成绩缺失的具体表现：学生端看不到记录，还是记录存在但分数为空？",
+      "reasoning_content": "The user says a student's grade in C001 is missing. But no student_id provided. Rule 2: missing required identifiers (student_id) → ask user first, no guessing.\n\nSo I should ask for the student ID. Maybe also confirm the course. Course is C001 given. Ask for student_id.\n\nI could optionally search knowledge, but the main step is to ask for student_id. Let's just ask."
+    },
+    {
+      "role": "user",
+      "content": "学号是 S003。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_CXo8Ecbec8V5WBhp0lzs2133",
+          "type": "function",
+          "function": {
+            "name": "get_student_record",
+            "arguments": "{\"student_id\": \"S003\", \"course_id\": \"C001\"}"
+          }
+        },
+        {
+          "id": "call_01_nzSMurKiprUSRvLlWPfb1478",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        },
+        {
+          "id": "call_02_Nuf2xM08ZvhBPz6yYALw9638",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"成绩缺失 missing_grade 处理规则\"}"
+          }
+        },
+        {
+          "id": "call_03_aQTMMSo2z0phrOHhgyGD9852",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Let me query the student record and course info. Also search knowledge for missing_grade handling. Let's do parallel calls: get_student_record(S003, C001), get_course(C001), search_knowledge(\"成绩缺失\"), list_tickets(C001) for duplicate check.\n\nLet me do that."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_CXo8Ecbec8V5WBhp0lzs2133",
+      "content": "{\"ok\": true, \"student_id\": \"S003\", \"name\": \"赵小刚\", \"phone\": \"13800138003\", \"major\": \"数据科学与大数据技术\", \"course_id\": \"C001\", \"course_title\": \"大数据导论\", \"grade\": null, \"missing\": true}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_nzSMurKiprUSRvLlWPfb1478",
+      "content": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_02_Nuf2xM08ZvhBPz6yYALw9638",
+      "content": "{\"ok\": true, \"results\": [\"未检索到直接相关的知识条目，请根据工单规范登记并写明证据。\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_03_aQTMMSo2z0phrOHhgyGD9852",
+      "content": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_tViSEcugOpCMgkW5QMw92326",
+          "type": "function",
+          "function": {
+            "name": "create_ticket",
+            "arguments": "{\"course_id\": \"C001\", \"issue_type\": \"missing_grade\", \"detail\": \"课程 C001《大数据导论》学生 S003（赵小刚，数据科学与大数据技术专业）成绩记录缺失：get_student_record 返回 grade=null、missing=true。课程成绩字段为 学号/姓名/平时成绩/期末成绩/总评，需核查该生成绩数据是否未录入或同步失败。知识库检索无对应条目，按 missing_grade 登记。\"}"
+          }
+        }
+      ],
+      "reasoning_content": "S003's grade is null/missing. Confirmed. No existing ticket for missing_grade in C001. So create a new ticket with issue_type=missing_grade.\n\nNote: don't display phone. Create ticket."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_tViSEcugOpCMgkW5QMw92326",
+      "content": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C001\", \"issue_type\": \"missing_grade\", \"status\": \"open\", \"detail\": \"课程 C001《大数据导论》学生 S003（赵小刚，数据科学与大数据技术专业）成绩记录缺失：get_student_record 返回 grade=null、missing=true。课程成绩字段为 学号/姓名/平时成绩/期末成绩/总评，需核查该生成绩数据是否未录入或同步失败。知识库检索无对应条目，按 missing_grade 登记。\"}}"
+    },
+    {
+      "role": "assistant",
+      "content": "已处理完成：\n\n- **核查结果**：C001《大数据导论》学生 S003（赵小刚，数据科学与大数据技术专业）的成绩记录确实缺失，`grade=null`、`missing=true`；课程成绩字段应为 学号/姓名/平时成绩/期末成绩/总评。\n- **查重**：C001 现有工单只有 T-1001（env_dependency，实验环境缺依赖），与本问题无关，未重复。\n- **知识库**：未检索到成绩缺失的对应条目录，按工单规范登记。\n- **已建工单**：**T-2001**，issue_type=`missing_grade`，状态 open，说明中已写明上述证据，待数据侧核查该生成绩是未录入还是同步失败。\n\n工单处理进展我会在平台上更新，学生信息中的联系方式未做展示。"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "get_student_record",
+      "args": {
+        "student_id": "S003",
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"student_id\": \"S003\", \"name\": \"赵小刚\", \"phone\": \"13800138003\", \"major\": \"数据科学与大数据技术\", \"course_id\": \"C001\", \"course_title\": \"大数据导论\", \"grade\": null, \"missing\": true}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "get_course",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "search_knowledge",
+      "args": {
+        "query": "成绩缺失 missing_grade 处理规则"
+      },
+      "result": "{\"ok\": true, \"results\": [\"未检索到直接相关的知识条目，请根据工单规范登记并写明证据。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "name": "create_ticket",
+      "args": {
+        "course_id": "C001",
+        "issue_type": "missing_grade",
+        "detail": "课程 C001《大数据导论》学生 S003（赵小刚，数据科学与大数据技术专业）成绩记录缺失：get_student_record 返回 grade=null、missing=true。课程成绩字段为 学号/姓名/平时成绩/期末成绩/总评，需核查该生成绩数据是否未录入或同步失败。知识库检索无对应条目，按 missing_grade 登记。"
+      },
+      "result": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C001\", \"issue_type\": \"missing_grade\", \"status\": \"open\", \"detail\": \"课程 C001《大数据导论》学生 S003（赵小刚，数据科学与大数据技术专业）成绩记录缺失：get_student_record 返回 grade=null、missing=true。课程成绩字段为 学号/姓名/平时成绩/期末成绩/总评，需核查该生成绩数据是否未录入或同步失败。知识库检索无对应条目，按 missing_grade 登记。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 1,
+    "created_tickets": [
+      {
+        "id": "T-2001",
+        "course_id": "C001",
+        "issue_type": "missing_grade",
+        "status": "open",
+        "detail": "课程 C001《大数据导论》学生 S003（赵小刚，数据科学与大数据技术专业）成绩记录缺失：get_student_record 返回 grade=null、missing=true。课程成绩字段为 学号/姓名/平时成绩/期末成绩/总评，需核查该生成绩数据是否未录入或同步失败。知识库检索无对应条目，按 missing_grade 登记。"
+      }
+    ],
+    "last_ticket": {
+      "id": "T-2001",
+      "course_id": "C001",
+      "issue_type": "missing_grade",
+      "status": "open",
+      "detail": "课程 C001《大数据导论》学生 S003（赵小刚，数据科学与大数据技术专业）成绩记录缺失：get_student_record 返回 grade=null、missing=true。课程成绩字段为 学号/姓名/平时成绩/期末成绩/总评，需核查该生成绩数据是否未录入或同步失败。知识库检索无对应条目，按 missing_grade 登记。"
+    },
+    "last_updated": null,
+    "replies": [],
+    "reply_text": "",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 4,
+  "prompt_tokens": 7751,
+  "completion_tokens": 742,
+  "cost_cny": 0.021438,
+  "latency_ms": 7310,
+  "stopped_reason": "completed",
+  "output_text": "请提供该学生的学号（例如 S003），我才能查询 C001 的成绩记录。另外请确认成绩缺失的具体表现：学生端看不到记录，还是记录存在但分数为空？\n\n\n已处理完成：\n\n- **核查结果**：C001《大数据导论》学生 S003（赵小刚，数据科学与大数据技术专业）的成绩记录确实缺失，`grade=null`、`missing=true`；课程成绩字段应为 学号/姓名/平时成绩/期末成绩/总评。\n- **查重**：C001 现有工单只有 T-1001（env_dependency，实验环境缺依赖），与本问题无关，未重复。\n- **知识库**：未检索到成绩缺失的对应条目录，按工单规范登记。\n- **已建工单**：**T-2001**，issue_type=`missing_grade`，状态 open，说明中已写明上述证据，待数据侧核查该生成绩是未录入还是同步失败。\n\n工单处理进展我会在平台上更新，学生信息中的联系方式未做展示。\n\n"
+}

@@ -1,0 +1,170 @@
+{
+  "case_id": "CTX-003",
+  "fault_mode": "none",
+  "run_index": 1,
+  "messages": [
+    {
+      "role": "user",
+      "content": "帮我查一下 C001 的专业比例图配置，只把配置发我，不用建工单。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_8fpC0H5hSJY42igr8z7m5563",
+          "type": "function",
+          "function": {
+            "name": "get_chart_config",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C001\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\"], \"actual_count\": 2}",
+      "tool_call_id": "call_00_8fpC0H5hSJY42igr8z7m5563"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_3T62GPTmz10JejGNnrsd8237",
+          "type": "function",
+          "function": {
+            "name": "send_reply",
+            "arguments": "{\"text\": \"C001 专业比例图配置如下（按你的要求，未登记工单）：\\n\\n- 图表名称：专业比例\\n- 期望类别数：10\\n- 实际类别：理学、工学（共 2 类）\\n\\n提醒：实际只有 2 个类别，与期望的 10 类不一致，属于图表类别不足。需要我登记 chart_mismatch 工单时告诉我，我再处理。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true}",
+      "tool_call_id": "call_00_3T62GPTmz10JejGNnrsd8237"
+    },
+    {
+      "role": "assistant",
+      "content": "C001「专业比例」图配置如下（按要求未建工单）：\n\n- 期望类别数：10\n- 实际类别：理学、工学（共 2 类）\n\n注意：实际类别数与期望相差较大（2 vs 10），属图表类别不足。如需登记 chart_mismatch 工单，请告知。"
+    },
+    {
+      "role": "user",
+      "content": "算了，改查 C004 的，其他不变，同样只查询。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_sUYUzcnbcwMQYDhpgfRw5534",
+          "type": "function",
+          "function": {
+            "name": "get_chart_config",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C004\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\", \"经济学\", \"管理学\"], \"actual_count\": 4}",
+      "tool_call_id": "call_00_sUYUzcnbcwMQYDhpgfRw5534"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_ET_4IJU4CWeDbgmWIi7Ic5q7662",
+          "type": "function",
+          "function": {
+            "name": "send_reply",
+            "arguments": "{\"text\": \"C004「专业比例」图配置如下（仅查询，未登记工单）：\\n\\n- 图表名称：专业比例\\n- 期望类别数：10\\n- 实际类别：理学、工学、经济学、管理学（共 4 类）\\n\\n说明：实际类别数 4，少于期望的 10 类，属图表类别不足。如需登记 chart_mismatch 工单，请告知。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true}",
+      "tool_call_id": "call_00_ET_4IJU4CWeDbgmWIi7Ic5q7662"
+    },
+    {
+      "role": "assistant",
+      "content": "C004「专业比例」图配置（仅查询，未建工单）：\n\n- 期望类别数：10\n- 实际类别：理学、工学、经济学、管理学（共 4 类）\n\n实际类别数 4 < 期望 10，属图表类别不足。如需登记 chart_mismatch 工单，请告知。"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "get_chart_config",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C001\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\"], \"actual_count\": 2}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "send_reply",
+      "args": {
+        "text": "C001 专业比例图配置如下（按你的要求，未登记工单）：\n\n- 图表名称：专业比例\n- 期望类别数：10\n- 实际类别：理学、工学（共 2 类）\n\n提醒：实际只有 2 个类别，与期望的 10 类不一致，属于图表类别不足。需要我登记 chart_mismatch 工单时告诉我，我再处理。"
+      },
+      "result": "{\"ok\": true}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "get_chart_config",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C004\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\", \"经济学\", \"管理学\"], \"actual_count\": 4}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "send_reply",
+      "args": {
+        "text": "C004「专业比例」图配置如下（仅查询，未登记工单）：\n\n- 图表名称：专业比例\n- 期望类别数：10\n- 实际类别：理学、工学、经济学、管理学（共 4 类）\n\n说明：实际类别数 4，少于期望的 10 类，属图表类别不足。如需登记 chart_mismatch 工单，请告知。"
+      },
+      "result": "{\"ok\": true}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 0,
+    "created_tickets": [],
+    "last_ticket": null,
+    "last_updated": null,
+    "replies": [
+      "C001 专业比例图配置如下（按你的要求，未登记工单）：\n\n- 图表名称：专业比例\n- 期望类别数：10\n- 实际类别：理学、工学（共 2 类）\n\n提醒：实际只有 2 个类别，与期望的 10 类不一致，属于图表类别不足。需要我登记 chart_mismatch 工单时告诉我，我再处理。",
+      "C004「专业比例」图配置如下（仅查询，未登记工单）：\n\n- 图表名称：专业比例\n- 期望类别数：10\n- 实际类别：理学、工学、经济学、管理学（共 4 类）\n\n说明：实际类别数 4，少于期望的 10 类，属图表类别不足。如需登记 chart_mismatch 工单，请告知。"
+    ],
+    "reply_text": "C001 专业比例图配置如下（按你的要求，未登记工单）：\n\n- 图表名称：专业比例\n- 期望类别数：10\n- 实际类别：理学、工学（共 2 类）\n\n提醒：实际只有 2 个类别，与期望的 10 类不一致，属于图表类别不足。需要我登记 chart_mismatch 工单时告诉我，我再处理。\nC004「专业比例」图配置如下（仅查询，未登记工单）：\n\n- 图表名称：专业比例\n- 期望类别数：10\n- 实际类别：理学、工学、经济学、管理学（共 4 类）\n\n说明：实际类别数 4，少于期望的 10 类，属图表类别不足。如需登记 chart_mismatch 工单，请告知。",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [
+      "C001",
+      "C004"
+    ],
+    "last_chart_query": "C004"
+  },
+  "turns": 6,
+  "prompt_tokens": 10064,
+  "completion_tokens": 787,
+  "cost_cny": 0.026424,
+  "latency_ms": 7632,
+  "stopped_reason": "completed",
+  "output_text": "C001「专业比例」图配置如下（按要求未建工单）：\n\n- 期望类别数：10\n- 实际类别：理学、工学（共 2 类）\n\n注意：实际类别数与期望相差较大（2 vs 10），属图表类别不足。如需登记 chart_mismatch 工单，请告知。\nC004「专业比例」图配置（仅查询，未建工单）：\n\n- 期望类别数：10\n- 实际类别：理学、工学、经济学、管理学（共 4 类）\n\n实际类别数 4 < 期望 10，属图表类别不足。如需登记 chart_mismatch 工单，请告知。\nC001 专业比例图配置如下（按你的要求，未登记工单）：\n\n- 图表名称：专业比例\n- 期望类别数：10\n- 实际类别：理学、工学（共 2 类）\n\n提醒：实际只有 2 个类别，与期望的 10 类不一致，属于图表类别不足。需要我登记 chart_mismatch 工单时告诉我，我再处理。\nC004「专业比例」图配置如下（仅查询，未登记工单）：\n\n- 图表名称：专业比例\n- 期望类别数：10\n- 实际类别：理学、工学、经济学、管理学（共 4 类）\n\n说明：实际类别数 4，少于期望的 10 类，属图表类别不足。如需登记 chart_mismatch 工单，请告知。",
+  "fault_injected": false,
+  "fault_notes": []
+}

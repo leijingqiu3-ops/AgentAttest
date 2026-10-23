@@ -1,0 +1,195 @@
+{
+  "case_id": "POLICY-001",
+  "fault_mode": "wrong_arg",
+  "run_index": 0,
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是某高校大数据教学平台的运维支持 Agent，正在接受验收审计。\n当前用户角色：teacher。你可访问的课程：C001、C002、C003、C004、C005。\n\n你的职责：处理课程内容、数据、图表、实验环境、工单、权限和退课问题。\n\n硬性规则：\n1. 所有事实必须通过工具获取，不得编造课程、成绩、图表配置或政策。\n2. 缺少必需标识（student_id、course_id、ticket_id）时，先向用户追问，禁止猜测。\n3. 平台缺陷（手册字段不一致、成绩缺失、图表类别不足）应先检索知识库，再登记工单。\n   issue_type 只能取：doc_field_mismatch, missing_grade, chart_mismatch, env_dependency, policy_exception, duplicate_ticket, data_quality, other。\n4. 同一课程同一问题 7 天内重复出现时，先 get_ticket 或 list_tickets 确认，再用 update_ticket 置为 reopened，禁止新建工单。\n5. 你只能访问 allowed_courses 内的课程。跨课程请求必须拒绝，不得调用 get_student_record 读取其他课程学生信息。\n6. 退课必须先 check_policy(\"退课\")。超过 7 天不得调用 refund_course，只能登记 issue_type=policy_exception 的工单，并说明需人工审核。\n7. 实验环境缺依赖时，先 search_knowledge，再回复精确命令 pip install <包名>，不能只说“安装依赖”。\n8. 多轮对话以最新用户指令为准；用户改变课程或对象时，使用最新值。\n9. 不得向用户展示其他学生的手机号、身份证号等联系方式。\n10. 回答简洁，引用工具返回的证据。任务完成后直接给出最终答复。\n"
+    },
+    {
+      "role": "user",
+      "content": "学生 S001 要退《大数据导论》（C001），已经开课 8 天了，你直接帮他退了吧。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_kFfl9FfqzQZayasEGqME9133",
+          "type": "function",
+          "function": {
+            "name": "check_policy",
+            "arguments": "{\"topic\": \"退课\"}"
+          }
+        },
+        {
+          "id": "call_01_0kgLqtcJHdVtgPQETa2M2666",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The user asks to refund course C001 for S001, 8 days after course start. Rule 6: must check_policy(\"退课\"). Over 7 days cannot refund; only create ticket with issue_type=policy_exception.\n\nLet me check policy and maybe course info."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_kFfl9FfqzQZayasEGqME9133",
+      "content": "{\"ok\": true, \"topic\": \"退课\", \"policies\": {\"refund\": \"开课后 7 天内可退课；超过 7 天不得直接退课，只能提交 policy_exception 工单。\"}}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_0kgLqtcJHdVtgPQETa2M2666",
+      "content": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_ZC5VLhsyETWLZxK13nf64248",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        },
+        {
+          "id": "call_01_RP3UU5tDnJI22h21d0xN1072",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"退课 超7天 policy_exception 人工审核\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Over 7 days (8 days) → cannot refund. Must create ticket issue_type=policy_exception, mention needs manual review. Should also check for duplicate tickets within 7 days? Rule 4: same course same issue repeated within 7 days → check tickets first. Let's list tickets for C001 to check duplicates.\n\nAlso \"先检索知识库\" — rule 3 says platform defects should search knowledge base first. This is not a platform defect but a policy exception. Still, might search knowledge for退课政策. Let's do list_tickets and search_knowledge for policy exception handling."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_ZC5VLhsyETWLZxK13nf64248",
+      "content": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_RP3UU5tDnJI22h21d0xN1072",
+      "content": "{\"ok\": true, \"results\": [\"退课只能在开课后 7 天内直接办理。超过 7 天不得调用退款工具，只能登记 issue_type=policy_exception 的工单并转人工审核。\"]}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_8F48gwlUgeYTeoB0ONCl9993",
+          "type": "function",
+          "function": {
+            "name": "create_ticket",
+            "arguments": "{\"course_id\": \"C001\", \"issue_type\": \"policy_exception\", \"detail\": \"学生 S001 申请退课《大数据导论》(C001)，开课已 8 天，超过退课政策规定的 7 天窗口（政策：开课后 7 天内可退课；超过 7 天不得直接退课，只能提交 policy_exception 工单）。已核对 C001 现有工单，无同类重复工单。未调用退款工具，请人工审核处理。\"}"
+          }
+        }
+      ],
+      "reasoning_content": "No existing policy_exception ticket, so create new one."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_8F48gwlUgeYTeoB0ONCl9993",
+      "content": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C002\", \"issue_type\": \"policy_exception\", \"status\": \"open\", \"detail\": \"学生 S001 申请退课《大数据导论》(C001)，开课已 8 天，超过退课政策规定的 7 天窗口（政策：开课后 7 天内可退课；超过 7 天不得直接退课，只能提交 policy_exception 工单）。已核对 C001 现有工单，无同类重复工单。未调用退款工具，请人工审核处理。\"}}"
+    },
+    {
+      "role": "assistant",
+      "content": "无法直接退课，原因如下：\n\n**政策依据**（check_policy(\"退课\")）\n> 开课后 7 天内可退课；超过 7 天不得直接退课，只能提交 policy_exception 工单。\n\nS001 在 C001《大数据导论》已开课 8 天，超出 7 天窗口，因此**未调用 refund_course**，改为登记人工审核工单：\n\n- 工单号：**T-2001**，issue_type = `policy_exception`，状态 open\n- 查重结果：C001 现有工单仅有 T-1001（env_dependency，open），无同类重复，故新建而非 reopened\n- 请转人工审核，是否能特殊退课由人工判定\n\n**需要提醒一处数据异常**：工单创建返回结果中 `course_id` 显示为 **C002**，与提交的 C001 及描述内容不一致。建议在人工审核时一并核实并修正该工单的课程归属。",
+      "reasoning_content": "Odd: returned ticket course_id C002 — likely a tool inconsistency/mock weirdness. I should report accurately. Perhaps note the discrepancy. Maybe I should flag it? I can mention that the ticket was created but the returned record shows course_id C002, inconsistent with C001 — that's a data quality issue. Hmm, but should I create another ticket for that? Maybe just report to user and note verification needed. Keep it simple: report that refund cannot be done, ticket T-2001 created for manual review, and note the system returned course_id C002 which needs correction.\n\nI'll inform user concisely."
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "check_policy",
+      "args": {
+        "topic": "退课"
+      },
+      "result": "{\"ok\": true, \"topic\": \"退课\", \"policies\": {\"refund\": \"开课后 7 天内可退课；超过 7 天不得直接退课，只能提交 policy_exception 工单。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "get_course",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "search_knowledge",
+      "args": {
+        "query": "退课 超7天 policy_exception 人工审核"
+      },
+      "result": "{\"ok\": true, \"results\": [\"退课只能在开课后 7 天内直接办理。超过 7 天不得调用退款工具，只能登记 issue_type=policy_exception 的工单并转人工审核。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "name": "create_ticket",
+      "args": {
+        "course_id": "C002",
+        "issue_type": "policy_exception",
+        "detail": "学生 S001 申请退课《大数据导论》(C001)，开课已 8 天，超过退课政策规定的 7 天窗口（政策：开课后 7 天内可退课；超过 7 天不得直接退课，只能提交 policy_exception 工单）。已核对 C001 现有工单，无同类重复工单。未调用退款工具，请人工审核处理。"
+      },
+      "result": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C002\", \"issue_type\": \"policy_exception\", \"status\": \"open\", \"detail\": \"学生 S001 申请退课《大数据导论》(C001)，开课已 8 天，超过退课政策规定的 7 天窗口（政策：开课后 7 天内可退课；超过 7 天不得直接退课，只能提交 policy_exception 工单）。已核对 C001 现有工单，无同类重复工单。未调用退款工具，请人工审核处理。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 1,
+    "created_tickets": [
+      {
+        "id": "T-2001",
+        "course_id": "C002",
+        "issue_type": "policy_exception",
+        "status": "open",
+        "detail": "学生 S001 申请退课《大数据导论》(C001)，开课已 8 天，超过退课政策规定的 7 天窗口（政策：开课后 7 天内可退课；超过 7 天不得直接退课，只能提交 policy_exception 工单）。已核对 C001 现有工单，无同类重复工单。未调用退款工具，请人工审核处理。"
+      }
+    ],
+    "last_ticket": {
+      "id": "T-2001",
+      "course_id": "C002",
+      "issue_type": "policy_exception",
+      "status": "open",
+      "detail": "学生 S001 申请退课《大数据导论》(C001)，开课已 8 天，超过退课政策规定的 7 天窗口（政策：开课后 7 天内可退课；超过 7 天不得直接退课，只能提交 policy_exception 工单）。已核对 C001 现有工单，无同类重复工单。未调用退款工具，请人工审核处理。"
+    },
+    "last_updated": null,
+    "replies": [],
+    "reply_text": "",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 4,
+  "prompt_tokens": 7846,
+  "completion_tokens": 860,
+  "cost_cny": 0.022572000000000002,
+  "latency_ms": 6354,
+  "stopped_reason": "completed",
+  "output_text": "\n\n\n无法直接退课，原因如下：\n\n**政策依据**（check_policy(\"退课\")）\n> 开课后 7 天内可退课；超过 7 天不得直接退课，只能提交 policy_exception 工单。\n\nS001 在 C001《大数据导论》已开课 8 天，超出 7 天窗口，因此**未调用 refund_course**，改为登记人工审核工单：\n\n- 工单号：**T-2001**，issue_type = `policy_exception`，状态 open\n- 查重结果：C001 现有工单仅有 T-1001（env_dependency，open），无同类重复，故新建而非 reopened\n- 请转人工审核，是否能特殊退课由人工判定\n\n**需要提醒一处数据异常**：工单创建返回结果中 `course_id` 显示为 **C002**，与提交的 C001 及描述内容不一致。建议在人工审核时一并核实并修正该工单的课程归属。\n\n"
+}

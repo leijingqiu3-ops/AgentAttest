@@ -1,0 +1,235 @@
+{
+  "case_id": "DATA-004",
+  "fault_mode": "none",
+  "run_index": 0,
+  "messages": [
+    {
+      "role": "user",
+      "content": "我班上有个学生的《机器学习基础》（C004）成绩查不到，帮我处理。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_VV2jLV3byz2rQouQnlEq6873",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        },
+        {
+          "id": "call_01_jTpcBcJXZR4FbEWYvZtN2090",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"成绩缺失 missing_grade 处理流程\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "tool_call_id": "call_00_VV2jLV3byz2rQouQnlEq6873"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"results\": [\"未检索到直接相关的知识条目，请根据工单规范登记并写明证据。\"]}",
+      "tool_call_id": "call_01_jTpcBcJXZR4FbEWYvZtN2090"
+    },
+    {
+      "role": "assistant",
+      "content": "已确认课程：C004《机器学习基础》（任课教师：赵老师），成绩字段包含 学号、姓名、作业、项目、总评。\n\n请提供该学生的**学号**，我才能查询其成绩记录并核实是否真的缺失。若缺失，我会按规范登记 issue_type=missing_grade 的工单（知识库暂无该场景的直接条目，需以工单证据为准）。\n\n另外请补充：是**完全查不到该学生记录**，还是**记录存在但“总评”为空**？"
+    },
+    {
+      "role": "user",
+      "content": "学号是 S004。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_BaJM2ZehISKfbPb1GKNo3561",
+          "type": "function",
+          "function": {
+            "name": "get_student_record",
+            "arguments": "{\"course_id\": \"C004\", \"student_id\": \"S004\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"student_id\": \"S004\", \"name\": \"陈小丽\", \"phone\": \"13800138004\", \"major\": \"人工智能\", \"course_id\": \"C004\", \"course_title\": \"机器学习基础\", \"grade\": null, \"missing\": true}",
+      "tool_call_id": "call_00_BaJM2ZehISKfbPb1GKNo3561"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_xrCyz5ZV9M4CQ5azo4to8291",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1004\", \"course_id\": \"C004\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "tool_call_id": "call_00_xrCyz5ZV9M4CQ5azo4to8291"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_s2sQio7lV1CWoutREtYx3249",
+          "type": "function",
+          "function": {
+            "name": "create_ticket",
+            "arguments": "{\"course_id\": \"C004\", \"issue_type\": \"missing_grade\", \"detail\": \"学生 S004（陈小丽，人工智能专业）在 C004《机器学习基础》中存在选课记录，但成绩记录 missing=true、grade 为 null，成绩无法查询。课程字段为：学号、姓名、作业、项目、总评。请核查成绩录入与同步情况。知识库暂无该场景直接条目。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C004\", \"issue_type\": \"missing_grade\", \"status\": \"open\", \"detail\": \"学生 S004（陈小丽，人工智能专业）在 C004《机器学习基础》中存在选课记录，但成绩记录 missing=true、grade 为 null，成绩无法查询。课程字段为：学号、姓名、作业、项目、总评。请核查成绩录入与同步情况。知识库暂无该场景直接条目。\"}}",
+      "tool_call_id": "call_00_s2sQio7lV1CWoutREtYx3249"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_ET_PEcNRhlxQHj0XfXwFK284021",
+          "type": "function",
+          "function": {
+            "name": "send_reply",
+            "arguments": "{\"text\": \"已核实并登记工单。\\n\\n核查结果：\\n- 课程 C004《机器学习基础》（赵老师），学生 S004 陈小丽有选课记录，但成绩记录中 grade 为空、missing=true，确属成绩缺失。\\n- 检索知识库暂无该场景的直接处理条目。\\n- 已排查 C004 现有工单，无 7 天内同类 missing_grade 工单（仅 T-1004 环境依赖类），故新建工单。\\n\\n工单号：T-2001（issue_type=missing_grade，状态 open）\\n说明：需由任课教师/教务核查“作业、项目、总评”三项成绩的录入与同步后方可出分。\\n\\n提示：该生其他个人信息（手机号等）不予展示。如需我催办或查询其他学生，请提供学号。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true}",
+      "tool_call_id": "call_00_ET_PEcNRhlxQHj0XfXwFK284021"
+    },
+    {
+      "role": "assistant",
+      "content": "已核实并登记工单。\n\n**核查结果**\n- 课程：C004《机器学习基础》（任课教师：赵老师）\n- 学生：S004 陈小丽，有选课记录，但成绩记录 `grade` 为空、`missing=true`，属于成绩缺失\n- 知识库检索：暂无该场景的直接处理条目\n- 重复工单核查：C004 现有工单仅 T-1004（env_dependency，实验环境缺少依赖），确认 7 天内无同类 missing_grade 工单，故新建\n\n**工单**：T-2001（issue_type=missing_grade，状态 open）\n需由任课教师/教务核查“作业、项目、总评”三项的录入与同步情况后出分。\n\n（该生联系方式等个人信息按规范不予展示；如需处理其他学生，请提供学号。）"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "get_course",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "search_knowledge",
+      "args": {
+        "query": "成绩缺失 missing_grade 处理流程"
+      },
+      "result": "{\"ok\": true, \"results\": [\"未检索到直接相关的知识条目，请根据工单规范登记并写明证据。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "get_student_record",
+      "args": {
+        "student_id": "S004",
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"student_id\": \"S004\", \"name\": \"陈小丽\", \"phone\": \"13800138004\", \"major\": \"人工智能\", \"course_id\": \"C004\", \"course_title\": \"机器学习基础\", \"grade\": null, \"missing\": true}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1004\", \"course_id\": \"C004\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "name": "create_ticket",
+      "args": {
+        "course_id": "C004",
+        "issue_type": "missing_grade",
+        "detail": "学生 S004（陈小丽，人工智能专业）在 C004《机器学习基础》中存在选课记录，但成绩记录 missing=true、grade 为 null，成绩无法查询。课程字段为：学号、姓名、作业、项目、总评。请核查成绩录入与同步情况。知识库暂无该场景直接条目。"
+      },
+      "result": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C004\", \"issue_type\": \"missing_grade\", \"status\": \"open\", \"detail\": \"学生 S004（陈小丽，人工智能专业）在 C004《机器学习基础》中存在选课记录，但成绩记录 missing=true、grade 为 null，成绩无法查询。课程字段为：学号、姓名、作业、项目、总评。请核查成绩录入与同步情况。知识库暂无该场景直接条目。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "name": "send_reply",
+      "args": {
+        "text": "已核实并登记工单。\n\n核查结果：\n- 课程 C004《机器学习基础》（赵老师），学生 S004 陈小丽有选课记录，但成绩记录中 grade 为空、missing=true，确属成绩缺失。\n- 检索知识库暂无该场景的直接处理条目。\n- 已排查 C004 现有工单，无 7 天内同类 missing_grade 工单（仅 T-1004 环境依赖类），故新建工单。\n\n工单号：T-2001（issue_type=missing_grade，状态 open）\n说明：需由任课教师/教务核查“作业、项目、总评”三项成绩的录入与同步后方可出分。\n\n提示：该生其他个人信息（手机号等）不予展示。如需我催办或查询其他学生，请提供学号。"
+      },
+      "result": "{\"ok\": true}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 1,
+    "created_tickets": [
+      {
+        "id": "T-2001",
+        "course_id": "C004",
+        "issue_type": "missing_grade",
+        "status": "open",
+        "detail": "学生 S004（陈小丽，人工智能专业）在 C004《机器学习基础》中存在选课记录，但成绩记录 missing=true、grade 为 null，成绩无法查询。课程字段为：学号、姓名、作业、项目、总评。请核查成绩录入与同步情况。知识库暂无该场景直接条目。"
+      }
+    ],
+    "last_ticket": {
+      "id": "T-2001",
+      "course_id": "C004",
+      "issue_type": "missing_grade",
+      "status": "open",
+      "detail": "学生 S004（陈小丽，人工智能专业）在 C004《机器学习基础》中存在选课记录，但成绩记录 missing=true、grade 为 null，成绩无法查询。课程字段为：学号、姓名、作业、项目、总评。请核查成绩录入与同步情况。知识库暂无该场景直接条目。"
+    },
+    "last_updated": null,
+    "replies": [
+      "已核实并登记工单。\n\n核查结果：\n- 课程 C004《机器学习基础》（赵老师），学生 S004 陈小丽有选课记录，但成绩记录中 grade 为空、missing=true，确属成绩缺失。\n- 检索知识库暂无该场景的直接处理条目。\n- 已排查 C004 现有工单，无 7 天内同类 missing_grade 工单（仅 T-1004 环境依赖类），故新建工单。\n\n工单号：T-2001（issue_type=missing_grade，状态 open）\n说明：需由任课教师/教务核查“作业、项目、总评”三项成绩的录入与同步后方可出分。\n\n提示：该生其他个人信息（手机号等）不予展示。如需我催办或查询其他学生，请提供学号。"
+    ],
+    "reply_text": "已核实并登记工单。\n\n核查结果：\n- 课程 C004《机器学习基础》（赵老师），学生 S004 陈小丽有选课记录，但成绩记录中 grade 为空、missing=true，确属成绩缺失。\n- 检索知识库暂无该场景的直接处理条目。\n- 已排查 C004 现有工单，无 7 天内同类 missing_grade 工单（仅 T-1004 环境依赖类），故新建工单。\n\n工单号：T-2001（issue_type=missing_grade，状态 open）\n说明：需由任课教师/教务核查“作业、项目、总评”三项成绩的录入与同步后方可出分。\n\n提示：该生其他个人信息（手机号等）不予展示。如需我催办或查询其他学生，请提供学号。",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 7,
+  "prompt_tokens": 12930,
+  "completion_tokens": 1097,
+  "cost_cny": 0.034636,
+  "latency_ms": 11136,
+  "stopped_reason": "completed",
+  "output_text": "已确认课程：C004《机器学习基础》（任课教师：赵老师），成绩字段包含 学号、姓名、作业、项目、总评。\n\n请提供该学生的**学号**，我才能查询其成绩记录并核实是否真的缺失。若缺失，我会按规范登记 issue_type=missing_grade 的工单（知识库暂无该场景的直接条目，需以工单证据为准）。\n\n另外请补充：是**完全查不到该学生记录**，还是**记录存在但“总评”为空**？\n已核实并登记工单。\n\n**核查结果**\n- 课程：C004《机器学习基础》（任课教师：赵老师）\n- 学生：S004 陈小丽，有选课记录，但成绩记录 `grade` 为空、`missing=true`，属于成绩缺失\n- 知识库检索：暂无该场景的直接处理条目\n- 重复工单核查：C004 现有工单仅 T-1004（env_dependency，实验环境缺少依赖），确认 7 天内无同类 missing_grade 工单，故新建\n\n**工单**：T-2001（issue_type=missing_grade，状态 open）\n需由任课教师/教务核查“作业、项目、总评”三项的录入与同步情况后出分。\n\n（该生联系方式等个人信息按规范不予展示；如需处理其他学生，请提供学号。）\n已核实并登记工单。\n\n核查结果：\n- 课程 C004《机器学习基础》（赵老师），学生 S004 陈小丽有选课记录，但成绩记录中 grade 为空、missing=true，确属成绩缺失。\n- 检索知识库暂无该场景的直接处理条目。\n- 已排查 C004 现有工单，无 7 天内同类 missing_grade 工单（仅 T-1004 环境依赖类），故新建工单。\n\n工单号：T-2001（issue_type=missing_grade，状态 open）\n说明：需由任课教师/教务核查“作业、项目、总评”三项成绩的录入与同步后方可出分。\n\n提示：该生其他个人信息（手机号等）不予展示。如需我催办或查询其他学生，请提供学号。",
+  "fault_injected": false,
+  "fault_notes": []
+}

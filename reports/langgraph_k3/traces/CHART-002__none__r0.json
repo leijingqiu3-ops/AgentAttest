@@ -1,0 +1,314 @@
+{
+  "case_id": "CHART-002",
+  "fault_mode": "none",
+  "run_index": 0,
+  "messages": [
+    {
+      "role": "user",
+      "content": "《某高校校情管理分析案例》的专业比例图只显示了 3 个专业，应该显示 10 个，帮我处理。"
+    },
+    {
+      "role": "assistant",
+      "content": "我先确认这门课程对应的课程 ID 和图表配置。",
+      "tool_calls": [
+        {
+          "id": "call_00_fz4MjvPAeuWYha1QF8zD4325",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        },
+        {
+          "id": "call_01_CFHoPrf1VsWiT3ejRXYl9877",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C002\"}"
+          }
+        },
+        {
+          "id": "call_02_1nAL7GUN8GVkGNFc5Vpv6258",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C003\"}"
+          }
+        },
+        {
+          "id": "call_03_NYCwdaJopo9PeBoFHQeP1217",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        },
+        {
+          "id": "call_04_gjUtYvT2xke0YiqqnXwD3184",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C005\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}",
+      "tool_call_id": "call_00_fz4MjvPAeuWYha1QF8zD4325"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C002\", \"title\": \"某高校校情管理分析案例\", \"instructor\": \"李老师\", \"fields\": [\"学号\", \"姓名\", \"专业\", \"总评\"]}",
+      "tool_call_id": "call_01_CFHoPrf1VsWiT3ejRXYl9877"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C003\", \"title\": \"Python数据分析\", \"instructor\": \"王老师\", \"fields\": [\"学号\", \"姓名\", \"实验1\", \"实验2\", \"总评\"]}",
+      "tool_call_id": "call_02_1nAL7GUN8GVkGNFc5Vpv6258"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "tool_call_id": "call_03_NYCwdaJopo9PeBoFHQeP1217"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C005\", \"title\": \"数据库原理\", \"instructor\": \"陈老师\", \"fields\": [\"学号\", \"姓名\", \"期中\", \"期末\", \"总评\"]}",
+      "tool_call_id": "call_04_gjUtYvT2xke0YiqqnXwD3184"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_yrGrdWjDQah1GIJM1nI87851",
+          "type": "function",
+          "function": {
+            "name": "get_chart_config",
+            "arguments": "{\"course_id\": \"C002\"}"
+          }
+        },
+        {
+          "id": "call_01_nOaJ4AAWBR60uBN7NVWZ7398",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"图表类别不足 专业比例图显示不全 chart_mismatch 处理\"}"
+          }
+        },
+        {
+          "id": "call_02_hd1TeQWmowlid4kmJkAP8371",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C002\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C002\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\", \"经济学\"], \"actual_count\": 3}",
+      "tool_call_id": "call_00_yrGrdWjDQah1GIJM1nI87851"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"results\": [\"专业比例图应展示 10 个专业类别。若实际类别数少于 10，登记 issue_type=chart_mismatch 的工单，并写明实际类别数。\"]}",
+      "tool_call_id": "call_01_nOaJ4AAWBR60uBN7NVWZ7398"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1002\", \"course_id\": \"C002\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "tool_call_id": "call_02_hd1TeQWmowlid4kmJkAP8371"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_596yYEUpYQ20OeKyDy666951",
+          "type": "function",
+          "function": {
+            "name": "create_ticket",
+            "arguments": "{\"course_id\": \"C002\", \"issue_type\": \"chart_mismatch\", \"detail\": \"课程《某高校校情管理分析案例》的“专业比例”图期望展示 10 个专业类别，实际仅展示 3 个（理学、工学、经济学），缺 7 个类别，请修复图表类别配置。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C002\", \"issue_type\": \"chart_mismatch\", \"status\": \"open\", \"detail\": \"课程《某高校校情管理分析案例》的“专业比例”图期望展示 10 个专业类别，实际仅展示 3 个（理学、工学、经济学），缺 7 个类别，请修复图表类别配置。\"}}",
+      "tool_call_id": "call_00_596yYEUpYQ20OeKyDy666951"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_ET_0qQYnN2Dnu1e6e9R4fns6521",
+          "type": "function",
+          "function": {
+            "name": "send_reply",
+            "arguments": "{\"text\": \"已处理。\\n\\n- 课程：《某高校校情管理分析案例》(C002)，授课教师李老师\\n- 图表配置核查：该“专业比例”图期望类别数 10，实际只有 3 个（理学、工学、经济学），缺 7 个，与您描述一致\\n- 依据知识库规则（类别数少于 10 应登记 chart_mismatch 工单），已登记工单：T-2001，issue_type=chart_mismatch，状态 open，详情已注明实际类别数与缺失情况\\n- 已确认 C002 下此前无同类图表工单（仅有一条 env_dependency 工单 T-1002，与本问题无关），故按新工单处理\\n\\n后续修复由图表配置侧跟进，工单进度可通过 T-2001 查询。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true}",
+      "tool_call_id": "call_00_ET_0qQYnN2Dnu1e6e9R4fns6521"
+    },
+    {
+      "role": "assistant",
+      "content": "已完成处理：\n\n- **课程**：《某高校校情管理分析案例》(C002)，李老师\n- **核查结果**：图表配置显示该“专业比例”图期望类别数为 **10**，实际仅 **3** 个（理学、工学、经济学），缺 7 个，与反馈一致\n- **处理**：按知识库规则登记工单 **T-2001**，`issue_type=chart_mismatch`，状态 open，详情已注明期望 10 / 实际 3 及缺失的 7 个类别\n- **查重**：C002 下原有工单仅 T-1002（env_dependency，与本问题无关），无同期同类图表工单，故新建\n\n后续修复进度可凭工单号 T-2001 跟进。"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "get_course",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "get_course",
+      "args": {
+        "course_id": "C002"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C002\", \"title\": \"某高校校情管理分析案例\", \"instructor\": \"李老师\", \"fields\": [\"学号\", \"姓名\", \"专业\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "get_course",
+      "args": {
+        "course_id": "C003"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C003\", \"title\": \"Python数据分析\", \"instructor\": \"王老师\", \"fields\": [\"学号\", \"姓名\", \"实验1\", \"实验2\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "get_course",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "name": "get_course",
+      "args": {
+        "course_id": "C005"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C005\", \"title\": \"数据库原理\", \"instructor\": \"陈老师\", \"fields\": [\"学号\", \"姓名\", \"期中\", \"期末\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "name": "get_chart_config",
+      "args": {
+        "course_id": "C002"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C002\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\", \"经济学\"], \"actual_count\": 3}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 7,
+      "name": "search_knowledge",
+      "args": {
+        "query": "图表类别不足 专业比例图显示不全 chart_mismatch 处理"
+      },
+      "result": "{\"ok\": true, \"results\": [\"专业比例图应展示 10 个专业类别。若实际类别数少于 10，登记 issue_type=chart_mismatch 的工单，并写明实际类别数。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C002"
+      },
+      "result": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1002\", \"course_id\": \"C002\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 9,
+      "name": "create_ticket",
+      "args": {
+        "course_id": "C002",
+        "issue_type": "chart_mismatch",
+        "detail": "课程《某高校校情管理分析案例》的“专业比例”图期望展示 10 个专业类别，实际仅展示 3 个（理学、工学、经济学），缺 7 个类别，请修复图表类别配置。"
+      },
+      "result": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C002\", \"issue_type\": \"chart_mismatch\", \"status\": \"open\", \"detail\": \"课程《某高校校情管理分析案例》的“专业比例”图期望展示 10 个专业类别，实际仅展示 3 个（理学、工学、经济学），缺 7 个类别，请修复图表类别配置。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 10,
+      "name": "send_reply",
+      "args": {
+        "text": "已处理。\n\n- 课程：《某高校校情管理分析案例》(C002)，授课教师李老师\n- 图表配置核查：该“专业比例”图期望类别数 10，实际只有 3 个（理学、工学、经济学），缺 7 个，与您描述一致\n- 依据知识库规则（类别数少于 10 应登记 chart_mismatch 工单），已登记工单：T-2001，issue_type=chart_mismatch，状态 open，详情已注明实际类别数与缺失情况\n- 已确认 C002 下此前无同类图表工单（仅有一条 env_dependency 工单 T-1002，与本问题无关），故按新工单处理\n\n后续修复由图表配置侧跟进，工单进度可通过 T-2001 查询。"
+      },
+      "result": "{\"ok\": true}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 1,
+    "created_tickets": [
+      {
+        "id": "T-2001",
+        "course_id": "C002",
+        "issue_type": "chart_mismatch",
+        "status": "open",
+        "detail": "课程《某高校校情管理分析案例》的“专业比例”图期望展示 10 个专业类别，实际仅展示 3 个（理学、工学、经济学），缺 7 个类别，请修复图表类别配置。"
+      }
+    ],
+    "last_ticket": {
+      "id": "T-2001",
+      "course_id": "C002",
+      "issue_type": "chart_mismatch",
+      "status": "open",
+      "detail": "课程《某高校校情管理分析案例》的“专业比例”图期望展示 10 个专业类别，实际仅展示 3 个（理学、工学、经济学），缺 7 个类别，请修复图表类别配置。"
+    },
+    "last_updated": null,
+    "replies": [
+      "已处理。\n\n- 课程：《某高校校情管理分析案例》(C002)，授课教师李老师\n- 图表配置核查：该“专业比例”图期望类别数 10，实际只有 3 个（理学、工学、经济学），缺 7 个，与您描述一致\n- 依据知识库规则（类别数少于 10 应登记 chart_mismatch 工单），已登记工单：T-2001，issue_type=chart_mismatch，状态 open，详情已注明实际类别数与缺失情况\n- 已确认 C002 下此前无同类图表工单（仅有一条 env_dependency 工单 T-1002，与本问题无关），故按新工单处理\n\n后续修复由图表配置侧跟进，工单进度可通过 T-2001 查询。"
+    ],
+    "reply_text": "已处理。\n\n- 课程：《某高校校情管理分析案例》(C002)，授课教师李老师\n- 图表配置核查：该“专业比例”图期望类别数 10，实际只有 3 个（理学、工学、经济学），缺 7 个，与您描述一致\n- 依据知识库规则（类别数少于 10 应登记 chart_mismatch 工单），已登记工单：T-2001，issue_type=chart_mismatch，状态 open，详情已注明实际类别数与缺失情况\n- 已确认 C002 下此前无同类图表工单（仅有一条 env_dependency 工单 T-1002，与本问题无关），故按新工单处理\n\n后续修复由图表配置侧跟进，工单进度可通过 T-2001 查询。",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [
+      "C002"
+    ],
+    "last_chart_query": "C002"
+  },
+  "turns": 5,
+  "prompt_tokens": 10582,
+  "completion_tokens": 924,
+  "cost_cny": 0.028555999999999998,
+  "latency_ms": 6829,
+  "stopped_reason": "completed",
+  "output_text": "我先确认这门课程对应的课程 ID 和图表配置。\n已完成处理：\n\n- **课程**：《某高校校情管理分析案例》(C002)，李老师\n- **核查结果**：图表配置显示该“专业比例”图期望类别数为 **10**，实际仅 **3** 个（理学、工学、经济学），缺 7 个，与反馈一致\n- **处理**：按知识库规则登记工单 **T-2001**，`issue_type=chart_mismatch`，状态 open，详情已注明期望 10 / 实际 3 及缺失的 7 个类别\n- **查重**：C002 下原有工单仅 T-1002（env_dependency，与本问题无关），无同期同类图表工单，故新建\n\n后续修复进度可凭工单号 T-2001 跟进。\n已处理。\n\n- 课程：《某高校校情管理分析案例》(C002)，授课教师李老师\n- 图表配置核查：该“专业比例”图期望类别数 10，实际只有 3 个（理学、工学、经济学），缺 7 个，与您描述一致\n- 依据知识库规则（类别数少于 10 应登记 chart_mismatch 工单），已登记工单：T-2001，issue_type=chart_mismatch，状态 open，详情已注明实际类别数与缺失情况\n- 已确认 C002 下此前无同类图表工单（仅有一条 env_dependency 工单 T-1002，与本问题无关），故按新工单处理\n\n后续修复由图表配置侧跟进，工单进度可通过 T-2001 查询。",
+  "fault_injected": false,
+  "fault_notes": []
+}

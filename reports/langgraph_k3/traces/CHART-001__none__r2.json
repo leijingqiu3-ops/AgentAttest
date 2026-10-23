@@ -1,0 +1,320 @@
+{
+  "case_id": "CHART-001",
+  "fault_mode": "none",
+  "run_index": 2,
+  "messages": [
+    {
+      "role": "user",
+      "content": "《大数据导论》的专业比例图只显示了 2 个专业，应该显示 10 个，帮我处理。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_Or6AhMFTiQ7JgJ5c2w4v2216",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        },
+        {
+          "id": "call_01_gR3fExHfbGh7Q1jmgYES0281",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C002\"}"
+          }
+        },
+        {
+          "id": "call_02_f0UvnIQaxeSjTWGYVEc60047",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C003\"}"
+          }
+        },
+        {
+          "id": "call_03_Eim9fEPtJ20f6G0ChOhe2921",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        },
+        {
+          "id": "call_04_o5LQIuQ4yfawKLOCh2ik7287",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C005\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}",
+      "tool_call_id": "call_00_Or6AhMFTiQ7JgJ5c2w4v2216"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C002\", \"title\": \"某高校校情管理分析案例\", \"instructor\": \"李老师\", \"fields\": [\"学号\", \"姓名\", \"专业\", \"总评\"]}",
+      "tool_call_id": "call_01_gR3fExHfbGh7Q1jmgYES0281"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C003\", \"title\": \"Python数据分析\", \"instructor\": \"王老师\", \"fields\": [\"学号\", \"姓名\", \"实验1\", \"实验2\", \"总评\"]}",
+      "tool_call_id": "call_02_f0UvnIQaxeSjTWGYVEc60047"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "tool_call_id": "call_03_Eim9fEPtJ20f6G0ChOhe2921"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C005\", \"title\": \"数据库原理\", \"instructor\": \"陈老师\", \"fields\": [\"学号\", \"姓名\", \"期中\", \"期末\", \"总评\"]}",
+      "tool_call_id": "call_04_o5LQIuQ4yfawKLOCh2ik7287"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_xwNyBJEv3KaIVvHjXtu52262",
+          "type": "function",
+          "function": {
+            "name": "get_chart_config",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        },
+        {
+          "id": "call_01_XAjKVIqNWTKvpGMCqVac6264",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"图表类别不足 专业比例图只显示部分专业 chart_mismatch 处理\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C001\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\"], \"actual_count\": 2}",
+      "tool_call_id": "call_00_xwNyBJEv3KaIVvHjXtu52262"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"results\": [\"专业比例图应展示 10 个专业类别。若实际类别数少于 10，登记 issue_type=chart_mismatch 的工单，并写明实际类别数。\"]}",
+      "tool_call_id": "call_01_XAjKVIqNWTKvpGMCqVac6264"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_z28Cvxt8mWJbTgOTWNNM8578",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "tool_call_id": "call_00_z28Cvxt8mWJbTgOTWNNM8578"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_iN0D8lE8agB7Zf6jho2p7669",
+          "type": "function",
+          "function": {
+            "name": "create_ticket",
+            "arguments": "{\"course_id\": \"C001\", \"issue_type\": \"chart_mismatch\", \"detail\": \"《大数据导论》(C001) 专业比例图应为 10 个专业类别，实际仅显示 2 个（理学、工学），实际类别数=2，期望=10，请核查数据源/图表配置。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C001\", \"issue_type\": \"chart_mismatch\", \"status\": \"open\", \"detail\": \"《大数据导论》(C001) 专业比例图应为 10 个专业类别，实际仅显示 2 个（理学、工学），实际类别数=2，期望=10，请核查数据源/图表配置。\"}}",
+      "tool_call_id": "call_00_iN0D8lE8agB7Zf6jho2p7669"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_ET_KQdZ1FoqXL6n1s3XXsP63445",
+          "type": "function",
+          "function": {
+            "name": "send_reply",
+            "arguments": "{\"text\": \"已处理。\\n\\n核查结果（《大数据导论》C001，授课教师张老师）：\\n- 图表配置“专业比例”：期望类别数 10，实际仅 2 类（理学、工学）。\\n\\n处理依据知识库规则：专业比例图应展示 10 个专业类别，实际少于 10 时应登记 issue_type=chart_mismatch 工单并写明实际类别数。\\n该课程 7 天内无同类工单（现有 T-1001 为实验环境依赖问题），故新建工单：\\n- 工单号：T-2001\\n- 类型：chart_mismatch\\n- 状态：open\\n- 内容：实际类别数=2（理学、工学），期望=10，请核查数据源与图表配置。\\n\\n后续由平台侧排查数据源（可能是专业字段缺失或分组被截断），修复后图表将显示 10 个专业。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true}",
+      "tool_call_id": "call_00_ET_KQdZ1FoqXL6n1s3XXsP63445"
+    },
+    {
+      "role": "assistant",
+      "content": "已处理完成。\n\n**核查结果**（《大数据导论》C001，张老师）：\n- 「专业比例」图表配置：期望类别数为 10，实际仅 2 类，分别为理学、工学。\n\n**处理过程**：\n- 检索知识库：专业比例图应展示 10 个专业类别；若实际少于 10 个，则登记 `chart_mismatch` 工单，并写明实际类别数。\n- 查询该课程工单：仅 T-1001（env_dependency，实验环境缺少依赖），7 天内没有同类问题，因此需要新建工单。\n- 已新建工单：**T-2001**，类型 `chart_mismatch`，状态 open，详情写明实际类别数=2、期望=10。\n\n待平台侧排查数据源与图表配置（可能是专业字段缺失或分组被截断）并修复后，即可显示全部 10 个专业。"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "get_course",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "get_course",
+      "args": {
+        "course_id": "C002"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C002\", \"title\": \"某高校校情管理分析案例\", \"instructor\": \"李老师\", \"fields\": [\"学号\", \"姓名\", \"专业\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "get_course",
+      "args": {
+        "course_id": "C003"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C003\", \"title\": \"Python数据分析\", \"instructor\": \"王老师\", \"fields\": [\"学号\", \"姓名\", \"实验1\", \"实验2\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "get_course",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "name": "get_course",
+      "args": {
+        "course_id": "C005"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C005\", \"title\": \"数据库原理\", \"instructor\": \"陈老师\", \"fields\": [\"学号\", \"姓名\", \"期中\", \"期末\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "name": "get_chart_config",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C001\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\"], \"actual_count\": 2}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 7,
+      "name": "search_knowledge",
+      "args": {
+        "query": "图表类别不足 专业比例图只显示部分专业 chart_mismatch 处理"
+      },
+      "result": "{\"ok\": true, \"results\": [\"专业比例图应展示 10 个专业类别。若实际类别数少于 10，登记 issue_type=chart_mismatch 的工单，并写明实际类别数。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 9,
+      "name": "create_ticket",
+      "args": {
+        "course_id": "C001",
+        "issue_type": "chart_mismatch",
+        "detail": "《大数据导论》(C001) 专业比例图应为 10 个专业类别，实际仅显示 2 个（理学、工学），实际类别数=2，期望=10，请核查数据源/图表配置。"
+      },
+      "result": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C001\", \"issue_type\": \"chart_mismatch\", \"status\": \"open\", \"detail\": \"《大数据导论》(C001) 专业比例图应为 10 个专业类别，实际仅显示 2 个（理学、工学），实际类别数=2，期望=10，请核查数据源/图表配置。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 10,
+      "name": "send_reply",
+      "args": {
+        "text": "已处理。\n\n核查结果（《大数据导论》C001，授课教师张老师）：\n- 图表配置“专业比例”：期望类别数 10，实际仅 2 类（理学、工学）。\n\n处理依据知识库规则：专业比例图应展示 10 个专业类别，实际少于 10 时应登记 issue_type=chart_mismatch 工单并写明实际类别数。\n该课程 7 天内无同类工单（现有 T-1001 为实验环境依赖问题），故新建工单：\n- 工单号：T-2001\n- 类型：chart_mismatch\n- 状态：open\n- 内容：实际类别数=2（理学、工学），期望=10，请核查数据源与图表配置。\n\n后续由平台侧排查数据源（可能是专业字段缺失或分组被截断），修复后图表将显示 10 个专业。"
+      },
+      "result": "{\"ok\": true}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 1,
+    "created_tickets": [
+      {
+        "id": "T-2001",
+        "course_id": "C001",
+        "issue_type": "chart_mismatch",
+        "status": "open",
+        "detail": "《大数据导论》(C001) 专业比例图应为 10 个专业类别，实际仅显示 2 个（理学、工学），实际类别数=2，期望=10，请核查数据源/图表配置。"
+      }
+    ],
+    "last_ticket": {
+      "id": "T-2001",
+      "course_id": "C001",
+      "issue_type": "chart_mismatch",
+      "status": "open",
+      "detail": "《大数据导论》(C001) 专业比例图应为 10 个专业类别，实际仅显示 2 个（理学、工学），实际类别数=2，期望=10，请核查数据源/图表配置。"
+    },
+    "last_updated": null,
+    "replies": [
+      "已处理。\n\n核查结果（《大数据导论》C001，授课教师张老师）：\n- 图表配置“专业比例”：期望类别数 10，实际仅 2 类（理学、工学）。\n\n处理依据知识库规则：专业比例图应展示 10 个专业类别，实际少于 10 时应登记 issue_type=chart_mismatch 工单并写明实际类别数。\n该课程 7 天内无同类工单（现有 T-1001 为实验环境依赖问题），故新建工单：\n- 工单号：T-2001\n- 类型：chart_mismatch\n- 状态：open\n- 内容：实际类别数=2（理学、工学），期望=10，请核查数据源与图表配置。\n\n后续由平台侧排查数据源（可能是专业字段缺失或分组被截断），修复后图表将显示 10 个专业。"
+    ],
+    "reply_text": "已处理。\n\n核查结果（《大数据导论》C001，授课教师张老师）：\n- 图表配置“专业比例”：期望类别数 10，实际仅 2 类（理学、工学）。\n\n处理依据知识库规则：专业比例图应展示 10 个专业类别，实际少于 10 时应登记 issue_type=chart_mismatch 工单并写明实际类别数。\n该课程 7 天内无同类工单（现有 T-1001 为实验环境依赖问题），故新建工单：\n- 工单号：T-2001\n- 类型：chart_mismatch\n- 状态：open\n- 内容：实际类别数=2（理学、工学），期望=10，请核查数据源与图表配置。\n\n后续由平台侧排查数据源（可能是专业字段缺失或分组被截断），修复后图表将显示 10 个专业。",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [
+      "C001"
+    ],
+    "last_chart_query": "C001"
+  },
+  "turns": 6,
+  "prompt_tokens": 13133,
+  "completion_tokens": 1090,
+  "cost_cny": 0.034986,
+  "latency_ms": 7997,
+  "stopped_reason": "completed",
+  "output_text": "已处理完成。\n\n**核查结果**（《大数据导论》C001，张老师）：\n- 「专业比例」图表配置：期望类别数为 10，实际仅 2 类，分别为理学、工学。\n\n**处理过程**：\n- 检索知识库：专业比例图应展示 10 个专业类别；若实际少于 10 个，则登记 `chart_mismatch` 工单，并写明实际类别数。\n- 查询该课程工单：仅 T-1001（env_dependency，实验环境缺少依赖），7 天内没有同类问题，因此需要新建工单。\n- 已新建工单：**T-2001**，类型 `chart_mismatch`，状态 open，详情写明实际类别数=2、期望=10。\n\n待平台侧排查数据源与图表配置（可能是专业字段缺失或分组被截断）并修复后，即可显示全部 10 个专业。\n已处理。\n\n核查结果（《大数据导论》C001，授课教师张老师）：\n- 图表配置“专业比例”：期望类别数 10，实际仅 2 类（理学、工学）。\n\n处理依据知识库规则：专业比例图应展示 10 个专业类别，实际少于 10 时应登记 issue_type=chart_mismatch 工单并写明实际类别数。\n该课程 7 天内无同类工单（现有 T-1001 为实验环境依赖问题），故新建工单：\n- 工单号：T-2001\n- 类型：chart_mismatch\n- 状态：open\n- 内容：实际类别数=2（理学、工学），期望=10，请核查数据源与图表配置。\n\n后续由平台侧排查数据源（可能是专业字段缺失或分组被截断），修复后图表将显示 10 个专业。",
+  "fault_injected": false,
+  "fault_notes": []
+}

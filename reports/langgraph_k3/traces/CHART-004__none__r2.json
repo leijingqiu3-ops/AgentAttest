@@ -1,0 +1,320 @@
+{
+  "case_id": "CHART-004",
+  "fault_mode": "none",
+  "run_index": 2,
+  "messages": [
+    {
+      "role": "user",
+      "content": "《机器学习基础》的专业比例图只显示了 4 个专业，应该显示 10 个，帮我处理。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_oDVswJfOZs0MSJhrzJe00157",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        },
+        {
+          "id": "call_01_GxQYCwxbQoibETJqfnoN6524",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C002\"}"
+          }
+        },
+        {
+          "id": "call_02_uraApMBPOJxpBe9DM9Ly0231",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C003\"}"
+          }
+        },
+        {
+          "id": "call_03_JWQByhdsw3IlIuIyclET9569",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        },
+        {
+          "id": "call_04_mJAQK83bSIkgdW49JQIr6722",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C005\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}",
+      "tool_call_id": "call_00_oDVswJfOZs0MSJhrzJe00157"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C002\", \"title\": \"某高校校情管理分析案例\", \"instructor\": \"李老师\", \"fields\": [\"学号\", \"姓名\", \"专业\", \"总评\"]}",
+      "tool_call_id": "call_01_GxQYCwxbQoibETJqfnoN6524"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C003\", \"title\": \"Python数据分析\", \"instructor\": \"王老师\", \"fields\": [\"学号\", \"姓名\", \"实验1\", \"实验2\", \"总评\"]}",
+      "tool_call_id": "call_02_uraApMBPOJxpBe9DM9Ly0231"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "tool_call_id": "call_03_JWQByhdsw3IlIuIyclET9569"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C005\", \"title\": \"数据库原理\", \"instructor\": \"陈老师\", \"fields\": [\"学号\", \"姓名\", \"期中\", \"期末\", \"总评\"]}",
+      "tool_call_id": "call_04_mJAQK83bSIkgdW49JQIr6722"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_vNZAdhSRM5VWwbZgFMRn9788",
+          "type": "function",
+          "function": {
+            "name": "get_chart_config",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        },
+        {
+          "id": "call_01_bKMKiYMCqYXMSm2lJGPu2650",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"图表类别不足 专业比例图 只显示部分专业 chart_mismatch\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C004\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\", \"经济学\", \"管理学\"], \"actual_count\": 4}",
+      "tool_call_id": "call_00_vNZAdhSRM5VWwbZgFMRn9788"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"results\": [\"专业比例图应展示 10 个专业类别。若实际类别数少于 10，登记 issue_type=chart_mismatch 的工单，并写明实际类别数。\"]}",
+      "tool_call_id": "call_01_bKMKiYMCqYXMSm2lJGPu2650"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_UAUgYVI0UdZ8A6c2xsw10209",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1004\", \"course_id\": \"C004\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "tool_call_id": "call_00_UAUgYVI0UdZ8A6c2xsw10209"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_1FfOMKdbLp3cjsE7vHBw7143",
+          "type": "function",
+          "function": {
+            "name": "create_ticket",
+            "arguments": "{\"course_id\": \"C004\", \"issue_type\": \"chart_mismatch\", \"detail\": \"《机器学习基础》(C004) 专业比例图类别数不足：期望 10 个专业类别，实际仅显示 4 个（理学、工学、经济学、管理学），缺少 6 个类别，需补全图表类别配置。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C004\", \"issue_type\": \"chart_mismatch\", \"status\": \"open\", \"detail\": \"《机器学习基础》(C004) 专业比例图类别数不足：期望 10 个专业类别，实际仅显示 4 个（理学、工学、经济学、管理学），缺少 6 个类别，需补全图表类别配置。\"}}",
+      "tool_call_id": "call_00_1FfOMKdbLp3cjsE7vHBw7143"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_ET_MWM3UvhehUq3j6IONtEe6364",
+          "type": "function",
+          "function": {
+            "name": "send_reply",
+            "arguments": "{\"text\": \"已确认为《机器学习基础》（C004，赵老师）的图表类别缺陷：\\n\\n- 图表配置：专业比例，期望类别数 10，实际仅 4 个（理学、工学、经济学、管理学），缺失 6 个。\\n- 依据知识库规则，该类问题登记为 issue_type=chart_mismatch。\\n- 已新建工单 T-2001（课程 C004，状态 open）：请后台补全专业比例图的 10 个专业类别配置。\\n\\n补充说明：该课程现有另一张工单 T-1004（env_dependency，实验环境缺少依赖）与本问题无关，未做合并。若需要我一并跟进实验环境依赖，请告知具体缺失的包名/实验。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true}",
+      "tool_call_id": "call_00_ET_MWM3UvhehUq3j6IONtEe6364"
+    },
+    {
+      "role": "assistant",
+      "content": "已处理完成。\n\n**问题确认**（工具证据）\n- 《机器学习基础》对应课程 C004（赵老师）。\n- 图表配置：`专业比例`，`expected_categories: 10`，`actual_categories: [\"理学\",\"工学\",\"经济学\",\"管理学\"]`，`actual_count: 4`。\n\n**处理依据**\n- 知识库规则：专业比例图应展示 10 个专业类别；如果实际类别少于 10，就登记 `issue_type=chart_mismatch`，并写明实际类别数。\n\n**已登记工单**\n- T-2001（C004，chart_mismatch，open）：专业比例图类别数不足，期望 10 个，实际 4 个，缺少 6 个，需要补全图表类别配置。\n- 已核对 C004 现有工单，只有 T-1004（env_dependency，实验环境缺少依赖），与本问题不同，因此无需按“7 天内重复问题 reopened”处理，新建了工单。"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "get_course",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "get_course",
+      "args": {
+        "course_id": "C002"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C002\", \"title\": \"某高校校情管理分析案例\", \"instructor\": \"李老师\", \"fields\": [\"学号\", \"姓名\", \"专业\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "get_course",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "get_course",
+      "args": {
+        "course_id": "C003"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C003\", \"title\": \"Python数据分析\", \"instructor\": \"王老师\", \"fields\": [\"学号\", \"姓名\", \"实验1\", \"实验2\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "name": "get_course",
+      "args": {
+        "course_id": "C005"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C005\", \"title\": \"数据库原理\", \"instructor\": \"陈老师\", \"fields\": [\"学号\", \"姓名\", \"期中\", \"期末\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "name": "get_chart_config",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C004\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\", \"经济学\", \"管理学\"], \"actual_count\": 4}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 7,
+      "name": "search_knowledge",
+      "args": {
+        "query": "图表类别不足 专业比例图 只显示部分专业 chart_mismatch"
+      },
+      "result": "{\"ok\": true, \"results\": [\"专业比例图应展示 10 个专业类别。若实际类别数少于 10，登记 issue_type=chart_mismatch 的工单，并写明实际类别数。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1004\", \"course_id\": \"C004\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 9,
+      "name": "create_ticket",
+      "args": {
+        "course_id": "C004",
+        "issue_type": "chart_mismatch",
+        "detail": "《机器学习基础》(C004) 专业比例图类别数不足：期望 10 个专业类别，实际仅显示 4 个（理学、工学、经济学、管理学），缺少 6 个类别，需补全图表类别配置。"
+      },
+      "result": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C004\", \"issue_type\": \"chart_mismatch\", \"status\": \"open\", \"detail\": \"《机器学习基础》(C004) 专业比例图类别数不足：期望 10 个专业类别，实际仅显示 4 个（理学、工学、经济学、管理学），缺少 6 个类别，需补全图表类别配置。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 10,
+      "name": "send_reply",
+      "args": {
+        "text": "已确认为《机器学习基础》（C004，赵老师）的图表类别缺陷：\n\n- 图表配置：专业比例，期望类别数 10，实际仅 4 个（理学、工学、经济学、管理学），缺失 6 个。\n- 依据知识库规则，该类问题登记为 issue_type=chart_mismatch。\n- 已新建工单 T-2001（课程 C004，状态 open）：请后台补全专业比例图的 10 个专业类别配置。\n\n补充说明：该课程现有另一张工单 T-1004（env_dependency，实验环境缺少依赖）与本问题无关，未做合并。若需要我一并跟进实验环境依赖，请告知具体缺失的包名/实验。"
+      },
+      "result": "{\"ok\": true}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 1,
+    "created_tickets": [
+      {
+        "id": "T-2001",
+        "course_id": "C004",
+        "issue_type": "chart_mismatch",
+        "status": "open",
+        "detail": "《机器学习基础》(C004) 专业比例图类别数不足：期望 10 个专业类别，实际仅显示 4 个（理学、工学、经济学、管理学），缺少 6 个类别，需补全图表类别配置。"
+      }
+    ],
+    "last_ticket": {
+      "id": "T-2001",
+      "course_id": "C004",
+      "issue_type": "chart_mismatch",
+      "status": "open",
+      "detail": "《机器学习基础》(C004) 专业比例图类别数不足：期望 10 个专业类别，实际仅显示 4 个（理学、工学、经济学、管理学），缺少 6 个类别，需补全图表类别配置。"
+    },
+    "last_updated": null,
+    "replies": [
+      "已确认为《机器学习基础》（C004，赵老师）的图表类别缺陷：\n\n- 图表配置：专业比例，期望类别数 10，实际仅 4 个（理学、工学、经济学、管理学），缺失 6 个。\n- 依据知识库规则，该类问题登记为 issue_type=chart_mismatch。\n- 已新建工单 T-2001（课程 C004，状态 open）：请后台补全专业比例图的 10 个专业类别配置。\n\n补充说明：该课程现有另一张工单 T-1004（env_dependency，实验环境缺少依赖）与本问题无关，未做合并。若需要我一并跟进实验环境依赖，请告知具体缺失的包名/实验。"
+    ],
+    "reply_text": "已确认为《机器学习基础》（C004，赵老师）的图表类别缺陷：\n\n- 图表配置：专业比例，期望类别数 10，实际仅 4 个（理学、工学、经济学、管理学），缺失 6 个。\n- 依据知识库规则，该类问题登记为 issue_type=chart_mismatch。\n- 已新建工单 T-2001（课程 C004，状态 open）：请后台补全专业比例图的 10 个专业类别配置。\n\n补充说明：该课程现有另一张工单 T-1004（env_dependency，实验环境缺少依赖）与本问题无关，未做合并。若需要我一并跟进实验环境依赖，请告知具体缺失的包名/实验。",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [
+      "C004"
+    ],
+    "last_chart_query": "C004"
+  },
+  "turns": 6,
+  "prompt_tokens": 13070,
+  "completion_tokens": 1056,
+  "cost_cny": 0.034588,
+  "latency_ms": 7450,
+  "stopped_reason": "completed",
+  "output_text": "已处理完成。\n\n**问题确认**（工具证据）\n- 《机器学习基础》对应课程 C004（赵老师）。\n- 图表配置：`专业比例`，`expected_categories: 10`，`actual_categories: [\"理学\",\"工学\",\"经济学\",\"管理学\"]`，`actual_count: 4`。\n\n**处理依据**\n- 知识库规则：专业比例图应展示 10 个专业类别；如果实际类别少于 10，就登记 `issue_type=chart_mismatch`，并写明实际类别数。\n\n**已登记工单**\n- T-2001（C004，chart_mismatch，open）：专业比例图类别数不足，期望 10 个，实际 4 个，缺少 6 个，需要补全图表类别配置。\n- 已核对 C004 现有工单，只有 T-1004（env_dependency，实验环境缺少依赖），与本问题不同，因此无需按“7 天内重复问题 reopened”处理，新建了工单。\n已确认为《机器学习基础》（C004，赵老师）的图表类别缺陷：\n\n- 图表配置：专业比例，期望类别数 10，实际仅 4 个（理学、工学、经济学、管理学），缺失 6 个。\n- 依据知识库规则，该类问题登记为 issue_type=chart_mismatch。\n- 已新建工单 T-2001（课程 C004，状态 open）：请后台补全专业比例图的 10 个专业类别配置。\n\n补充说明：该课程现有另一张工单 T-1004（env_dependency，实验环境缺少依赖）与本问题无关，未做合并。若需要我一并跟进实验环境依赖，请告知具体缺失的包名/实验。",
+  "fault_injected": false,
+  "fault_notes": []
+}

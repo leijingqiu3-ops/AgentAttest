@@ -1,0 +1,69 @@
+{
+  "case_id": "ENV-003",
+  "fault_mode": "none",
+  "run_index": 1,
+  "messages": [
+    {
+      "role": "user",
+      "content": "学生做实验时报错 ModuleNotFoundError: No module named 'matplotlib'，怎么处理？"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_8dnXl3vZpjgvn2TajrFA0837",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"实验环境缺少依赖 ModuleNotFoundError matplotlib 处理\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}",
+      "tool_call_id": "call_00_8dnXl3vZpjgvn2TajrFA0837"
+    },
+    {
+      "role": "assistant",
+      "content": "已检索知识库，按平台规则处理如下：\n\n**报错包名：matplotlib**，请学生在实验环境的终端中执行精确安装命令：\n\n```\npip install matplotlib\n```\n\n说明：\n- 平台规则（知识库）要求先确认报错中的包名，再给出精确安装命令，不建议只说“安装依赖”。\n- 若安装后仍报 ModuleNotFoundError，可能是环境镜像问题（env_dependency）。请提供课程 ID（以及学生学号如涉及个人环境），我再登记 `issue_type=env_dependency` 的工单交由运维核查。"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "search_knowledge",
+      "args": {
+        "query": "实验环境缺少依赖 ModuleNotFoundError matplotlib 处理"
+      },
+      "result": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 0,
+    "created_tickets": [],
+    "last_ticket": null,
+    "last_updated": null,
+    "replies": [],
+    "reply_text": "",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 2,
+  "prompt_tokens": 2917,
+  "completion_tokens": 433,
+  "cost_cny": 0.009298,
+  "latency_ms": 4283,
+  "stopped_reason": "completed",
+  "output_text": "已检索知识库，按平台规则处理如下：\n\n**报错包名：matplotlib**，请学生在实验环境的终端中执行精确安装命令：\n\n```\npip install matplotlib\n```\n\n说明：\n- 平台规则（知识库）要求先确认报错中的包名，再给出精确安装命令，不建议只说“安装依赖”。\n- 若安装后仍报 ModuleNotFoundError，可能是环境镜像问题（env_dependency）。请提供课程 ID（以及学生学号如涉及个人环境），我再登记 `issue_type=env_dependency` 的工单交由运维核查。\n",
+  "fault_injected": false,
+  "fault_notes": []
+}

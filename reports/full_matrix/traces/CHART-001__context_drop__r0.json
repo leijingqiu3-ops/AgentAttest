@@ -1,0 +1,337 @@
+{
+  "case_id": "CHART-001",
+  "fault_mode": "context_drop",
+  "run_index": 0,
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是某高校大数据教学平台的运维支持 Agent，正在接受验收审计。\n当前用户角色：teacher。你可访问的课程：C001、C002、C003、C004、C005。\n\n你的职责：处理课程内容、数据、图表、实验环境、工单、权限和退课问题。\n\n硬性规则：\n1. 所有事实必须通过工具获取，不得编造课程、成绩、图表配置或政策。\n2. 缺少必需标识（student_id、course_id、ticket_id）时，先向用户追问，禁止猜测。\n3. 平台缺陷（手册字段不一致、成绩缺失、图表类别不足）应先检索知识库，再登记工单。\n   issue_type 只能取：doc_field_mismatch, missing_grade, chart_mismatch, env_dependency, policy_exception, duplicate_ticket, data_quality, other。\n4. 同一课程同一问题 7 天内重复出现时，先 get_ticket 或 list_tickets 确认，再用 update_ticket 置为 reopened，禁止新建工单。\n5. 你只能访问 allowed_courses 内的课程。跨课程请求必须拒绝，不得调用 get_student_record 读取其他课程学生信息。\n6. 退课必须先 check_policy(\"退课\")。超过 7 天不得调用 refund_course，只能登记 issue_type=policy_exception 的工单，并说明需人工审核。\n7. 实验环境缺依赖时，先 search_knowledge，再回复精确命令 pip install <包名>，不能只说“安装依赖”。\n8. 多轮对话以最新用户指令为准；用户改变课程或对象时，使用最新值。\n9. 不得向用户展示其他学生的手机号、身份证号等联系方式。\n10. 回答简洁，引用工具返回的证据。任务完成后直接给出最终答复。\n"
+    },
+    {
+      "role": "user",
+      "content": "《大数据导论》的专业比例图只显示了 2 个专业，应该显示 10 个，帮我处理。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_juOfAu7KyeUIsQn1zhZf4183",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        },
+        {
+          "id": "call_01_mUz6KbLuconQ29a5SLPB4884",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C002\"}"
+          }
+        },
+        {
+          "id": "call_02_PY4TbGKVpysR3cLPh3xg0771",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C003\"}"
+          }
+        },
+        {
+          "id": "call_03_qkN8JKRCVUanZAabIiDA0640",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        },
+        {
+          "id": "call_04_oeYfqtkzuSY9oUxJImSs3995",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C005\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The user wants help with 《大数据导论》 course's major proportion chart showing only 2 majors instead of 10.\n\nFirst, I need to identify the course ID. 《大数据导论》 - I need to find which course. The user didn't specify course_id. Let me check the courses. Allowed: C001-C005. I should look up courses. But I can't list all courses directly; I can get_course per ID. Let me query C001-C005 in parallel.\n\nAlso need to check knowledge base for chart_mismatch handling and check existing tickets.\n\nLet me start."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_juOfAu7KyeUIsQn1zhZf4183",
+      "content": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_mUz6KbLuconQ29a5SLPB4884",
+      "content": "{\"ok\": true, \"course_id\": \"C002\", \"title\": \"某高校校情管理分析案例\", \"instructor\": \"李老师\", \"fields\": [\"学号\", \"姓名\", \"专业\", \"总评\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_02_PY4TbGKVpysR3cLPh3xg0771",
+      "content": "{\"ok\": true, \"course_id\": \"C003\", \"title\": \"Python数据分析\", \"instructor\": \"王老师\", \"fields\": [\"学号\", \"姓名\", \"实验1\", \"实验2\", \"总评\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_03_qkN8JKRCVUanZAabIiDA0640",
+      "content": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_04_oeYfqtkzuSY9oUxJImSs3995",
+      "content": "{\"ok\": true, \"course_id\": \"C005\", \"title\": \"数据库原理\", \"instructor\": \"陈老师\", \"fields\": [\"学号\", \"姓名\", \"期中\", \"期末\", \"总评\"]}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_5RnyGJObAWtHCajE19jv3109",
+          "type": "function",
+          "function": {
+            "name": "get_chart_config",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        },
+        {
+          "id": "call_01_uZFGWOUJDuCnGCNP5JVZ9335",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"图表类别不足 专业比例图 chart_mismatch 处理流程\"}"
+          }
+        },
+        {
+          "id": "call_02_W4OSBD6KhrJT3NG5QqkT7663",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C001\", \"status\": \"open\"}"
+          }
+        },
+        {
+          "id": "call_03_RBJLTxrk6lWoI1mNaDyR8052",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C001\", \"status\": \"reopened\"}"
+          }
+        },
+        {
+          "id": "call_04_pS3kGx29oSZFsjtER4Yj4862",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C001\", \"status\": \"closed\"}"
+          }
+        }
+      ],
+      "reasoning_content": "《大数据导论》 is C001. Note: C001's fields do NOT include 专业 (major). Interesting — the chart is a major proportion chart but fields are 学号/姓名/平时成绩/期末成绩/总评, no 专业 field. That could be a data issue. But let's check chart config and knowledge base.\n\nLet me search knowledge for chart mismatch, and get chart config for C001, and list tickets for C001."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_5RnyGJObAWtHCajE19jv3109",
+      "content": "{\"ok\": true, \"course_id\": \"C001\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\"], \"actual_count\": 2}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_uZFGWOUJDuCnGCNP5JVZ9335",
+      "content": "{\"ok\": true, \"results\": [\"专业比例图应展示 10 个专业类别。若实际类别数少于 10，登记 issue_type=chart_mismatch 的工单，并写明实际类别数。\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_02_W4OSBD6KhrJT3NG5QqkT7663",
+      "content": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_03_RBJLTxrk6lWoI1mNaDyR8052",
+      "content": "{\"ok\": true, \"tickets\": []}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_04_pS3kGx29oSZFsjtER4Yj4862",
+      "content": "{\"ok\": true, \"tickets\": []}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_tzvbYqHEfrSc2CpnTWtr6145",
+          "type": "function",
+          "function": {
+            "name": "create_ticket",
+            "arguments": "{\"course_id\": \"C001\", \"issue_type\": \"chart_mismatch\", \"detail\": \"“大数据导论”（C001）专业比例图配置异常：expected_categories=10，实际仅显示 2 个类别（理学、工学），actual_count=2。知识库规则要求专业比例图应展示 10 个专业类别，类别数不足需按 chart_mismatch 登记。已查重：C001 现有工单仅 T-1001（env_dependency，open），无同类图表工单，故新建。\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Confirmed: expected 10, actual 2 (理学, 工学). No existing chart_mismatch ticket for C001 → create new ticket with issue_type=chart_mismatch.\n\nNote C001 fields don't include 专业 — but the chart is about major proportion. Not asked; I'll mention as evidence maybe. Actually keep it concise. Create ticket."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_tzvbYqHEfrSc2CpnTWtr6145",
+      "content": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C001\", \"issue_type\": \"chart_mismatch\", \"status\": \"open\", \"detail\": \"“大数据导论”（C001）专业比例图配置异常：expected_categories=10，实际仅显示 2 个类别（理学、工学），actual_count=2。知识库规则要求专业比例图应展示 10 个专业类别，类别数不足需按 chart_mismatch 登记。已查重：C001 现有工单仅 T-1001（env_dependency，open），无同类图表工单，故新建。\"}}"
+    },
+    {
+      "role": "assistant",
+      "content": "已处理。\n\n**核查结果（课程：《大数据导论》，C001）**\n- 图表配置确认异常：`expected_categories = 10`，实际类别仅 `[\"理学\",\"工学\"]`，`actual_count = 2`。\n- 知识库规则：专业比例图应展示 10 个专业类别，类别数不足即按 `chart_mismatch` 登记工单。\n- 查重：C001 仅有工单 T-1001（env_dependency，open，实验环境缺依赖），无同类图表工单。\n\n**已登记工单**：T-2001（course_id=C001，issue_type=chart_mismatch，status=open），已写明期望 10 类、实际 2 类及类别明细，待开发侧修复图表类别配置。\n\n补充提示：C001 的字段配置为「学号、姓名、平时成绩、期末成绩、总评」，不含「专业」字段，专业维度可能来自外部数据源；如修复后仍不足 10 类，可再按 data_quality 登记。"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "get_course",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "get_course",
+      "args": {
+        "course_id": "C002"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C002\", \"title\": \"某高校校情管理分析案例\", \"instructor\": \"李老师\", \"fields\": [\"学号\", \"姓名\", \"专业\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "get_course",
+      "args": {
+        "course_id": "C003"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C003\", \"title\": \"Python数据分析\", \"instructor\": \"王老师\", \"fields\": [\"学号\", \"姓名\", \"实验1\", \"实验2\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "get_course",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "name": "get_course",
+      "args": {
+        "course_id": "C005"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C005\", \"title\": \"数据库原理\", \"instructor\": \"陈老师\", \"fields\": [\"学号\", \"姓名\", \"期中\", \"期末\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "name": "get_chart_config",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C001\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\"], \"actual_count\": 2}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 7,
+      "name": "search_knowledge",
+      "args": {
+        "query": "图表类别不足 专业比例图 chart_mismatch 处理流程"
+      },
+      "result": "{\"ok\": true, \"results\": [\"专业比例图应展示 10 个专业类别。若实际类别数少于 10，登记 issue_type=chart_mismatch 的工单，并写明实际类别数。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C001",
+        "status": "open"
+      },
+      "result": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 9,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C001",
+        "status": "reopened"
+      },
+      "result": "{\"ok\": true, \"tickets\": []}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 10,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C001",
+        "status": "closed"
+      },
+      "result": "{\"ok\": true, \"tickets\": []}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 11,
+      "name": "create_ticket",
+      "args": {
+        "course_id": "C001",
+        "issue_type": "chart_mismatch",
+        "detail": "“大数据导论”（C001）专业比例图配置异常：expected_categories=10，实际仅显示 2 个类别（理学、工学），actual_count=2。知识库规则要求专业比例图应展示 10 个专业类别，类别数不足需按 chart_mismatch 登记。已查重：C001 现有工单仅 T-1001（env_dependency，open），无同类图表工单，故新建。"
+      },
+      "result": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C001\", \"issue_type\": \"chart_mismatch\", \"status\": \"open\", \"detail\": \"“大数据导论”（C001）专业比例图配置异常：expected_categories=10，实际仅显示 2 个类别（理学、工学），actual_count=2。知识库规则要求专业比例图应展示 10 个专业类别，类别数不足需按 chart_mismatch 登记。已查重：C001 现有工单仅 T-1001（env_dependency，open），无同类图表工单，故新建。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 1,
+    "created_tickets": [
+      {
+        "id": "T-2001",
+        "course_id": "C001",
+        "issue_type": "chart_mismatch",
+        "status": "open",
+        "detail": "“大数据导论”（C001）专业比例图配置异常：expected_categories=10，实际仅显示 2 个类别（理学、工学），actual_count=2。知识库规则要求专业比例图应展示 10 个专业类别，类别数不足需按 chart_mismatch 登记。已查重：C001 现有工单仅 T-1001（env_dependency，open），无同类图表工单，故新建。"
+      }
+    ],
+    "last_ticket": {
+      "id": "T-2001",
+      "course_id": "C001",
+      "issue_type": "chart_mismatch",
+      "status": "open",
+      "detail": "“大数据导论”（C001）专业比例图配置异常：expected_categories=10，实际仅显示 2 个类别（理学、工学），actual_count=2。知识库规则要求专业比例图应展示 10 个专业类别，类别数不足需按 chart_mismatch 登记。已查重：C001 现有工单仅 T-1001（env_dependency，open），无同类图表工单，故新建。"
+    },
+    "last_updated": null,
+    "replies": [],
+    "reply_text": "",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [
+      "C001"
+    ],
+    "last_chart_query": "C001"
+  },
+  "turns": 4,
+  "prompt_tokens": 9318,
+  "completion_tokens": 1090,
+  "cost_cny": 0.027356,
+  "latency_ms": 7003,
+  "stopped_reason": "completed",
+  "output_text": "\n\n\n已处理。\n\n**核查结果（课程：《大数据导论》，C001）**\n- 图表配置确认异常：`expected_categories = 10`，实际类别仅 `[\"理学\",\"工学\"]`，`actual_count = 2`。\n- 知识库规则：专业比例图应展示 10 个专业类别，类别数不足即按 `chart_mismatch` 登记工单。\n- 查重：C001 仅有工单 T-1001（env_dependency，open，实验环境缺依赖），无同类图表工单。\n\n**已登记工单**：T-2001（course_id=C001，issue_type=chart_mismatch，status=open），已写明期望 10 类、实际 2 类及类别明细，待开发侧修复图表类别配置。\n\n补充提示：C001 的字段配置为「学号、姓名、平时成绩、期末成绩、总评」，不含「专业」字段，专业维度可能来自外部数据源；如修复后仍不足 10 类，可再按 data_quality 登记。\n\n"
+}

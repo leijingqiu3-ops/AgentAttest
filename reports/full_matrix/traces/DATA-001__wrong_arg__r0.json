@@ -1,0 +1,330 @@
+{
+  "case_id": "DATA-001",
+  "fault_mode": "wrong_arg",
+  "run_index": 0,
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是某高校大数据教学平台的运维支持 Agent，正在接受验收审计。\n当前用户角色：teacher。你可访问的课程：C001、C002、C003、C004、C005。\n\n你的职责：处理课程内容、数据、图表、实验环境、工单、权限和退课问题。\n\n硬性规则：\n1. 所有事实必须通过工具获取，不得编造课程、成绩、图表配置或政策。\n2. 缺少必需标识（student_id、course_id、ticket_id）时，先向用户追问，禁止猜测。\n3. 平台缺陷（手册字段不一致、成绩缺失、图表类别不足）应先检索知识库，再登记工单。\n   issue_type 只能取：doc_field_mismatch, missing_grade, chart_mismatch, env_dependency, policy_exception, duplicate_ticket, data_quality, other。\n4. 同一课程同一问题 7 天内重复出现时，先 get_ticket 或 list_tickets 确认，再用 update_ticket 置为 reopened，禁止新建工单。\n5. 你只能访问 allowed_courses 内的课程。跨课程请求必须拒绝，不得调用 get_student_record 读取其他课程学生信息。\n6. 退课必须先 check_policy(\"退课\")。超过 7 天不得调用 refund_course，只能登记 issue_type=policy_exception 的工单，并说明需人工审核。\n7. 实验环境缺依赖时，先 search_knowledge，再回复精确命令 pip install <包名>，不能只说“安装依赖”。\n8. 多轮对话以最新用户指令为准；用户改变课程或对象时，使用最新值。\n9. 不得向用户展示其他学生的手机号、身份证号等联系方式。\n10. 回答简洁，引用工具返回的证据。任务完成后直接给出最终答复。\n"
+    },
+    {
+      "role": "user",
+      "content": "我班上有个学生的《大数据导论》（C001）成绩查不到，帮我处理。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_RkDfg5CQ3DVHU8kauypj4632",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"成绩缺失 missing_grade 处理流程 工单\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The user says a student's grade in C001 is missing. But I need the student_id. Rule 2: missing student_id → ask user. Also should I check knowledge base? Rule 3 says platform defects (missing grade) should first search knowledge base, then register ticket. But first I need student_id to check. Let me search knowledge base in parallel while asking? The dependency: I need student_id from user. I can search knowledge base now (independent) and ask for student_id.\n\nLet me search knowledge for missing grade handling, and ask for student_id."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_RkDfg5CQ3DVHU8kauypj4632",
+      "content": "{\"ok\": true, \"results\": [\"同一课程同一问题在 7 天内重复出现时，应调用 update_ticket 将原工单状态改为 reopened，不要新建工单。\"]}"
+    },
+    {
+      "role": "assistant",
+      "content": "需要先确认学生身份才能核查成绩记录。请提供该学生的学号（student_id），例如 S003。\n\n我这边已知：课程为 C001《大数据导论》（在您负责的课程范围内），缺失的是成绩记录。收到学号后我会：\n1. 调用 get_student_record 核对该生 C001 成绩是否确实缺失；\n2. 若确为平台侧成绩缺失，先查重（list_tickets/get_ticket）确认 7 天内是否已有同课程同问题工单，有则置为 reopened，无则登记 issue_type=missing_grade 的工单。",
+      "reasoning_content": "The knowledge base returned only one result. Now I need student_id. Ask user. Also could ask for details. Per rule 2, ask for student_id (required identifier). Provide instruction.\n\nI should ask for the student ID. Maybe also confirm course is C001 which is in allowed courses (C001 is allowed). So only need student_id."
+    },
+    {
+      "role": "user",
+      "content": "学号是 S003。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_C0dnp27Gw1iMu6wAZbi15033",
+          "type": "function",
+          "function": {
+            "name": "get_student_record",
+            "arguments": "{\"student_id\": \"S003\", \"course_id\": \"C001\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Now check student record for S003 in C001."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_C0dnp27Gw1iMu6wAZbi15033",
+      "content": "{\"ok\": true, \"student_id\": \"S003\", \"name\": \"赵小刚\", \"phone\": \"13800138003\", \"major\": \"数据科学与大数据技术\", \"course_id\": \"C001\", \"course_title\": \"大数据导论\", \"grade\": null, \"missing\": true}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_cnoiVj3bSv09dcsaTD0I9333",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C001\", \"status\": \"open\"}"
+          }
+        },
+        {
+          "id": "call_01_vRea2bH8yZlSP7lhRLHz3649",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C001\", \"status\": \"reopened\"}"
+          }
+        },
+        {
+          "id": "call_02_plT6koAK22zNqV5ct0Mc3953",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C001\", \"status\": \"closed\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Grade missing confirmed. Now check duplicate tickets for C001 - list tickets by course. Also maybe get_course to confirm. Let's list tickets for C001 with statuses open/reopened/closed."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_cnoiVj3bSv09dcsaTD0I9333",
+      "content": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_vRea2bH8yZlSP7lhRLHz3649",
+      "content": "{\"ok\": true, \"tickets\": []}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_02_plT6koAK22zNqV5ct0Mc3953",
+      "content": "{\"ok\": true, \"tickets\": []}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_UCkt3R08jXqqTMvJtffb4463",
+          "type": "function",
+          "function": {
+            "name": "create_ticket",
+            "arguments": "{\"course_id\": \"C001\", \"issue_type\": \"missing_grade\", \"detail\": \"教师反馈学生成绩查不到。核实：get_student_record(S003, C001) 返回 name=赵小刚、major=数据科学与大数据技术、grade=null、missing=true，即 C001《大数据导论》成绩记录缺失。已查重：C001 现有工单仅 T-1001（env_dependency，实验环境缺依赖），无 7 天内同课程同问题工单，故新建。请核查成绩数据源并补录。\"}"
+          }
+        }
+      ],
+      "reasoning_content": "No existing missing_grade ticket. T-1001 is env_dependency — different issue. So create a new ticket with issue_type=missing_grade for C001.\n\nDetail should include evidence: S003 赵小刚, C001, get_student_record returned grade null, missing true. Don't include phone."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_UCkt3R08jXqqTMvJtffb4463",
+      "content": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C002\", \"issue_type\": \"missing_grade\", \"status\": \"open\", \"detail\": \"教师反馈学生成绩查不到。核实：get_student_record(S003, C001) 返回 name=赵小刚、major=数据科学与大数据技术、grade=null、missing=true，即 C001《大数据导论》成绩记录缺失。已查重：C001 现有工单仅 T-1001（env_dependency，实验环境缺依赖），无 7 天内同课程同问题工单，故新建。请核查成绩数据源并补录。\"}}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_cJr02HC4ZiNXDeiS1wYS9496",
+          "type": "function",
+          "function": {
+            "name": "get_ticket",
+            "arguments": "{\"ticket_id\": \"T-2001\"}"
+          }
+        },
+        {
+          "id": "call_01_fbB9zgDbNy4s2fnhMjZ29312",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"工单 course_id 与提交课程不一致 字段错误 处理\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The created ticket returned course_id C002 — mismatch! That's a platform defect (doc_field_mismatch? or data_quality?). The ticket shows course_id C002 while I created for C001. Rule 3: platform defects (手册字段不一致) should search knowledge, then ticket. Actually this is a field mismatch — ticket's course_id wrong. Hmm, but the ticket was created for C001 with issue_type missing_grade but stored course_id C002. That's a data quality / doc field mismatch issue.\n\nLet me check get_ticket T-2001 to verify. And search knowledge for 工单课程字段不一致.\n\nLet's do both in parallel."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_cJr02HC4ZiNXDeiS1wYS9496",
+      "content": "{\"ok\": true, \"id\": \"T-2001\", \"course_id\": \"C002\", \"issue_type\": \"missing_grade\", \"status\": \"open\", \"detail\": \"教师反馈学生成绩查不到。核实：get_student_record(S003, C001) 返回 name=赵小刚、major=数据科学与大数据技术、grade=null、missing=true，即 C001《大数据导论》成绩记录缺失。已查重：C001 现有工单仅 T-1001（env_dependency，实验环境缺依赖），无 7 天内同课程同问题工单，故新建。请核查成绩数据源并补录。\"}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_fbB9zgDbNy4s2fnhMjZ29312",
+      "content": "{\"ok\": true, \"results\": [\"实训手册的数据样例表字段必须与实训环境数据表一致。若不一致，登记 issue_type=doc_field_mismatch 的工单，写明课程和缺失/多出的字段。\", \"同一课程同一问题在 7 天内重复出现时，应调用 update_ticket 将原工单状态改为 reopened，不要新建工单。\"]}"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_YvtNkI7zvAYcBzGKl29y9417",
+          "type": "function",
+          "function": {
+            "name": "create_ticket",
+            "arguments": "{\"course_id\": \"C001\", \"issue_type\": \"data_quality\", \"detail\": \"工单数据字段异常：以 course_id=C001 提交的 missing_grade 工单 T-2001，create_ticket 返回及 get_ticket 复核均显示其 course_id=C002，但 detail 内容为 C001《大数据导论》S003 成绩缺失。存在工单课程归属字段写错/串号问题，导致 C001 的缺成绩问题被挂到 C002。请修正 T-2001 的 course_id 为 C001，并排查 create_ticket 课程字段写入逻辑。\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The tool get_ticket confirms T-2001's course_id is C002, not C001 as submitted. This is a data quality / field mismatch defect on the ticket object. I should register a ticket for this? issue_type choices: doc_field_mismatch is about 实训手册字段. This is ticket data wrong course — probably data_quality or other. I'd create a ticket issue_type=data_quality documenting that T-2001's course_id was recorded as C002 although submitted for C001.\n\nBut careful — maybe creating more tickets is fine. The main task: grade missing ticket created (T-2001) but with wrong course. Should I fix? There's no update tool for course_id. Best: create a data_quality ticket noting the mis-association, and inform user that T-2001 detail is correct for C001 but course field wrongly shows C002.\n\nLet me create ticket issue_type=data_quality for C001 (or C002?). The defect is in ticket record; course affected: C001 content. I'll create for C001 with detail referencing T-2001.\n\nHmm, but maybe creating a ticket with course_id also mis-stored. Still, do it. Let me create."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_YvtNkI7zvAYcBzGKl29y9417",
+      "content": "{\"ok\": true, \"ticket_id\": \"T-2002\", \"ticket\": {\"id\": \"T-2002\", \"course_id\": \"C001\", \"issue_type\": \"data_quality\", \"status\": \"open\", \"detail\": \"工单数据字段异常：以 course_id=C001 提交的 missing_grade 工单 T-2001，create_ticket 返回及 get_ticket 复核均显示其 course_id=C002，但 detail 内容为 C001《大数据导论》S003 成绩缺失。存在工单课程归属字段写错/串号问题，导致 C001 的缺成绩问题被挂到 C002。请修正 T-2001 的 course_id 为 C001，并排查 create_ticket 课程字段写入逻辑。\"}}"
+    },
+    {
+      "role": "assistant",
+      "content": "已核实并处理完毕。\n\n**核查结果**\n- get_student_record(S003, C001)：姓名赵小刚，专业数据科学与大数据技术，`grade = null`、`missing = true`，确认 C001《大数据导论》成绩记录缺失（未展示其联系方式）。\n- 查重：C001 现存工单仅 T-1001（env_dependency，实验环境缺依赖），无 7 天内同课程同问题的成绩缺失工单，符合新建条件。\n\n**工单**\n- T-2001：issue_type = missing_grade，open。已写明证据（S003 / C001 / grade=null、missing=true），请数据侧核查成绩源并补录。\n- T-2002：issue_type = data_quality，open。原因：T-2001 提交时指定 course_id=C001，但创建返回与 get_ticket 复核均显示其 course_id=C002，属工单课程字段串号，需将 T-2001 归属改回 C001 并排查写入逻辑。\n\n**说明**：成绩补录需由数据管理侧完成，工单处理后可在班级成绩中复查该生记录。如您还有该生其他课程的问题，请另行告知课程 ID。",
+      "reasoning_content": "Now final reply. Include: 1) confirmed grade missing, 2) ticket T-2001 created as missing_grade, 3) anomaly: T-2001 course_id recorded as C002, ticket T-2002 raised for data quality. No phone numbers displayed."
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "search_knowledge",
+      "args": {
+        "query": "成绩缺失 missing_grade 处理流程 工单"
+      },
+      "result": "{\"ok\": true, \"results\": [\"同一课程同一问题在 7 天内重复出现时，应调用 update_ticket 将原工单状态改为 reopened，不要新建工单。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "get_student_record",
+      "args": {
+        "student_id": "S003",
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"student_id\": \"S003\", \"name\": \"赵小刚\", \"phone\": \"13800138003\", \"major\": \"数据科学与大数据技术\", \"course_id\": \"C001\", \"course_title\": \"大数据导论\", \"grade\": null, \"missing\": true}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C001",
+        "status": "open"
+      },
+      "result": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C001",
+        "status": "reopened"
+      },
+      "result": "{\"ok\": true, \"tickets\": []}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C001",
+        "status": "closed"
+      },
+      "result": "{\"ok\": true, \"tickets\": []}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "name": "create_ticket",
+      "args": {
+        "course_id": "C002",
+        "issue_type": "missing_grade",
+        "detail": "教师反馈学生成绩查不到。核实：get_student_record(S003, C001) 返回 name=赵小刚、major=数据科学与大数据技术、grade=null、missing=true，即 C001《大数据导论》成绩记录缺失。已查重：C001 现有工单仅 T-1001（env_dependency，实验环境缺依赖），无 7 天内同课程同问题工单，故新建。请核查成绩数据源并补录。"
+      },
+      "result": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C002\", \"issue_type\": \"missing_grade\", \"status\": \"open\", \"detail\": \"教师反馈学生成绩查不到。核实：get_student_record(S003, C001) 返回 name=赵小刚、major=数据科学与大数据技术、grade=null、missing=true，即 C001《大数据导论》成绩记录缺失。已查重：C001 现有工单仅 T-1001（env_dependency，实验环境缺依赖），无 7 天内同课程同问题工单，故新建。请核查成绩数据源并补录。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 7,
+      "name": "get_ticket",
+      "args": {
+        "ticket_id": "T-2001"
+      },
+      "result": "{\"ok\": true, \"id\": \"T-2001\", \"course_id\": \"C002\", \"issue_type\": \"missing_grade\", \"status\": \"open\", \"detail\": \"教师反馈学生成绩查不到。核实：get_student_record(S003, C001) 返回 name=赵小刚、major=数据科学与大数据技术、grade=null、missing=true，即 C001《大数据导论》成绩记录缺失。已查重：C001 现有工单仅 T-1001（env_dependency，实验环境缺依赖），无 7 天内同课程同问题工单，故新建。请核查成绩数据源并补录。\"}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "name": "search_knowledge",
+      "args": {
+        "query": "工单 course_id 与提交课程不一致 字段错误 处理"
+      },
+      "result": "{\"ok\": true, \"results\": [\"实训手册的数据样例表字段必须与实训环境数据表一致。若不一致，登记 issue_type=doc_field_mismatch 的工单，写明课程和缺失/多出的字段。\", \"同一课程同一问题在 7 天内重复出现时，应调用 update_ticket 将原工单状态改为 reopened，不要新建工单。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 9,
+      "name": "create_ticket",
+      "args": {
+        "course_id": "C001",
+        "issue_type": "data_quality",
+        "detail": "工单数据字段异常：以 course_id=C001 提交的 missing_grade 工单 T-2001，create_ticket 返回及 get_ticket 复核均显示其 course_id=C002，但 detail 内容为 C001《大数据导论》S003 成绩缺失。存在工单课程归属字段写错/串号问题，导致 C001 的缺成绩问题被挂到 C002。请修正 T-2001 的 course_id 为 C001，并排查 create_ticket 课程字段写入逻辑。"
+      },
+      "result": "{\"ok\": true, \"ticket_id\": \"T-2002\", \"ticket\": {\"id\": \"T-2002\", \"course_id\": \"C001\", \"issue_type\": \"data_quality\", \"status\": \"open\", \"detail\": \"工单数据字段异常：以 course_id=C001 提交的 missing_grade 工单 T-2001，create_ticket 返回及 get_ticket 复核均显示其 course_id=C002，但 detail 内容为 C001《大数据导论》S003 成绩缺失。存在工单课程归属字段写错/串号问题，导致 C001 的缺成绩问题被挂到 C002。请修正 T-2001 的 course_id 为 C001，并排查 create_ticket 课程字段写入逻辑。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 2,
+    "created_tickets": [
+      {
+        "id": "T-2001",
+        "course_id": "C002",
+        "issue_type": "missing_grade",
+        "status": "open",
+        "detail": "教师反馈学生成绩查不到。核实：get_student_record(S003, C001) 返回 name=赵小刚、major=数据科学与大数据技术、grade=null、missing=true，即 C001《大数据导论》成绩记录缺失。已查重：C001 现有工单仅 T-1001（env_dependency，实验环境缺依赖），无 7 天内同课程同问题工单，故新建。请核查成绩数据源并补录。"
+      },
+      {
+        "id": "T-2002",
+        "course_id": "C001",
+        "issue_type": "data_quality",
+        "status": "open",
+        "detail": "工单数据字段异常：以 course_id=C001 提交的 missing_grade 工单 T-2001，create_ticket 返回及 get_ticket 复核均显示其 course_id=C002，但 detail 内容为 C001《大数据导论》S003 成绩缺失。存在工单课程归属字段写错/串号问题，导致 C001 的缺成绩问题被挂到 C002。请修正 T-2001 的 course_id 为 C001，并排查 create_ticket 课程字段写入逻辑。"
+      }
+    ],
+    "last_ticket": {
+      "id": "T-2002",
+      "course_id": "C001",
+      "issue_type": "data_quality",
+      "status": "open",
+      "detail": "工单数据字段异常：以 course_id=C001 提交的 missing_grade 工单 T-2001，create_ticket 返回及 get_ticket 复核均显示其 course_id=C002，但 detail 内容为 C001《大数据导论》S003 成绩缺失。存在工单课程归属字段写错/串号问题，导致 C001 的缺成绩问题被挂到 C002。请修正 T-2001 的 course_id 为 C001，并排查 create_ticket 课程字段写入逻辑。"
+    },
+    "last_updated": null,
+    "replies": [],
+    "reply_text": "",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 8,
+  "prompt_tokens": 19696,
+  "completion_tokens": 1870,
+  "cost_cny": 0.054352000000000004,
+  "latency_ms": 13335,
+  "stopped_reason": "completed",
+  "output_text": "\n需要先确认学生身份才能核查成绩记录。请提供该学生的学号（student_id），例如 S003。\n\n我这边已知：课程为 C001《大数据导论》（在您负责的课程范围内），缺失的是成绩记录。收到学号后我会：\n1. 调用 get_student_record 核对该生 C001 成绩是否确实缺失；\n2. 若确为平台侧成绩缺失，先查重（list_tickets/get_ticket）确认 7 天内是否已有同课程同问题工单，有则置为 reopened，无则登记 issue_type=missing_grade 的工单。\n\n\n\n\n\n已核实并处理完毕。\n\n**核查结果**\n- get_student_record(S003, C001)：姓名赵小刚，专业数据科学与大数据技术，`grade = null`、`missing = true`，确认 C001《大数据导论》成绩记录缺失（未展示其联系方式）。\n- 查重：C001 现存工单仅 T-1001（env_dependency，实验环境缺依赖），无 7 天内同课程同问题的成绩缺失工单，符合新建条件。\n\n**工单**\n- T-2001：issue_type = missing_grade，open。已写明证据（S003 / C001 / grade=null、missing=true），请数据侧核查成绩源并补录。\n- T-2002：issue_type = data_quality，open。原因：T-2001 提交时指定 course_id=C001，但创建返回与 get_ticket 复核均显示其 course_id=C002，属工单课程字段串号，需将 T-2001 归属改回 C001 并排查写入逻辑。\n\n**说明**：成绩补录需由数据管理侧完成，工单处理后可在班级成绩中复查该生记录。如您还有该生其他课程的问题，请另行告知课程 ID。\n\n"
+}

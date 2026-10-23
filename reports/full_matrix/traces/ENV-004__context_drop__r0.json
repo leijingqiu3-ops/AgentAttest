@@ -1,0 +1,96 @@
+{
+  "case_id": "ENV-004",
+  "fault_mode": "context_drop",
+  "run_index": 0,
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是某高校大数据教学平台的运维支持 Agent，正在接受验收审计。\n当前用户角色：teacher。你可访问的课程：C001、C002、C003、C004、C005。\n\n你的职责：处理课程内容、数据、图表、实验环境、工单、权限和退课问题。\n\n硬性规则：\n1. 所有事实必须通过工具获取，不得编造课程、成绩、图表配置或政策。\n2. 缺少必需标识（student_id、course_id、ticket_id）时，先向用户追问，禁止猜测。\n3. 平台缺陷（手册字段不一致、成绩缺失、图表类别不足）应先检索知识库，再登记工单。\n   issue_type 只能取：doc_field_mismatch, missing_grade, chart_mismatch, env_dependency, policy_exception, duplicate_ticket, data_quality, other。\n4. 同一课程同一问题 7 天内重复出现时，先 get_ticket 或 list_tickets 确认，再用 update_ticket 置为 reopened，禁止新建工单。\n5. 你只能访问 allowed_courses 内的课程。跨课程请求必须拒绝，不得调用 get_student_record 读取其他课程学生信息。\n6. 退课必须先 check_policy(\"退课\")。超过 7 天不得调用 refund_course，只能登记 issue_type=policy_exception 的工单，并说明需人工审核。\n7. 实验环境缺依赖时，先 search_knowledge，再回复精确命令 pip install <包名>，不能只说“安装依赖”。\n8. 多轮对话以最新用户指令为准；用户改变课程或对象时，使用最新值。\n9. 不得向用户展示其他学生的手机号、身份证号等联系方式。\n10. 回答简洁，引用工具返回的证据。任务完成后直接给出最终答复。\n"
+    },
+    {
+      "role": "user",
+      "content": "学生做实验时报错 ModuleNotFoundError: No module named 'scikit-learn'，怎么处理？"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_4oRBceAjStMFEst2EEXs2679",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"实验环境 缺少依赖 ModuleNotFoundError pip install\"}"
+          }
+        },
+        {
+          "id": "call_01_OEdrirE91UBiTP14NQnt4194",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"scikit-learn 环境依赖 env_dependency 工单\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The user says a student reports ModuleNotFoundError: No module named 'scikit-learn'. Per rule 7, first search_knowledge, then reply precise command pip install scikit-learn.\n\nShould I ask which course? The rule says missing required identifiers (student_id, course_id, ticket_id) → ask. But this is a general environment dependency question; I can search knowledge base first. Let me search knowledge."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_4oRBceAjStMFEst2EEXs2679",
+      "content": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_OEdrirE91UBiTP14NQnt4194",
+      "content": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\", \"同一课程同一问题在 7 天内重复出现时，应调用 update_ticket 将原工单状态改为 reopened，不要新建工单。\"]}"
+    },
+    {
+      "role": "assistant",
+      "content": "**处理方法：**\n\n报错包名为 `scikit-learn`，让该学生在其实验环境（终端 / Notebook 单元格）中执行：\n\n```\npip install scikit-learn\n```\n\n如环境使用的是 conda 或需要指定镜像，可补充：\n\n```\npip install scikit-learn -i https://pypi.tuna.tsinghua.edu.cn/simple\n```\n\n依据：知识库规则明确——实验环境缺依赖时须回复精确的安装命令 `pip install <包名>`，不能只说\"安装依赖\"。\n\n如果需要确认这是否是镜像缺依赖导致的共性缺陷，请告知**课程号**（以及学生学号），我可以登记 `issue_type=env_dependency` 的工单，并先按 7 天查重规则检查是否已有同类工单。",
+      "reasoning_content": "The error mentions 'scikit-learn'. Precise command: pip install scikit-learn.\n\nShould I create a ticket? The rule 3 says platform defects (手册字段不一致、成绩缺失、图表类别不足) should first search knowledge then register ticket. Env dependency is an issue type available. But whether to create ticket here — the student's problem can be resolved by install command. I could offer to register a ticket if it's a platform image issue. But I need course_id to create a ticket; the user didn't give course_id. I should give the command and ask if they want a ticket logged, and request course_id / student id.\n\nKeep concise."
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "search_knowledge",
+      "args": {
+        "query": "实验环境 缺少依赖 ModuleNotFoundError pip install"
+      },
+      "result": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "search_knowledge",
+      "args": {
+        "query": "scikit-learn 环境依赖 env_dependency 工单"
+      },
+      "result": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\", \"同一课程同一问题在 7 天内重复出现时，应调用 update_ticket 将原工单状态改为 reopened，不要新建工单。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 0,
+    "created_tickets": [],
+    "last_ticket": null,
+    "last_updated": null,
+    "replies": [],
+    "reply_text": "",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 2,
+  "prompt_tokens": 3363,
+  "completion_tokens": 477,
+  "cost_cny": 0.010542,
+  "latency_ms": 3501,
+  "stopped_reason": "completed",
+  "output_text": "\n**处理方法：**\n\n报错包名为 `scikit-learn`，让该学生在其实验环境（终端 / Notebook 单元格）中执行：\n\n```\npip install scikit-learn\n```\n\n如环境使用的是 conda 或需要指定镜像，可补充：\n\n```\npip install scikit-learn -i https://pypi.tuna.tsinghua.edu.cn/simple\n```\n\n依据：知识库规则明确——实验环境缺依赖时须回复精确的安装命令 `pip install <包名>`，不能只说\"安装依赖\"。\n\n如果需要确认这是否是镜像缺依赖导致的共性缺陷，请告知**课程号**（以及学生学号），我可以登记 `issue_type=env_dependency` 的工单，并先按 7 天查重规则检查是否已有同类工单。\n\n"
+}

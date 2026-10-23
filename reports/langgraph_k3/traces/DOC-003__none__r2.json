@@ -1,0 +1,289 @@
+{
+  "case_id": "DOC-003",
+  "fault_mode": "none",
+  "run_index": 2,
+  "messages": [
+    {
+      "role": "user",
+      "content": "《Python数据分析》的实训手册里，数据样例表字段是「学号、姓名、成绩」，平台数据表实际是「学号、姓名、实验1、实验2、总评」，字段对不上，帮我处理一下。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_7DvBzQTwVeNWkTKArJSV8711",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        },
+        {
+          "id": "call_01_RwIzABSM8cLPlptEVQ4a5129",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C002\"}"
+          }
+        },
+        {
+          "id": "call_02_J6XkUHJz3BGWHKcmkikW4386",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C003\"}"
+          }
+        },
+        {
+          "id": "call_03_kGqdVVteFONc9EUSUm2v7444",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        },
+        {
+          "id": "call_04_q48VWlNXfyQhXHluf1hK8706",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C005\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}",
+      "tool_call_id": "call_00_7DvBzQTwVeNWkTKArJSV8711"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C002\", \"title\": \"某高校校情管理分析案例\", \"instructor\": \"李老师\", \"fields\": [\"学号\", \"姓名\", \"专业\", \"总评\"]}",
+      "tool_call_id": "call_01_RwIzABSM8cLPlptEVQ4a5129"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C003\", \"title\": \"Python数据分析\", \"instructor\": \"王老师\", \"fields\": [\"学号\", \"姓名\", \"实验1\", \"实验2\", \"总评\"]}",
+      "tool_call_id": "call_02_J6XkUHJz3BGWHKcmkikW4386"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "tool_call_id": "call_03_kGqdVVteFONc9EUSUm2v7444"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C005\", \"title\": \"数据库原理\", \"instructor\": \"陈老师\", \"fields\": [\"学号\", \"姓名\", \"期中\", \"期末\", \"总评\"]}",
+      "tool_call_id": "call_04_q48VWlNXfyQhXHluf1hK8706"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_pKUkyWadrydrvass13XA4255",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"实训手册字段与平台数据表字段不一致 处理规则 doc_field_mismatch\"}"
+          }
+        },
+        {
+          "id": "call_01_sqdPbk80wXtnQxzrASeF1242",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C003\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"results\": [\"实训手册的数据样例表字段必须与实训环境数据表一致。若不一致，登记 issue_type=doc_field_mismatch 的工单，写明课程和缺失/多出的字段。\"]}",
+      "tool_call_id": "call_00_pKUkyWadrydrvass13XA4255"
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1003\", \"course_id\": \"C003\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "tool_call_id": "call_01_sqdPbk80wXtnQxzrASeF1242"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_ZsexindKnWAk6AwaNLsU5859",
+          "type": "function",
+          "function": {
+            "name": "create_ticket",
+            "arguments": "{\"course_id\": \"C003\", \"issue_type\": \"doc_field_mismatch\", \"detail\": \"《Python数据分析》(C003) 实训手册数据样例表字段为「学号、姓名、成绩」，与平台实训数据表实际字段「学号、姓名、实验1、实验2、总评」不一致：手册缺少「实验1、实验2、总评」，多出平台不存在的「成绩」。请按知识库规则将手册样例表字段与实训环境数据表对齐。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C003\", \"issue_type\": \"doc_field_mismatch\", \"status\": \"open\", \"detail\": \"《Python数据分析》(C003) 实训手册数据样例表字段为「学号、姓名、成绩」，与平台实训数据表实际字段「学号、姓名、实验1、实验2、总评」不一致：手册缺少「实验1、实验2、总评」，多出平台不存在的「成绩」。请按知识库规则将手册样例表字段与实训环境数据表对齐。\"}}",
+      "tool_call_id": "call_00_ZsexindKnWAk6AwaNLsU5859"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_ET_QRRXFd7q7lDvUYyeSMHf4199",
+          "type": "function",
+          "function": {
+            "name": "send_reply",
+            "arguments": "{\"text\": \"已定位课程：《Python数据分析》(C003，王老师)，平台数据表字段确为「学号、姓名、实验1、实验2、总评」，与手册样例表「学号、姓名、成绩」不一致。\\n\\n依据知识库规则（实训手册样例表字段须与实训环境数据表一致），已登记工单：\\n- 工单号：T-2001\\n- 类型：doc_field_mismatch\\n- 状态：open\\n- 差异：手册缺少「实验1、实验2、总评」，多出平台不存在的「成绩」\\n\\n该课程下另有一张既有工单 T-1003（env_dependency，open），非同一问题，未做合并/重开。后续手册修订进度可凭 T-2001 跟进。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true}",
+      "tool_call_id": "call_00_ET_QRRXFd7q7lDvUYyeSMHf4199"
+    },
+    {
+      "role": "assistant",
+      "content": "处理完成。\n\n- 课程：《Python数据分析》(C003，王老师)\n- 平台实际字段：学号、姓名、实验1、实验2、总评\n- 手册样例表字段：学号、姓名、成绩 → 缺「实验1、实验2、总评」，多出「成绩」\n- 依据知识库规则，已登记工单 **T-2001**（issue_type=doc_field_mismatch，状态 open），要求手册样例表与实训环境数据表字段对齐\n- 该课程另一张工单 T-1003（env_dependency）为不同问题，未做重开处理"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "get_course",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "get_course",
+      "args": {
+        "course_id": "C002"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C002\", \"title\": \"某高校校情管理分析案例\", \"instructor\": \"李老师\", \"fields\": [\"学号\", \"姓名\", \"专业\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "get_course",
+      "args": {
+        "course_id": "C003"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C003\", \"title\": \"Python数据分析\", \"instructor\": \"王老师\", \"fields\": [\"学号\", \"姓名\", \"实验1\", \"实验2\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "get_course",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "name": "get_course",
+      "args": {
+        "course_id": "C005"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C005\", \"title\": \"数据库原理\", \"instructor\": \"陈老师\", \"fields\": [\"学号\", \"姓名\", \"期中\", \"期末\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "name": "search_knowledge",
+      "args": {
+        "query": "实训手册字段与平台数据表字段不一致 处理规则 doc_field_mismatch"
+      },
+      "result": "{\"ok\": true, \"results\": [\"实训手册的数据样例表字段必须与实训环境数据表一致。若不一致，登记 issue_type=doc_field_mismatch 的工单，写明课程和缺失/多出的字段。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 7,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C003"
+      },
+      "result": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1003\", \"course_id\": \"C003\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "name": "create_ticket",
+      "args": {
+        "course_id": "C003",
+        "issue_type": "doc_field_mismatch",
+        "detail": "《Python数据分析》(C003) 实训手册数据样例表字段为「学号、姓名、成绩」，与平台实训数据表实际字段「学号、姓名、实验1、实验2、总评」不一致：手册缺少「实验1、实验2、总评」，多出平台不存在的「成绩」。请按知识库规则将手册样例表字段与实训环境数据表对齐。"
+      },
+      "result": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C003\", \"issue_type\": \"doc_field_mismatch\", \"status\": \"open\", \"detail\": \"《Python数据分析》(C003) 实训手册数据样例表字段为「学号、姓名、成绩」，与平台实训数据表实际字段「学号、姓名、实验1、实验2、总评」不一致：手册缺少「实验1、实验2、总评」，多出平台不存在的「成绩」。请按知识库规则将手册样例表字段与实训环境数据表对齐。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 9,
+      "name": "send_reply",
+      "args": {
+        "text": "已定位课程：《Python数据分析》(C003，王老师)，平台数据表字段确为「学号、姓名、实验1、实验2、总评」，与手册样例表「学号、姓名、成绩」不一致。\n\n依据知识库规则（实训手册样例表字段须与实训环境数据表一致），已登记工单：\n- 工单号：T-2001\n- 类型：doc_field_mismatch\n- 状态：open\n- 差异：手册缺少「实验1、实验2、总评」，多出平台不存在的「成绩」\n\n该课程下另有一张既有工单 T-1003（env_dependency，open），非同一问题，未做合并/重开。后续手册修订进度可凭 T-2001 跟进。"
+      },
+      "result": "{\"ok\": true}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 1,
+    "created_tickets": [
+      {
+        "id": "T-2001",
+        "course_id": "C003",
+        "issue_type": "doc_field_mismatch",
+        "status": "open",
+        "detail": "《Python数据分析》(C003) 实训手册数据样例表字段为「学号、姓名、成绩」，与平台实训数据表实际字段「学号、姓名、实验1、实验2、总评」不一致：手册缺少「实验1、实验2、总评」，多出平台不存在的「成绩」。请按知识库规则将手册样例表字段与实训环境数据表对齐。"
+      }
+    ],
+    "last_ticket": {
+      "id": "T-2001",
+      "course_id": "C003",
+      "issue_type": "doc_field_mismatch",
+      "status": "open",
+      "detail": "《Python数据分析》(C003) 实训手册数据样例表字段为「学号、姓名、成绩」，与平台实训数据表实际字段「学号、姓名、实验1、实验2、总评」不一致：手册缺少「实验1、实验2、总评」，多出平台不存在的「成绩」。请按知识库规则将手册样例表字段与实训环境数据表对齐。"
+    },
+    "last_updated": null,
+    "replies": [
+      "已定位课程：《Python数据分析》(C003，王老师)，平台数据表字段确为「学号、姓名、实验1、实验2、总评」，与手册样例表「学号、姓名、成绩」不一致。\n\n依据知识库规则（实训手册样例表字段须与实训环境数据表一致），已登记工单：\n- 工单号：T-2001\n- 类型：doc_field_mismatch\n- 状态：open\n- 差异：手册缺少「实验1、实验2、总评」，多出平台不存在的「成绩」\n\n该课程下另有一张既有工单 T-1003（env_dependency，open），非同一问题，未做合并/重开。后续手册修订进度可凭 T-2001 跟进。"
+    ],
+    "reply_text": "已定位课程：《Python数据分析》(C003，王老师)，平台数据表字段确为「学号、姓名、实验1、实验2、总评」，与手册样例表「学号、姓名、成绩」不一致。\n\n依据知识库规则（实训手册样例表字段须与实训环境数据表一致），已登记工单：\n- 工单号：T-2001\n- 类型：doc_field_mismatch\n- 状态：open\n- 差异：手册缺少「实验1、实验2、总评」，多出平台不存在的「成绩」\n\n该课程下另有一张既有工单 T-1003（env_dependency，open），非同一问题，未做合并/重开。后续手册修订进度可凭 T-2001 跟进。",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 5,
+  "prompt_tokens": 10805,
+  "completion_tokens": 994,
+  "cost_cny": 0.029562,
+  "latency_ms": 7489,
+  "stopped_reason": "completed",
+  "output_text": "处理完成。\n\n- 课程：《Python数据分析》(C003，王老师)\n- 平台实际字段：学号、姓名、实验1、实验2、总评\n- 手册样例表字段：学号、姓名、成绩 → 缺「实验1、实验2、总评」，多出「成绩」\n- 依据知识库规则，已登记工单 **T-2001**（issue_type=doc_field_mismatch，状态 open），要求手册样例表与实训环境数据表字段对齐\n- 该课程另一张工单 T-1003（env_dependency）为不同问题，未做重开处理\n已定位课程：《Python数据分析》(C003，王老师)，平台数据表字段确为「学号、姓名、实验1、实验2、总评」，与手册样例表「学号、姓名、成绩」不一致。\n\n依据知识库规则（实训手册样例表字段须与实训环境数据表一致），已登记工单：\n- 工单号：T-2001\n- 类型：doc_field_mismatch\n- 状态：open\n- 差异：手册缺少「实验1、实验2、总评」，多出平台不存在的「成绩」\n\n该课程下另有一张既有工单 T-1003（env_dependency，open），非同一问题，未做合并/重开。后续手册修订进度可凭 T-2001 跟进。",
+  "fault_injected": false,
+  "fault_notes": []
+}

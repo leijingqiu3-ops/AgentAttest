@@ -1,0 +1,109 @@
+{
+  "case_id": "CTX-005",
+  "fault_mode": "none",
+  "run_index": 2,
+  "messages": [
+    {
+      "role": "user",
+      "content": "帮我查一下 C001 的专业比例图配置，只把配置发我，不用建工单。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_TLJg3cOHD8a0umQPyRYS7156",
+          "type": "function",
+          "function": {
+            "name": "get_chart_config",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C001\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\"], \"actual_count\": 2}",
+      "tool_call_id": "call_00_TLJg3cOHD8a0umQPyRYS7156"
+    },
+    {
+      "role": "assistant",
+      "content": "C001 的「专业比例」图配置如下：\n\n- 图表名称：专业比例\n- 期望类别数：10\n- 实际类别：理学、工学（共 2 个）\n\n按你的要求，未登记工单。注意：实际类别数（2）与期望（10）不一致，如需修复请再告知我。"
+    },
+    {
+      "role": "user",
+      "content": "算了，改查 C003 的，其他不变，同样只查询。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_oN8gXsdSbUDLyqQAqVjY4779",
+          "type": "function",
+          "function": {
+            "name": "get_chart_config",
+            "arguments": "{\"course_id\": \"C003\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C003\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\"], \"actual_count\": 1}",
+      "tool_call_id": "call_00_oN8gXsdSbUDLyqQAqVjY4779"
+    },
+    {
+      "role": "assistant",
+      "content": "C003 的「专业比例」图配置如下：\n\n- 图表名称：专业比例\n- 期望类别数：10\n- 实际类别：理学（共 1 个）\n\n同样只做查询，未登记工单。（实际类别数 1 与期望 10 不一致，需要处理可再告知。）"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "get_chart_config",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C001\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\"], \"actual_count\": 2}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "get_chart_config",
+      "args": {
+        "course_id": "C003"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C003\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\"], \"actual_count\": 1}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 0,
+    "created_tickets": [],
+    "last_ticket": null,
+    "last_updated": null,
+    "replies": [],
+    "reply_text": "",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [
+      "C001",
+      "C003"
+    ],
+    "last_chart_query": "C003"
+  },
+  "turns": 4,
+  "prompt_tokens": 5951,
+  "completion_tokens": 254,
+  "cost_cny": 0.013933999999999998,
+  "latency_ms": 4279,
+  "stopped_reason": "completed",
+  "output_text": "C001 的「专业比例」图配置如下：\n\n- 图表名称：专业比例\n- 期望类别数：10\n- 实际类别：理学、工学（共 2 个）\n\n按你的要求，未登记工单。注意：实际类别数（2）与期望（10）不一致，如需修复请再告知我。\nC003 的「专业比例」图配置如下：\n\n- 图表名称：专业比例\n- 期望类别数：10\n- 实际类别：理学（共 1 个）\n\n同样只做查询，未登记工单。（实际类别数 1 与期望 10 不一致，需要处理可再告知。）\n",
+  "fault_injected": false,
+  "fault_notes": []
+}

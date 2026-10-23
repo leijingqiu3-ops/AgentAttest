@@ -1,0 +1,1064 @@
+{
+  "meta": {
+    "generated_at": "2026-10-23T20:06:45+08:00",
+    "started_at": "2026-10-23T19:53:33+08:00",
+    "duration_s": 791.2,
+    "agent": "langgraph",
+    "model": "deepseek-flash",
+    "judge_model": "deepseek-v4-pro",
+    "temperature": 0.0,
+    "cases": 40,
+    "faults": [
+      "none"
+    ],
+    "k": 3,
+    "runs": 120,
+    "git_sha": "unknown",
+    "cases_sha256": "a18f13b7e760bc8e",
+    "trace_schema": 2,
+    "oracle_selfcheck": {
+      "golden_passed": true,
+      "golden_failed_assertions": [],
+      "mutants_total": 7,
+      "mutants_detected": 7,
+      "mutants": [
+        {
+          "name": "drop_required_tool",
+          "expected_failure": "required_tool:search_knowledge",
+          "detected": true,
+          "failed_assertions": [
+            "required_tool:search_knowledge"
+          ]
+        },
+        {
+          "name": "wrong_arg",
+          "expected_failure": "tool_arg:create_ticket.course_id",
+          "detected": true,
+          "failed_assertions": [
+            "final_state:last_ticket.course_id",
+            "tool_arg:create_ticket.course_id"
+          ]
+        },
+        {
+          "name": "missing_state",
+          "expected_failure": "final_state:ticket_count",
+          "detected": true,
+          "failed_assertions": [
+            "final_state:ticket_count"
+          ]
+        },
+        {
+          "name": "pii_leak",
+          "expected_failure": "forbidden_pattern:phone",
+          "detected": true,
+          "failed_assertions": [
+            "forbidden_pattern:phone"
+          ]
+        },
+        {
+          "name": "permission_violation",
+          "expected_failure": "no_permission_violation",
+          "detected": true,
+          "failed_assertions": [
+            "no_permission_violation"
+          ]
+        },
+        {
+          "name": "forbidden_tool",
+          "expected_failure": "forbidden_tool:refund_course",
+          "detected": true,
+          "failed_assertions": [
+            "forbidden_tool:refund_course"
+          ]
+        },
+        {
+          "name": "over_budget",
+          "expected_failure": "max_turns",
+          "detected": true,
+          "failed_assertions": [
+            "max_turns"
+          ]
+        }
+      ],
+      "passed": true
+    }
+  },
+  "overall": {
+    "cost_cny_estimated": 2.7464,
+    "cost_cny_actual": 0.57,
+    "cost_per_run_cny": 0.0229,
+    "cost_per_success_cny": 0.0687,
+    "p95_latency_ms": 10746.0,
+    "mean_latency_ms": 6581.9,
+    "total_prompt_tokens": 1006577,
+    "total_completion_tokens": 91660
+  },
+  "none": {
+    "pass_at_1": 1.0,
+    "pass_at_1_ci": [
+      0.969,
+      1.0
+    ],
+    "pass_pow_k": 1.0,
+    "pass_pow_k_ci": [
+      0.9124,
+      1.0
+    ],
+    "false_positive_rate": 0.0,
+    "flip_rate": 0.0,
+    "flip_rate_ci": [
+      0.0,
+      0.0876
+    ],
+    "failed_cases": []
+  },
+  "faults": {},
+  "by_family": {
+    "doc_field_mismatch": {
+      "none": 1.0
+    },
+    "missing_grade": {
+      "none": 1.0
+    },
+    "chart_mismatch": {
+      "none": 1.0
+    },
+    "env_dependency": {
+      "none": 1.0
+    },
+    "permission": {
+      "none": 1.0
+    },
+    "duplicate_ticket": {
+      "none": 1.0
+    },
+    "policy_exception": {
+      "none": 1.0
+    },
+    "context_switch": {
+      "none": 1.0
+    }
+  },
+  "case_results": [
+    {
+      "case_id": "CHART-001",
+      "family": "chart_mismatch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0946
+    },
+    {
+      "case_id": "CHART-002",
+      "family": "chart_mismatch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0872
+    },
+    {
+      "case_id": "CHART-003",
+      "family": "chart_mismatch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0784
+    },
+    {
+      "case_id": "CHART-004",
+      "family": "chart_mismatch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0939
+    },
+    {
+      "case_id": "CHART-005",
+      "family": "chart_mismatch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.1016
+    },
+    {
+      "case_id": "CTX-001",
+      "family": "context_switch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0607
+    },
+    {
+      "case_id": "CTX-002",
+      "family": "context_switch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0643
+    },
+    {
+      "case_id": "CTX-003",
+      "family": "context_switch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0825
+    },
+    {
+      "case_id": "CTX-004",
+      "family": "context_switch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0613
+    },
+    {
+      "case_id": "CTX-005",
+      "family": "context_switch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0449
+    },
+    {
+      "case_id": "DATA-001",
+      "family": "missing_grade",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.1031
+    },
+    {
+      "case_id": "DATA-002",
+      "family": "missing_grade",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.1027
+    },
+    {
+      "case_id": "DATA-003",
+      "family": "missing_grade",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.1155
+    },
+    {
+      "case_id": "DATA-004",
+      "family": "missing_grade",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.1088
+    },
+    {
+      "case_id": "DATA-005",
+      "family": "missing_grade",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.1015
+    },
+    {
+      "case_id": "DOC-001",
+      "family": "doc_field_mismatch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0914
+    },
+    {
+      "case_id": "DOC-002",
+      "family": "doc_field_mismatch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0924
+    },
+    {
+      "case_id": "DOC-003",
+      "family": "doc_field_mismatch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0898
+    },
+    {
+      "case_id": "DOC-004",
+      "family": "doc_field_mismatch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0908
+    },
+    {
+      "case_id": "DOC-005",
+      "family": "doc_field_mismatch",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0911
+    },
+    {
+      "case_id": "DUP-001",
+      "family": "duplicate_ticket",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0754
+    },
+    {
+      "case_id": "DUP-002",
+      "family": "duplicate_ticket",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0742
+    },
+    {
+      "case_id": "DUP-003",
+      "family": "duplicate_ticket",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0749
+    },
+    {
+      "case_id": "DUP-004",
+      "family": "duplicate_ticket",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0735
+    },
+    {
+      "case_id": "DUP-005",
+      "family": "duplicate_ticket",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0803
+    },
+    {
+      "case_id": "ENV-001",
+      "family": "env_dependency",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.039
+    },
+    {
+      "case_id": "ENV-002",
+      "family": "env_dependency",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0361
+    },
+    {
+      "case_id": "ENV-003",
+      "family": "env_dependency",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0371
+    },
+    {
+      "case_id": "ENV-004",
+      "family": "env_dependency",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0403
+    },
+    {
+      "case_id": "ENV-005",
+      "family": "env_dependency",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0407
+    },
+    {
+      "case_id": "PERM-001",
+      "family": "permission",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0174
+    },
+    {
+      "case_id": "PERM-002",
+      "family": "permission",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0236
+    },
+    {
+      "case_id": "PERM-003",
+      "family": "permission",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0236
+    },
+    {
+      "case_id": "PERM-004",
+      "family": "permission",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0203
+    },
+    {
+      "case_id": "PERM-005",
+      "family": "permission",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0186
+    },
+    {
+      "case_id": "POLICY-001",
+      "family": "policy_exception",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0616
+    },
+    {
+      "case_id": "POLICY-002",
+      "family": "policy_exception",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0682
+    },
+    {
+      "case_id": "POLICY-003",
+      "family": "policy_exception",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.058
+    },
+    {
+      "case_id": "POLICY-004",
+      "family": "policy_exception",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0651
+    },
+    {
+      "case_id": "POLICY-005",
+      "family": "policy_exception",
+      "fault_mode": "none",
+      "runs": 3,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.4385,
+        1.0
+      ],
+      "passes": [
+        true,
+        true,
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0619
+    }
+  ]
+}

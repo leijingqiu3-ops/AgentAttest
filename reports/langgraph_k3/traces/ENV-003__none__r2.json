@@ -1,0 +1,100 @@
+{
+  "case_id": "ENV-003",
+  "fault_mode": "none",
+  "run_index": 2,
+  "messages": [
+    {
+      "role": "user",
+      "content": "学生做实验时报错 ModuleNotFoundError: No module named 'matplotlib'，怎么处理？"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_SnMXB08fcl2CMUKtk63T9042",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"实验环境缺少依赖 ModuleNotFoundError matplotlib 处理规则\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}",
+      "tool_call_id": "call_00_SnMXB08fcl2CMUKtk63T9042"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_PF1wVjeidY7mVFX4AQLd9390",
+          "type": "function",
+          "function": {
+            "name": "send_reply",
+            "arguments": "{\"text\": \"这是实验环境缺少 Python 依赖，按知识库规则请直接安装缺少的包（不要在回答里只说“安装依赖”）：\\n\\npip install matplotlib\\n\\n说明：\\n1. 报错明确指出了包名 matplotlib，故精确命令为上面这条；\\n2. 若该实验还用到其他库，按报错依次执行 pip install <报错中的包名>；\\n3. 如安装后仍报错（例如需要固定版本），请告知课程 ID 和完整报错信息，我可按 issue_type=env_dependency 登记工单交由环境管理员处理。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true}",
+      "tool_call_id": "call_00_PF1wVjeidY7mVFX4AQLd9390"
+    },
+    {
+      "role": "assistant",
+      "content": "处理方式：这是实验环境缺少依赖，请让学生执行精确命令\n\n```\npip install matplotlib\n```\n\n依据知识库：环境缺少 Python 依赖时，必须先确认报错中的包名，再回复精确的安装命令，不能只笼统说“安装依赖”。\n\n若安装后仍报错（如需指定版本、内网源不可用等），请提供课程 ID 和完整报错信息，我可登记 issue_type=env_dependency 的工单由环境管理员处理。"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "search_knowledge",
+      "args": {
+        "query": "实验环境缺少依赖 ModuleNotFoundError matplotlib 处理规则"
+      },
+      "result": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "send_reply",
+      "args": {
+        "text": "这是实验环境缺少 Python 依赖，按知识库规则请直接安装缺少的包（不要在回答里只说“安装依赖”）：\n\npip install matplotlib\n\n说明：\n1. 报错明确指出了包名 matplotlib，故精确命令为上面这条；\n2. 若该实验还用到其他库，按报错依次执行 pip install <报错中的包名>；\n3. 如安装后仍报错（例如需要固定版本），请告知课程 ID 和完整报错信息，我可按 issue_type=env_dependency 登记工单交由环境管理员处理。"
+      },
+      "result": "{\"ok\": true}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 0,
+    "created_tickets": [],
+    "last_ticket": null,
+    "last_updated": null,
+    "replies": [
+      "这是实验环境缺少 Python 依赖，按知识库规则请直接安装缺少的包（不要在回答里只说“安装依赖”）：\n\npip install matplotlib\n\n说明：\n1. 报错明确指出了包名 matplotlib，故精确命令为上面这条；\n2. 若该实验还用到其他库，按报错依次执行 pip install <报错中的包名>；\n3. 如安装后仍报错（例如需要固定版本），请告知课程 ID 和完整报错信息，我可按 issue_type=env_dependency 登记工单交由环境管理员处理。"
+    ],
+    "reply_text": "这是实验环境缺少 Python 依赖，按知识库规则请直接安装缺少的包（不要在回答里只说“安装依赖”）：\n\npip install matplotlib\n\n说明：\n1. 报错明确指出了包名 matplotlib，故精确命令为上面这条；\n2. 若该实验还用到其他库，按报错依次执行 pip install <报错中的包名>；\n3. 如安装后仍报错（例如需要固定版本），请告知课程 ID 和完整报错信息，我可按 issue_type=env_dependency 登记工单交由环境管理员处理。",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 3,
+  "prompt_tokens": 4606,
+  "completion_tokens": 458,
+  "cost_cny": 0.012876,
+  "latency_ms": 4754,
+  "stopped_reason": "completed",
+  "output_text": "处理方式：这是实验环境缺少依赖，请让学生执行精确命令\n\n```\npip install matplotlib\n```\n\n依据知识库：环境缺少 Python 依赖时，必须先确认报错中的包名，再回复精确的安装命令，不能只笼统说“安装依赖”。\n\n若安装后仍报错（如需指定版本、内网源不可用等），请提供课程 ID 和完整报错信息，我可登记 issue_type=env_dependency 的工单由环境管理员处理。\n这是实验环境缺少 Python 依赖，按知识库规则请直接安装缺少的包（不要在回答里只说“安装依赖”）：\n\npip install matplotlib\n\n说明：\n1. 报错明确指出了包名 matplotlib，故精确命令为上面这条；\n2. 若该实验还用到其他库，按报错依次执行 pip install <报错中的包名>；\n3. 如安装后仍报错（例如需要固定版本），请告知课程 ID 和完整报错信息，我可按 issue_type=env_dependency 登记工单交由环境管理员处理。",
+  "fault_injected": false,
+  "fault_notes": []
+}

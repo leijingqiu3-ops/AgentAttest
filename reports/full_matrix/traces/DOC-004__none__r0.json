@@ -1,0 +1,312 @@
+{
+  "case_id": "DOC-004",
+  "fault_mode": "none",
+  "run_index": 0,
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是某高校大数据教学平台的运维支持 Agent，正在接受验收审计。\n当前用户角色：teacher。你可访问的课程：C001、C002、C003、C004、C005。\n\n你的职责：处理课程内容、数据、图表、实验环境、工单、权限和退课问题。\n\n硬性规则：\n1. 所有事实必须通过工具获取，不得编造课程、成绩、图表配置或政策。\n2. 缺少必需标识（student_id、course_id、ticket_id）时，先向用户追问，禁止猜测。\n3. 平台缺陷（手册字段不一致、成绩缺失、图表类别不足）应先检索知识库，再登记工单。\n   issue_type 只能取：doc_field_mismatch, missing_grade, chart_mismatch, env_dependency, policy_exception, duplicate_ticket, data_quality, other。\n4. 同一课程同一问题 7 天内重复出现时，先 get_ticket 或 list_tickets 确认，再用 update_ticket 置为 reopened，禁止新建工单。\n5. 你只能访问 allowed_courses 内的课程。跨课程请求必须拒绝，不得调用 get_student_record 读取其他课程学生信息。\n6. 退课必须先 check_policy(\"退课\")。超过 7 天不得调用 refund_course，只能登记 issue_type=policy_exception 的工单，并说明需人工审核。\n7. 实验环境缺依赖时，先 search_knowledge，再回复精确命令 pip install <包名>，不能只说“安装依赖”。\n8. 多轮对话以最新用户指令为准；用户改变课程或对象时，使用最新值。\n9. 不得向用户展示其他学生的手机号、身份证号等联系方式。\n10. 回答简洁，引用工具返回的证据。任务完成后直接给出最终答复。\n"
+    },
+    {
+      "role": "user",
+      "content": "《机器学习基础》的实训手册里，数据样例表字段是「学号、姓名、成绩」，平台数据表实际是「学号、姓名、作业、项目、总评」，字段对不上，帮我处理一下。"
+    },
+    {
+      "role": "assistant",
+      "content": "我先确认《机器学习基础》对应的课程 ID，并检索知识库中的处理规则。",
+      "tool_calls": [
+        {
+          "id": "call_00_l5RBY7SwEvFwWLwAEiAP4957",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        },
+        {
+          "id": "call_01_VNVoDmkunnmWS3OWT4OC0547",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C002\"}"
+          }
+        },
+        {
+          "id": "call_02_nxbGiaAOvuu6ai6DCPbA8808",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C003\"}"
+          }
+        },
+        {
+          "id": "call_03_Cp18wejmP5w8LkGdQ6Vn1515",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        },
+        {
+          "id": "call_04_pmLR6myTLacFLR8fNJ7z8818",
+          "type": "function",
+          "function": {
+            "name": "get_course",
+            "arguments": "{\"course_id\": \"C005\"}"
+          }
+        },
+        {
+          "id": "call_05_AO2iBi02uIgiBJjzBKZ84387",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"实训手册字段与平台数据表不一致 doc_field_mismatch 处理\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The user reports a doc field mismatch for 机器学习基础 course. I need to identify the course ID. The user says 《机器学习基础》 — I need to know which course ID. Allowed courses: C001-C005. I should query the courses to find which is 机器学习基础.\n\nLet me get course info for C001-C005 in parallel."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_l5RBY7SwEvFwWLwAEiAP4957",
+      "content": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_VNVoDmkunnmWS3OWT4OC0547",
+      "content": "{\"ok\": true, \"course_id\": \"C002\", \"title\": \"某高校校情管理分析案例\", \"instructor\": \"李老师\", \"fields\": [\"学号\", \"姓名\", \"专业\", \"总评\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_02_nxbGiaAOvuu6ai6DCPbA8808",
+      "content": "{\"ok\": true, \"course_id\": \"C003\", \"title\": \"Python数据分析\", \"instructor\": \"王老师\", \"fields\": [\"学号\", \"姓名\", \"实验1\", \"实验2\", \"总评\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_03_Cp18wejmP5w8LkGdQ6Vn1515",
+      "content": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_04_pmLR6myTLacFLR8fNJ7z8818",
+      "content": "{\"ok\": true, \"course_id\": \"C005\", \"title\": \"数据库原理\", \"instructor\": \"陈老师\", \"fields\": [\"学号\", \"姓名\", \"期中\", \"期末\", \"总评\"]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_05_AO2iBi02uIgiBJjzBKZ84387",
+      "content": "{\"ok\": true, \"results\": [\"实训手册的数据样例表字段必须与实训环境数据表一致。若不一致，登记 issue_type=doc_field_mismatch 的工单，写明课程和缺失/多出的字段。\"]}"
+    },
+    {
+      "role": "assistant",
+      "content": "《机器学习基础》= C004，平台数据表字段确认为「学号、姓名、作业、项目、总评」。我先查该课程是否已有同类工单（7 天查重）。",
+      "tool_calls": [
+        {
+          "id": "call_00_vcHL5NPIumqO7n8WgSSN1533",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C004\", \"status\": \"open\"}"
+          }
+        },
+        {
+          "id": "call_01_CMCCZl3x9JVG9B0Sm7C00943",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C004\", \"status\": \"reopened\"}"
+          }
+        },
+        {
+          "id": "call_02_TMCP9twVU2bjBXzDxfWa1690",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C004\", \"status\": \"closed\"}"
+          }
+        }
+      ],
+      "reasoning_content": "Course is C004. Fields match what user described. Need to check for existing tickets within 7 days (duplicate). Rule 4: same course same problem within 7 days → check tickets first, then reopened.\n\nList tickets for C004, all statuses."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_vcHL5NPIumqO7n8WgSSN1533",
+      "content": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1004\", \"course_id\": \"C004\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_01_CMCCZl3x9JVG9B0Sm7C00943",
+      "content": "{\"ok\": true, \"tickets\": []}"
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_02_TMCP9twVU2bjBXzDxfWa1690",
+      "content": "{\"ok\": true, \"tickets\": []}"
+    },
+    {
+      "role": "assistant",
+      "content": "C004 仅有一条 env_dependency 工单，无同类字段不一致工单，因此新建工单。",
+      "tool_calls": [
+        {
+          "id": "call_00_jfAH1HloHdyXD6yidyJ05446",
+          "type": "function",
+          "function": {
+            "name": "create_ticket",
+            "arguments": "{\"course_id\": \"C004\", \"issue_type\": \"doc_field_mismatch\", \"detail\": \"课程：C004《机器学习基础》。实训手册数据样例表字段为「学号、姓名、成绩」；平台实际数据表字段（get_course C004 返回）为「学号、姓名、作业、项目、总评」。差异：手册多出「成绩」，缺少「作业、项目、总评」，与知识库要求（手册样例字段须与实际数据表一致）不符，需修订手册样例表字段。\"}"
+          }
+        }
+      ],
+      "reasoning_content": "No existing doc_field_mismatch ticket for C004. So create new ticket.\n\nDetail should include evidence: course C004, manual sample fields 学号、姓名、成绩 vs platform 学号、姓名、作业、项目、总评. Missing fields: 作业、项目、总评; extra: 成绩."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_jfAH1HloHdyXD6yidyJ05446",
+      "content": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C004\", \"issue_type\": \"doc_field_mismatch\", \"status\": \"open\", \"detail\": \"课程：C004《机器学习基础》。实训手册数据样例表字段为「学号、姓名、成绩」；平台实际数据表字段（get_course C004 返回）为「学号、姓名、作业、项目、总评」。差异：手册多出「成绩」，缺少「作业、项目、总评」，与知识库要求（手册样例字段须与实际数据表一致）不符，需修订手册样例表字段。\"}}"
+    },
+    {
+      "role": "assistant",
+      "content": "已处理完毕。\n\n**结论**\n- 课程：《机器学习基础》= `C004`（平台字段经 get_course 核实为「学号、姓名、作业、项目、总评」）\n- 已登记工单：**T-2001**，`issue_type=doc_field_mismatch`，状态 open\n- 差异明细：手册样例表多出「成绩」；缺少「作业、项目、总评」\n\n**依据**\n- 知识库规则：实训手册数据样例表字段必须与实训环境数据表一致，不一致时登记 `doc_field_mismatch` 工单并写明缺失/多出字段\n- 查重结果：C004 原有工单仅 T-1004（env_dependency，实验环境缺依赖，open），无同类字段问题工单，故新建\n\n**建议**\n- 手册修订建议直接对齐平台实际字段：学号、姓名、作业、项目、总评\n- 另：T-1004（C004 实验环境缺依赖）仍为 open，如需同步处理可告知具体报错信息，我会检索知识库后给出精确安装命令"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "get_course",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C001\", \"title\": \"大数据导论\", \"instructor\": \"张老师\", \"fields\": [\"学号\", \"姓名\", \"平时成绩\", \"期末成绩\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "get_course",
+      "args": {
+        "course_id": "C002"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C002\", \"title\": \"某高校校情管理分析案例\", \"instructor\": \"李老师\", \"fields\": [\"学号\", \"姓名\", \"专业\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "get_course",
+      "args": {
+        "course_id": "C003"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C003\", \"title\": \"Python数据分析\", \"instructor\": \"王老师\", \"fields\": [\"学号\", \"姓名\", \"实验1\", \"实验2\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "get_course",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C004\", \"title\": \"机器学习基础\", \"instructor\": \"赵老师\", \"fields\": [\"学号\", \"姓名\", \"作业\", \"项目\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "name": "get_course",
+      "args": {
+        "course_id": "C005"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C005\", \"title\": \"数据库原理\", \"instructor\": \"陈老师\", \"fields\": [\"学号\", \"姓名\", \"期中\", \"期末\", \"总评\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 6,
+      "name": "search_knowledge",
+      "args": {
+        "query": "实训手册字段与平台数据表不一致 doc_field_mismatch 处理"
+      },
+      "result": "{\"ok\": true, \"results\": [\"实训手册的数据样例表字段必须与实训环境数据表一致。若不一致，登记 issue_type=doc_field_mismatch 的工单，写明课程和缺失/多出的字段。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 7,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C004",
+        "status": "open"
+      },
+      "result": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1004\", \"course_id\": \"C004\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 8,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C004",
+        "status": "reopened"
+      },
+      "result": "{\"ok\": true, \"tickets\": []}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 9,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C004",
+        "status": "closed"
+      },
+      "result": "{\"ok\": true, \"tickets\": []}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 10,
+      "name": "create_ticket",
+      "args": {
+        "course_id": "C004",
+        "issue_type": "doc_field_mismatch",
+        "detail": "课程：C004《机器学习基础》。实训手册数据样例表字段为「学号、姓名、成绩」；平台实际数据表字段（get_course C004 返回）为「学号、姓名、作业、项目、总评」。差异：手册多出「成绩」，缺少「作业、项目、总评」，与知识库要求（手册样例字段须与实际数据表一致）不符，需修订手册样例表字段。"
+      },
+      "result": "{\"ok\": true, \"ticket_id\": \"T-2001\", \"ticket\": {\"id\": \"T-2001\", \"course_id\": \"C004\", \"issue_type\": \"doc_field_mismatch\", \"status\": \"open\", \"detail\": \"课程：C004《机器学习基础》。实训手册数据样例表字段为「学号、姓名、成绩」；平台实际数据表字段（get_course C004 返回）为「学号、姓名、作业、项目、总评」。差异：手册多出「成绩」，缺少「作业、项目、总评」，与知识库要求（手册样例字段须与实际数据表一致）不符，需修订手册样例表字段。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 1,
+    "created_tickets": [
+      {
+        "id": "T-2001",
+        "course_id": "C004",
+        "issue_type": "doc_field_mismatch",
+        "status": "open",
+        "detail": "课程：C004《机器学习基础》。实训手册数据样例表字段为「学号、姓名、成绩」；平台实际数据表字段（get_course C004 返回）为「学号、姓名、作业、项目、总评」。差异：手册多出「成绩」，缺少「作业、项目、总评」，与知识库要求（手册样例字段须与实际数据表一致）不符，需修订手册样例表字段。"
+      }
+    ],
+    "last_ticket": {
+      "id": "T-2001",
+      "course_id": "C004",
+      "issue_type": "doc_field_mismatch",
+      "status": "open",
+      "detail": "课程：C004《机器学习基础》。实训手册数据样例表字段为「学号、姓名、成绩」；平台实际数据表字段（get_course C004 返回）为「学号、姓名、作业、项目、总评」。差异：手册多出「成绩」，缺少「作业、项目、总评」，与知识库要求（手册样例字段须与实际数据表一致）不符，需修订手册样例表字段。"
+    },
+    "last_updated": null,
+    "replies": [],
+    "reply_text": "",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 4,
+  "prompt_tokens": 9249,
+  "completion_tokens": 1050,
+  "cost_cny": 0.026898,
+  "latency_ms": 7113,
+  "stopped_reason": "completed",
+  "output_text": "我先确认《机器学习基础》对应的课程 ID，并检索知识库中的处理规则。\n《机器学习基础》= C004，平台数据表字段确认为「学号、姓名、作业、项目、总评」。我先查该课程是否已有同类工单（7 天查重）。\nC004 仅有一条 env_dependency 工单，无同类字段不一致工单，因此新建工单。\n已处理完毕。\n\n**结论**\n- 课程：《机器学习基础》= `C004`（平台字段经 get_course 核实为「学号、姓名、作业、项目、总评」）\n- 已登记工单：**T-2001**，`issue_type=doc_field_mismatch`，状态 open\n- 差异明细：手册样例表多出「成绩」；缺少「作业、项目、总评」\n\n**依据**\n- 知识库规则：实训手册数据样例表字段必须与实训环境数据表一致，不一致时登记 `doc_field_mismatch` 工单并写明缺失/多出字段\n- 查重结果：C004 原有工单仅 T-1004（env_dependency，实验环境缺依赖，open），无同类字段问题工单，故新建\n\n**建议**\n- 手册修订建议直接对齐平台实际字段：学号、姓名、作业、项目、总评\n- 另：T-1004（C004 实验环境缺依赖）仍为 open，如需同步处理可告知具体报错信息，我会检索知识库后给出精确安装命令\n\n"
+}

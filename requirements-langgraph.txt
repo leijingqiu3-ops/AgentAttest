@@ -1,0 +1,4 @@
+-r requirements.txt
+langgraph>=1.2,<2
+langchain-openai>=1.7,<2
+openai>=2.45,<3

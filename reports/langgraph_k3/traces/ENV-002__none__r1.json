@@ -1,0 +1,69 @@
+{
+  "case_id": "ENV-002",
+  "fault_mode": "none",
+  "run_index": 1,
+  "messages": [
+    {
+      "role": "user",
+      "content": "学生做实验时报错 ModuleNotFoundError: No module named 'numpy'，怎么处理？"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_t4HBJQgLvKZausnTuSs02507",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"实验环境 ModuleNotFoundError 缺少依赖 numpy 处理\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}",
+      "tool_call_id": "call_00_t4HBJQgLvKZausnTuSs02507"
+    },
+    {
+      "role": "assistant",
+      "content": "处理方式如下：\n\n- **报错包名**：numpy\n- **在实验环境中执行**：`pip install numpy`\n\n如果安装后仍报错，请确认终端是否是实验环境对应的 Python 环境（必要时使用 `python -m pip install numpy`）。\n\n如需登记工单（例如实验镜像本身缺少依赖，需平台补齐），请告诉我**课程 ID**，我会按 `env_dependency` 类型登记。"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "search_knowledge",
+      "args": {
+        "query": "实验环境 ModuleNotFoundError 缺少依赖 numpy 处理"
+      },
+      "result": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 0,
+    "created_tickets": [],
+    "last_ticket": null,
+    "last_updated": null,
+    "replies": [],
+    "reply_text": "",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 2,
+  "prompt_tokens": 2864,
+  "completion_tokens": 320,
+  "cost_cny": 0.008288,
+  "latency_ms": 3609,
+  "stopped_reason": "completed",
+  "output_text": "处理方式如下：\n\n- **报错包名**：numpy\n- **在实验环境中执行**：`pip install numpy`\n\n如果安装后仍报错，请确认终端是否是实验环境对应的 Python 环境（必要时使用 `python -m pip install numpy`）。\n\n如需登记工单（例如实验镜像本身缺少依赖，需平台补齐），请告诉我**课程 ID**，我会按 `env_dependency` 类型登记。\n",
+  "fault_injected": false,
+  "fault_notes": []
+}

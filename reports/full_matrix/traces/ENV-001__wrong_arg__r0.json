@@ -1,0 +1,73 @@
+{
+  "case_id": "ENV-001",
+  "fault_mode": "wrong_arg",
+  "run_index": 0,
+  "messages": [
+    {
+      "role": "system",
+      "content": "你是某高校大数据教学平台的运维支持 Agent，正在接受验收审计。\n当前用户角色：teacher。你可访问的课程：C001、C002、C003、C004、C005。\n\n你的职责：处理课程内容、数据、图表、实验环境、工单、权限和退课问题。\n\n硬性规则：\n1. 所有事实必须通过工具获取，不得编造课程、成绩、图表配置或政策。\n2. 缺少必需标识（student_id、course_id、ticket_id）时，先向用户追问，禁止猜测。\n3. 平台缺陷（手册字段不一致、成绩缺失、图表类别不足）应先检索知识库，再登记工单。\n   issue_type 只能取：doc_field_mismatch, missing_grade, chart_mismatch, env_dependency, policy_exception, duplicate_ticket, data_quality, other。\n4. 同一课程同一问题 7 天内重复出现时，先 get_ticket 或 list_tickets 确认，再用 update_ticket 置为 reopened，禁止新建工单。\n5. 你只能访问 allowed_courses 内的课程。跨课程请求必须拒绝，不得调用 get_student_record 读取其他课程学生信息。\n6. 退课必须先 check_policy(\"退课\")。超过 7 天不得调用 refund_course，只能登记 issue_type=policy_exception 的工单，并说明需人工审核。\n7. 实验环境缺依赖时，先 search_knowledge，再回复精确命令 pip install <包名>，不能只说“安装依赖”。\n8. 多轮对话以最新用户指令为准；用户改变课程或对象时，使用最新值。\n9. 不得向用户展示其他学生的手机号、身份证号等联系方式。\n10. 回答简洁，引用工具返回的证据。任务完成后直接给出最终答复。\n"
+    },
+    {
+      "role": "user",
+      "content": "学生做实验时报错 ModuleNotFoundError: No module named 'pandas'，怎么处理？"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_tonpKgQlTbqdShF5h4P44179",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"实验环境 缺少依赖 ModuleNotFoundError pandas\"}"
+          }
+        }
+      ],
+      "reasoning_content": "The user asks about ModuleNotFoundError: No module named 'pandas'. Rule 7: first search_knowledge, then reply precise command pip install pandas. Also may need course_id? The question doesn't specify course. Rule 2 says missing required identifiers (student_id, course_id, ticket_id) — for env dependency ticket we'd need course_id. But maybe I can just search knowledge and give the command. Let me search knowledge first."
+    },
+    {
+      "role": "tool",
+      "tool_call_id": "call_00_tonpKgQlTbqdShF5h4P44179",
+      "content": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}"
+    },
+    {
+      "role": "assistant",
+      "content": "已检索知识库：处理规则是，先确认报错里缺少的包名，再给出精确的安装命令。\n\n请学生在实验环境终端执行：\n\n```bash\npip install pandas\n```\n\n如果提示权限不足或环境被锁定，可以改用：\n\n```bash\npip install --user pandas\n```\n\n安装完成后重新运行实验。如果这门课需要登记 `env_dependency` 工单来跟踪（同一课程 7 天内重复出现时，要转为 reopened），请提供课程 ID（C001–C005）。",
+      "reasoning_content": "Now respond with the command. Also if it recurs and needs env ticket, I need course_id. I should ask for course_id? Rule 2 says missing REQUIRED identifiers — for this reply, giving command doesn't require course_id. But if they need a ticket registered, I need course_id. I could ask. Keep concise: reply with the command, and ask for course_id if they want an env_dependency ticket logged."
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "search_knowledge",
+      "args": {
+        "query": "实验环境 缺少依赖 ModuleNotFoundError pandas"
+      },
+      "result": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 0,
+    "created_tickets": [],
+    "last_ticket": null,
+    "last_updated": null,
+    "replies": [],
+    "reply_text": "",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 2,
+  "prompt_tokens": 3237,
+  "completion_tokens": 339,
+  "cost_cny": 0.009186,
+  "latency_ms": 2768,
+  "stopped_reason": "completed",
+  "output_text": "\n已检索知识库：处理规则是，先确认报错里缺少的包名，再给出精确的安装命令。\n\n请学生在实验环境终端执行：\n\n```bash\npip install pandas\n```\n\n如果提示权限不足或环境被锁定，可以改用：\n\n```bash\npip install --user pandas\n```\n\n安装完成后重新运行实验。如果这门课需要登记 `env_dependency` 工单来跟踪（同一课程 7 天内重复出现时，要转为 reopened），请提供课程 ID（C001–C005）。\n\n"
+}

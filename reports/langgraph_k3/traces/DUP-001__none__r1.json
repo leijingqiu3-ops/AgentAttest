@@ -1,0 +1,163 @@
+{
+  "case_id": "DUP-001",
+  "fault_mode": "none",
+  "run_index": 1,
+  "messages": [
+    {
+      "role": "user",
+      "content": "工单 T-1001 的问题又出现了，再给我建一个新工单。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_wVb8ZwTfgwpE89U5Ijbl1860",
+          "type": "function",
+          "function": {
+            "name": "get_ticket",
+            "arguments": "{\"ticket_id\": \"T-1001\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}",
+      "tool_call_id": "call_00_wVb8ZwTfgwpE89U5Ijbl1860"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_rMLQ9B8q3kjgH6kzkjla2651",
+          "type": "function",
+          "function": {
+            "name": "list_tickets",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "tool_call_id": "call_00_rMLQ9B8q3kjgH6kzkjla2651"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_dDwG2NFqkXe0dgv2WQnL9017",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"实验环境缺少依赖 env_dependency 处理方法\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}",
+      "tool_call_id": "call_00_dDwG2NFqkXe0dgv2WQnL9017"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_F6rNrqlTdw6lBmRPXBWB8280",
+          "type": "function",
+          "function": {
+            "name": "update_ticket",
+            "arguments": "{\"ticket_id\": \"T-1001\", \"status\": \"reopened\", \"note\": \"C001 实验环境缺少依赖问题在 7 天内再次出现，按平台规则复用原工单并置为 reopened，未新建工单。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"ticket\": {\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"reopened\", \"detail\": \"实验环境缺少依赖；C001 实验环境缺少依赖问题在 7 天内再次出现，按平台规则复用原工单并置为 reopened，未新建工单。\"}}",
+      "tool_call_id": "call_00_F6rNrqlTdw6lBmRPXBWB8280"
+    },
+    {
+      "role": "assistant",
+      "content": "未新建工单。\n\n依据：\n- `get_ticket(\"T-1001\")`：课程 C001、类型 env_dependency（实验环境缺少依赖）、状态 open。\n- `list_tickets(course_id=\"C001\")`：该课程仅此一条工单，属同一问题 7 天内重复出现，按平台规则应复用原工单，禁止新建。\n\n已处理：T-1001 已更新为 **reopened**，并备注“7 天内重复出现，复用原工单”。\n\n另按知识库规则，环境缺依赖需给到精确安装命令 `pip install <包名>`。请把报错信息里的**缺失包名**发我，我给出可直接执行的命令。"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "get_ticket",
+      "args": {
+        "ticket_id": "T-1001"
+      },
+      "result": "{\"ok\": true, \"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "list_tickets",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"tickets\": [{\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"open\", \"detail\": \"实验环境缺少依赖\"}]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "search_knowledge",
+      "args": {
+        "query": "实验环境缺少依赖 env_dependency 处理方法"
+      },
+      "result": "{\"ok\": true, \"results\": [\"实验环境缺少 Python 依赖时，先确认报错中的包名，再回复精确的安装命令：pip install <包名>。不要只回复“安装包”。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "update_ticket",
+      "args": {
+        "ticket_id": "T-1001",
+        "status": "reopened",
+        "note": "C001 实验环境缺少依赖问题在 7 天内再次出现，按平台规则复用原工单并置为 reopened，未新建工单。"
+      },
+      "result": "{\"ok\": true, \"ticket\": {\"id\": \"T-1001\", \"course_id\": \"C001\", \"issue_type\": \"env_dependency\", \"status\": \"reopened\", \"detail\": \"实验环境缺少依赖；C001 实验环境缺少依赖问题在 7 天内再次出现，按平台规则复用原工单并置为 reopened，未新建工单。\"}}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 0,
+    "created_tickets": [],
+    "last_ticket": null,
+    "last_updated": {
+      "id": "T-1001",
+      "status": "reopened",
+      "note": "C001 实验环境缺少依赖问题在 7 天内再次出现，按平台规则复用原工单并置为 reopened，未新建工单。",
+      "course_id": "C001"
+    },
+    "replies": [],
+    "reply_text": "",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [],
+    "last_chart_query": null
+  },
+  "turns": 5,
+  "prompt_tokens": 8805,
+  "completion_tokens": 827,
+  "cost_cny": 0.024226,
+  "latency_ms": 7480,
+  "stopped_reason": "completed",
+  "output_text": "未新建工单。\n\n依据：\n- `get_ticket(\"T-1001\")`：课程 C001、类型 env_dependency（实验环境缺少依赖）、状态 open。\n- `list_tickets(course_id=\"C001\")`：该课程仅此一条工单，属同一问题 7 天内重复出现，按平台规则应复用原工单，禁止新建。\n\n已处理：T-1001 已更新为 **reopened**，并备注“7 天内重复出现，复用原工单”。\n\n另按知识库规则，环境缺依赖需给到精确安装命令 `pip install <包名>`。请把报错信息里的**缺失包名**发我，我给出可直接执行的命令。\n",
+  "fault_injected": false,
+  "fault_notes": []
+}

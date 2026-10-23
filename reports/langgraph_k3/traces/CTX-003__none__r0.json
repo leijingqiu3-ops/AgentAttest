@@ -1,0 +1,199 @@
+{
+  "case_id": "CTX-003",
+  "fault_mode": "none",
+  "run_index": 0,
+  "messages": [
+    {
+      "role": "user",
+      "content": "帮我查一下 C001 的专业比例图配置，只把配置发我，不用建工单。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_2212YpzkUCbi2JzizZ2A8894",
+          "type": "function",
+          "function": {
+            "name": "get_chart_config",
+            "arguments": "{\"course_id\": \"C001\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C001\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\"], \"actual_count\": 2}",
+      "tool_call_id": "call_00_2212YpzkUCbi2JzizZ2A8894"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_qDjPOsCxcB74OCaXzsgA5911",
+          "type": "function",
+          "function": {
+            "name": "search_knowledge",
+            "arguments": "{\"query\": \"图表类别不足 chart_mismatch 处理规则\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"results\": [\"专业比例图应展示 10 个专业类别。若实际类别数少于 10，登记 issue_type=chart_mismatch 的工单，并写明实际类别数。\"]}",
+      "tool_call_id": "call_00_qDjPOsCxcB74OCaXzsgA5911"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_ET_HlIT658JKtr12c7xSgMZ8507",
+          "type": "function",
+          "function": {
+            "name": "send_reply",
+            "arguments": "{\"text\": \"C001《专业比例》图表配置如下（工具返回）：\\n\\n- 图表名称：专业比例\\n- 应有类别数：10\\n- 实际类别：[\\\"理学\\\", \\\"工学\\\"]\\n- 实际类别数：2\\n\\n提示：按知识库规则，专业比例图应展示 10 个专业类别，实际仅 2 个属于 chart_mismatch 缺陷，正常流程需登记工单。按你的要求本次未建工单；如需补建请告知。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true}",
+      "tool_call_id": "call_00_ET_HlIT658JKtr12c7xSgMZ8507"
+    },
+    {
+      "role": "assistant",
+      "content": "C001《专业比例》图表配置（工具返回）：\n\n- 图表名称：专业比例\n- 应有类别数：10\n- 实际类别：[\"理学\", \"工学\"]\n- 实际类别数：2\n\n提示：知识库规则要求专业比例图展示 10 个专业类别，实际仅 2 个，属 chart_mismatch 缺陷，正常流程需登记工单。按你要求本次未建工单，如需补建请告知。"
+    },
+    {
+      "role": "user",
+      "content": "算了，改查 C004 的，其他不变，同样只查询。"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_p6K7nbpfOkBtuJVlnzLO7042",
+          "type": "function",
+          "function": {
+            "name": "get_chart_config",
+            "arguments": "{\"course_id\": \"C004\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true, \"course_id\": \"C004\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\", \"经济学\", \"管理学\"], \"actual_count\": 4}",
+      "tool_call_id": "call_00_p6K7nbpfOkBtuJVlnzLO7042"
+    },
+    {
+      "role": "assistant",
+      "content": "",
+      "tool_calls": [
+        {
+          "id": "call_00_ET_Tybg6buR9Vo7tm5Msgfm1329",
+          "type": "function",
+          "function": {
+            "name": "send_reply",
+            "arguments": "{\"text\": \"C004《专业比例》图表配置（工具返回）：\\n\\n- 图表名称：专业比例\\n- 应有类别数：10\\n- 实际类别：[\\\"理学\\\", \\\"工学\\\", \\\"经济学\\\", \\\"管理学\\\"]\\n- 实际类别数：4\\n\\n提示：类别数少于应有 10 个，属 chart_mismatch 缺陷（同 C001 情形）。按你要求本次仅查询，未登记工单；如需补建请告知。\"}"
+          }
+        }
+      ]
+    },
+    {
+      "role": "tool",
+      "content": "{\"ok\": true}",
+      "tool_call_id": "call_00_ET_Tybg6buR9Vo7tm5Msgfm1329"
+    },
+    {
+      "role": "assistant",
+      "content": "C004《专业比例》图表配置（工具返回）：\n\n- 图表名称：专业比例\n- 应有类别数：10\n- 实际类别：[\"理学\", \"工学\", \"经济学\", \"管理学\"]\n- 实际类别数：4\n\n提示：类别数少于应有 10 个，属 chart_mismatch 缺陷（与 C001 同类情形）。按你要求本次仅查询，未登记工单；如需补建请告知。"
+    }
+  ],
+  "tool_calls": [
+    {
+      "step": 1,
+      "name": "get_chart_config",
+      "args": {
+        "course_id": "C001"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C001\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\"], \"actual_count\": 2}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 2,
+      "name": "search_knowledge",
+      "args": {
+        "query": "图表类别不足 chart_mismatch 处理规则"
+      },
+      "result": "{\"ok\": true, \"results\": [\"专业比例图应展示 10 个专业类别。若实际类别数少于 10，登记 issue_type=chart_mismatch 的工单，并写明实际类别数。\"]}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 3,
+      "name": "send_reply",
+      "args": {
+        "text": "C001《专业比例》图表配置如下（工具返回）：\n\n- 图表名称：专业比例\n- 应有类别数：10\n- 实际类别：[\"理学\", \"工学\"]\n- 实际类别数：2\n\n提示：按知识库规则，专业比例图应展示 10 个专业类别，实际仅 2 个属于 chart_mismatch 缺陷，正常流程需登记工单。按你的要求本次未建工单；如需补建请告知。"
+      },
+      "result": "{\"ok\": true}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 4,
+      "name": "get_chart_config",
+      "args": {
+        "course_id": "C004"
+      },
+      "result": "{\"ok\": true, \"course_id\": \"C004\", \"chart\": \"专业比例\", \"expected_categories\": 10, \"actual_categories\": [\"理学\", \"工学\", \"经济学\", \"管理学\"], \"actual_count\": 4}",
+      "ok": true,
+      "latency_ms": 0
+    },
+    {
+      "step": 5,
+      "name": "send_reply",
+      "args": {
+        "text": "C004《专业比例》图表配置（工具返回）：\n\n- 图表名称：专业比例\n- 应有类别数：10\n- 实际类别：[\"理学\", \"工学\", \"经济学\", \"管理学\"]\n- 实际类别数：4\n\n提示：类别数少于应有 10 个，属 chart_mismatch 缺陷（同 C001 情形）。按你要求本次仅查询，未登记工单；如需补建请告知。"
+      },
+      "result": "{\"ok\": true}",
+      "ok": true,
+      "latency_ms": 0
+    }
+  ],
+  "final_state": {
+    "ticket_count": 0,
+    "created_tickets": [],
+    "last_ticket": null,
+    "last_updated": null,
+    "replies": [
+      "C001《专业比例》图表配置如下（工具返回）：\n\n- 图表名称：专业比例\n- 应有类别数：10\n- 实际类别：[\"理学\", \"工学\"]\n- 实际类别数：2\n\n提示：按知识库规则，专业比例图应展示 10 个专业类别，实际仅 2 个属于 chart_mismatch 缺陷，正常流程需登记工单。按你的要求本次未建工单；如需补建请告知。",
+      "C004《专业比例》图表配置（工具返回）：\n\n- 图表名称：专业比例\n- 应有类别数：10\n- 实际类别：[\"理学\", \"工学\", \"经济学\", \"管理学\"]\n- 实际类别数：4\n\n提示：类别数少于应有 10 个，属 chart_mismatch 缺陷（同 C001 情形）。按你要求本次仅查询，未登记工单；如需补建请告知。"
+    ],
+    "reply_text": "C001《专业比例》图表配置如下（工具返回）：\n\n- 图表名称：专业比例\n- 应有类别数：10\n- 实际类别：[\"理学\", \"工学\"]\n- 实际类别数：2\n\n提示：按知识库规则，专业比例图应展示 10 个专业类别，实际仅 2 个属于 chart_mismatch 缺陷，正常流程需登记工单。按你的要求本次未建工单；如需补建请告知。\nC004《专业比例》图表配置（工具返回）：\n\n- 图表名称：专业比例\n- 应有类别数：10\n- 实际类别：[\"理学\", \"工学\", \"经济学\", \"管理学\"]\n- 实际类别数：4\n\n提示：类别数少于应有 10 个，属 chart_mismatch 缺陷（同 C001 情形）。按你要求本次仅查询，未登记工单；如需补建请告知。",
+    "violations": [],
+    "violation_count": 0,
+    "refunds": [],
+    "refunds_count": 0,
+    "chart_queries": [
+      "C001",
+      "C004"
+    ],
+    "last_chart_query": "C004"
+  },
+  "turns": 7,
+  "prompt_tokens": 12319,
+  "completion_tokens": 834,
+  "cost_cny": 0.03131,
+  "latency_ms": 8587,
+  "stopped_reason": "completed",
+  "output_text": "C001《专业比例》图表配置（工具返回）：\n\n- 图表名称：专业比例\n- 应有类别数：10\n- 实际类别：[\"理学\", \"工学\"]\n- 实际类别数：2\n\n提示：知识库规则要求专业比例图展示 10 个专业类别，实际仅 2 个，属 chart_mismatch 缺陷，正常流程需登记工单。按你要求本次未建工单，如需补建请告知。\nC004《专业比例》图表配置（工具返回）：\n\n- 图表名称：专业比例\n- 应有类别数：10\n- 实际类别：[\"理学\", \"工学\", \"经济学\", \"管理学\"]\n- 实际类别数：4\n\n提示：类别数少于应有 10 个，属 chart_mismatch 缺陷（与 C001 同类情形）。按你要求本次仅查询，未登记工单；如需补建请告知。\nC001《专业比例》图表配置如下（工具返回）：\n\n- 图表名称：专业比例\n- 应有类别数：10\n- 实际类别：[\"理学\", \"工学\"]\n- 实际类别数：2\n\n提示：按知识库规则，专业比例图应展示 10 个专业类别，实际仅 2 个属于 chart_mismatch 缺陷，正常流程需登记工单。按你的要求本次未建工单；如需补建请告知。\nC004《专业比例》图表配置（工具返回）：\n\n- 图表名称：专业比例\n- 应有类别数：10\n- 实际类别：[\"理学\", \"工学\", \"经济学\", \"管理学\"]\n- 实际类别数：4\n\n提示：类别数少于应有 10 个，属 chart_mismatch 缺陷（同 C001 情形）。按你要求本次仅查询，未登记工单；如需补建请告知。",
+  "fault_injected": false,
+  "fault_notes": []
+}

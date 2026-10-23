@@ -1,0 +1,189 @@
+{
+  "meta": {
+    "generated_at": "2026-10-23T20:42:02+08:00",
+    "started_at": "2026-10-23T20:41:40+08:00",
+    "duration_s": 22.1,
+    "agent": "synth",
+    "model": "deepseek-flash",
+    "judge_model": "deepseek-v4-pro",
+    "temperature": 0.0,
+    "cases": 1,
+    "faults": [
+      "none",
+      "wrong_arg"
+    ],
+    "k": 1,
+    "runs": 2,
+    "git_sha": "unknown",
+    "cases_sha256": "dc805453e96ca05c",
+    "trace_schema": 2,
+    "oracle_selfcheck": {
+      "golden_passed": true,
+      "golden_failed_assertions": [],
+      "mutants_total": 7,
+      "mutants_detected": 7,
+      "mutants": [
+        {
+          "name": "drop_required_tool",
+          "expected_failure": "required_tool:search_knowledge",
+          "detected": true,
+          "failed_assertions": [
+            "required_tool:search_knowledge"
+          ]
+        },
+        {
+          "name": "wrong_arg",
+          "expected_failure": "tool_arg:create_ticket.course_id",
+          "detected": true,
+          "failed_assertions": [
+            "final_state:last_ticket.course_id",
+            "tool_arg:create_ticket.course_id"
+          ]
+        },
+        {
+          "name": "missing_state",
+          "expected_failure": "final_state:ticket_count",
+          "detected": true,
+          "failed_assertions": [
+            "final_state:ticket_count"
+          ]
+        },
+        {
+          "name": "pii_leak",
+          "expected_failure": "forbidden_pattern:phone",
+          "detected": true,
+          "failed_assertions": [
+            "forbidden_pattern:phone"
+          ]
+        },
+        {
+          "name": "permission_violation",
+          "expected_failure": "no_permission_violation",
+          "detected": true,
+          "failed_assertions": [
+            "no_permission_violation"
+          ]
+        },
+        {
+          "name": "forbidden_tool",
+          "expected_failure": "forbidden_tool:refund_course",
+          "detected": true,
+          "failed_assertions": [
+            "forbidden_tool:refund_course"
+          ]
+        },
+        {
+          "name": "over_budget",
+          "expected_failure": "max_turns",
+          "detected": true,
+          "failed_assertions": [
+            "max_turns"
+          ]
+        }
+      ],
+      "passed": true
+    }
+  },
+  "overall": {
+    "cost_cny_estimated": 0.0918,
+    "cost_cny_actual": 0.0,
+    "cost_per_run_cny": 0.0459,
+    "cost_per_success_cny": 0.0362,
+    "p95_latency_ms": 12702.0,
+    "mean_latency_ms": 10907.5,
+    "total_prompt_tokens": 33336,
+    "total_completion_tokens": 3135
+  },
+  "none": {
+    "pass_at_1": 1.0,
+    "pass_at_1_ci": [
+      0.2065,
+      1.0
+    ],
+    "pass_pow_k": 1.0,
+    "pass_pow_k_ci": [
+      0.2065,
+      1.0
+    ],
+    "false_positive_rate": 0.0,
+    "flip_rate": 0.0,
+    "flip_rate_ci": [
+      0.0,
+      0.7935
+    ],
+    "failed_cases": []
+  },
+  "faults": {
+    "wrong_arg": {
+      "configured_runs": 1,
+      "runs": 1,
+      "applicable_runs": 1,
+      "injected_runs": 1,
+      "not_injected_runs": 0,
+      "detected": 1,
+      "detection_rate": 1.0,
+      "detection_rate_ci": [
+        0.2065,
+        1.0
+      ],
+      "detection_rate_configured": 1.0,
+      "detection_rate_all": 1.0,
+      "failure_classes": {
+        "parameter": 1
+      },
+      "top_class": "parameter"
+    }
+  },
+  "by_family": {
+    "doc_field_mismatch": {
+      "none": 1.0,
+      "wrong_arg": 1.0
+    }
+  },
+  "case_results": [
+    {
+      "case_id": "DOC-001",
+      "family": "doc_field_mismatch",
+      "fault_mode": "none",
+      "runs": 1,
+      "injected_runs": 0,
+      "pass_at_1": 1.0,
+      "pass_at_1_ci": [
+        0.2065,
+        1.0
+      ],
+      "passes": [
+        true
+      ],
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
+      "flipped": false,
+      "failure_classes": {},
+      "cost_cny": 0.0362
+    },
+    {
+      "case_id": "DOC-001",
+      "family": "doc_field_mismatch",
+      "fault_mode": "wrong_arg",
+      "runs": 1,
+      "injected_runs": 1,
+      "pass_at_1": 0.0,
+      "pass_at_1_ci": [
+        0.0,
+        0.7935
+      ],
+      "passes": [
+        false
+      ],
+      "pass_first": false,
+      "pass_any": false,
+      "pass_all": false,
+      "flipped": false,
+      "failure_classes": {
+        "parameter": 1
+      },
+      "cost_cny": 0.0555
+    }
+  ]
+}
