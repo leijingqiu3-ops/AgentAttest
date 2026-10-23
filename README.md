@@ -4,7 +4,7 @@
 
 **给 LLM Agent 做上线前验收：判定可复现，失败可归因，结论有证据。**
 
-`Python 3.11` · `40 条用例` · `7 种故障注入` · `四层确定性断言` · `pass@k / pass^k`
+`Python 3.11` · `40 条用例` · `7 种故障注入` · `四层确定性断言` · `pass@k / pass^k` · `MIT License`
 
 </div>
 
@@ -325,3 +325,7 @@ outputs/         演示视频与截图
 AgentAttest 是一个面向 LLM Agent 的验收/审计工具，关注三件事：**判定可复现、失败可归因、结论有证据**。
 
 如果你也在做 Agent 上线，欢迎用这 40 条用例跑一遍你的 Agent，或者提 issue 聊聊你遇到过的失败模式。
+
+## License
+
+MIT © 2026 Leijing Qiu
