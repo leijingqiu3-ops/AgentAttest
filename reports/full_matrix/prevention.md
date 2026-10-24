@@ -12,6 +12,15 @@
 | `skip_clarify` | 40 | 5 | 4 | 0 | 1 |
 | `wrong_arg` | 40 | 25 | 25 | 0 | 0 |
 
+## 规则消融
+
+| 规则集 | 拦下失败 | 本层新增 | 误伤 |
+|---|---:|---:|---:|
+| `schema_only` | 0 | 0 | 0 |
+| `plus_role_scope` | 5 | 5 | 0 |
+| `plus_policy` | 10 | 5 | 0 |
+| `full` | 39 | 29 | 0 |
+
 命中规则：{"task_contract:course_id": 20, "task_contract:ticket_id": 5, "course_scope": 5, "refund_window": 5, "task_contract:student_id": 4}
 
 > A block means the tool call never executed. The agent's behaviour after a denial is unknown, so this is an upper bound on prevention, not a success rate. Outbound hits are post-hoc: they only become preventive if replies are routed through send_reply, which the synthetic target does not always do.

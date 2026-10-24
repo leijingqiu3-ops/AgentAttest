@@ -8,7 +8,27 @@ from typing import Any
 
 from .dlp import screen_outbound
 from .engine import AttestEngine
-from .models import AttestContext
+from .models import AttestContext, Decision
+
+# Cumulative rule sets for the ablation. Each step adds one layer; the marginal
+# column in the report is what that layer buys on its own.
+RULESETS: dict[str, tuple[str, ...]] = {
+    "schema_only": ("tool_allowlist", "required_args", "arg_format", "issue_type_enum", "status_enum"),
+    "plus_role_scope": (
+        "tool_allowlist", "required_args", "arg_format", "issue_type_enum", "status_enum", "course_scope",
+    ),
+    "plus_policy": (
+        "tool_allowlist", "required_args", "arg_format", "issue_type_enum", "status_enum",
+        "course_scope", "refund_window", "untrusted_instruction",
+    ),
+    "full": (),  # empty tuple means every rule is on
+}
+
+
+def _enabled(rule_id: str, prefixes: tuple[str, ...]) -> bool:
+    if not prefixes:
+        return True
+    return any(rule_id == prefix or rule_id.startswith(prefix + ":") for prefix in prefixes)
 
 
 @dataclass
@@ -21,6 +41,7 @@ class TraceReplay:
     first_block: dict[str, Any] | None = None
     outbound: list[str] = field(default_factory=list)
     failure_class: str | None = None
+    decisions: list[tuple[dict[str, Any], Decision]] = field(default_factory=list)
 
     @property
     def prevented_pre(self) -> bool:
@@ -33,6 +54,22 @@ class TraceReplay:
     @property
     def prevented(self) -> bool:
         return self.prevented_pre or self.prevented_outbound
+
+    def block_under(self, prefixes: tuple[str, ...]) -> dict[str, Any] | None:
+        for call, decision in self.decisions:
+            blocked = [
+                hit for hit in decision.rule_hits
+                if not hit.ok and _enabled(hit.rule_id, prefixes)
+            ]
+            if blocked:
+                return {
+                    "step": call.get("step"),
+                    "tool": call["name"],
+                    "args": call.get("args") or {},
+                    "blocked_by": [hit.rule_id for hit in blocked],
+                    "reasons": [hit.reason for hit in blocked],
+                }
+        return None
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -96,14 +133,8 @@ def replay_run(run_dir: str | Path, suite: str | Path) -> dict[str, Any]:
         for call in trace.get("tool_calls") or ():
             item.calls += 1
             decision = engine.check(call["name"], call.get("args") or {}, ctx)
-            if not decision.allow and item.first_block is None:
-                item.first_block = {
-                    "step": call.get("step"),
-                    "tool": call["name"],
-                    "args": call.get("args") or {},
-                    "blocked_by": decision.blocked_by,
-                    "reasons": decision.reasons,
-                }
+            item.decisions.append((call, decision))
+        item.first_block = item.block_under(())
         outbound = screen_outbound(trace.get("output_text") or "")
         if outbound.leaked:
             item.outbound = list(outbound.findings)
@@ -111,7 +142,6 @@ def replay_run(run_dir: str | Path, suite: str | Path) -> dict[str, Any]:
 
     by_mode: dict[str, Counter[str]] = defaultdict(Counter)
     blocked_by: Counter[str] = Counter()
-    prevented_preventable: Counter[str] = Counter()
     false_positives: list[dict[str, Any]] = []
     missed: list[dict[str, Any]] = []
 
@@ -134,8 +164,26 @@ def replay_run(run_dir: str | Path, suite: str | Path) -> dict[str, Any]:
             bucket["prevented"] += 1
         else:
             missed.append(item.to_dict())
-            if item.failure_class:
-                prevented_preventable[item.failure_class] += 1
+
+    ablation: dict[str, dict[str, Any]] = {}
+    previous = 0
+    for name, prefixes in RULESETS.items():
+        blocked_failed = 0
+        fp = 0
+        for item in results:
+            block = item.block_under(prefixes)
+            if block is None:
+                continue
+            if item.passed:
+                fp += 1
+            else:
+                blocked_failed += 1
+        ablation[name] = {
+            "blocked_failed": blocked_failed,
+            "marginal": blocked_failed - previous,
+            "false_positives": fp,
+        }
+        previous = blocked_failed
 
     total_failed = sum(b["failed"] for b in by_mode.values())
     total_prevented = sum(b["prevented"] for b in by_mode.values())
@@ -167,6 +215,7 @@ def replay_run(run_dir: str | Path, suite: str | Path) -> dict[str, Any]:
                 round(len(false_positives) / total_passed, 4) if total_passed else None
             ),
         },
+        "ablation": ablation,
         "by_mode": {
             mode: {
                 **{k: bucket[k] for k in ("runs", "passed", "failed", "prevented_pre",
@@ -198,6 +247,11 @@ def render_replay_markdown(data: dict[str, Any]) -> str:
         lines.append(
             f"| `{mode}` | {row['runs']} | {row['failed']} | {row['prevented_pre']} "
             f"| {row['prevented_outbound']} | {row['not_prevented']} |"
+        )
+    lines += ["", "## 规则消融", "", "| 规则集 | 拦下失败 | 本层新增 | 误伤 |", "|---|---:|---:|---:|"]
+    for name, row in data["ablation"].items():
+        lines.append(
+            f"| `{name}` | {row['blocked_failed']} | {row['marginal']} | {row['false_positives']} |"
         )
     lines += ["", f"命中规则：{json.dumps(data['blocked_by_rule'], ensure_ascii=False)}", ""]
     lines.append(f"> {data['caveat']}")

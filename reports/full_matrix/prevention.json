@@ -15,6 +15,28 @@
     "false_positives": 0,
     "false_positive_rate": 0.0
   },
+  "ablation": {
+    "schema_only": {
+      "blocked_failed": 0,
+      "marginal": 0,
+      "false_positives": 0
+    },
+    "plus_role_scope": {
+      "blocked_failed": 5,
+      "marginal": 5,
+      "false_positives": 0
+    },
+    "plus_policy": {
+      "blocked_failed": 10,
+      "marginal": 5,
+      "false_positives": 0
+    },
+    "full": {
+      "blocked_failed": 39,
+      "marginal": 29,
+      "false_positives": 0
+    }
+  },
   "by_mode": {
     "context_drop": {
       "runs": 40,
