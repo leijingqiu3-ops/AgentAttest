@@ -11,7 +11,8 @@ __pycache__/
 venv/
 
 # heavy / third-party
-work/
+work/*
+!work/build_dashboard.mjs
 datasets/
 literature/
 
@@ -28,3 +29,6 @@ inspect*.py
 *.log
 *.out
 *.toc
+
+# runtime demo tamper copy
+reports/runtime_demo/ledger_tampered.jsonl

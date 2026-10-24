@@ -69,7 +69,7 @@ python -c "import json; [print(m, [c['args'] for c in json.load(open(f'reports/d
 
 1. 第一节的 A/B 两个口径；
 2. 检测器灵敏度表：`early_stop` 配置 40、实际注入 36、检出 36；
-3. Oracle 自检 7/7；
+3. Oracle 自检 8/8（trace 变异体）+ 7/7（oracle 缺陷变异体）；
 4. 成本与 P95。
 
 口播：
@@ -93,7 +93,7 @@ python -c "import json; [print(n, json.load(open(p,encoding='utf-8'))['none']) f
 
 收尾：
 
-> 下一步是人工双标 30 条失败、算 Cohen's κ，以及把 oracle 的完成声明核验补上。
+> 下一步是人工双标 30 条失败、算 Cohen's κ，以及把 PII 做成全链路追踪。
 
 ---
 

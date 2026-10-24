@@ -131,6 +131,15 @@ def cmd_recompute(args: argparse.Namespace) -> None:
     print(json.dumps({"none": summary["none"], "faults": summary["faults"]}, ensure_ascii=False, indent=2))
 
 
+def cmd_manifest(args: argparse.Namespace) -> None:
+    from .manifest import verify_manifest, write_manifest
+
+    result = verify_manifest(args.run) if args.verify else write_manifest(args.run)
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    if args.verify and not result["ok"]:
+        raise SystemExit(1)
+
+
 def cmd_selfcheck(args: argparse.Namespace) -> None:
     from .selfcheck import run_selfcheck
 
@@ -174,6 +183,11 @@ def main(argv: list[str] | None = None) -> None:
 
     check = sub.add_parser("selfcheck", help="用 known-answer 与变异体验证 oracle 自身")
     check.set_defaults(func=cmd_selfcheck)
+
+    manifest = sub.add_parser("manifest", help="生成或校验运行目录的证据清单")
+    manifest.add_argument("--run", default=str(ROOT / "reports" / "latest"))
+    manifest.add_argument("--verify", action="store_true")
+    manifest.set_defaults(func=cmd_manifest)
 
     args = parser.parse_args(argv)
     args.func(args)

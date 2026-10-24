@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>AgentAttest runtime demo</title>
+<style>
+  :root { --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --green:#047857; --greenbg:#ecfdf5; --red:#b91c1c; --redbg:#fef2f2; --blue:#1d4ed8; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:#f3f4f6; font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif; color:var(--ink); }
+  .page { width:1040px; margin:36px auto; background:#fff; border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 18px 50px rgba(17,24,39,.10); }
+  header { padding:28px 32px 20px; border-bottom:1px solid var(--line); }
+  h1 { margin:0 0 6px; font-size:26px; letter-spacing:-.02em; }
+  .sub { margin:0; color:var(--muted); font-size:14px; }
+  .pill { display:inline-block; padding:3px 9px; border-radius:999px; font-size:12px; background:#eff6ff; color:var(--blue); margin-left:8px; vertical-align:2px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  th { text-align:left; padding:11px 16px; color:var(--muted); font-weight:600; background:#fafafa; border-bottom:1px solid var(--line); font-size:12px; letter-spacing:.04em; }
+  td { padding:12px 16px; border-bottom:1px solid #f0f1f3; vertical-align:top; }
+  tr:last-child td { border-bottom:none; }
+  .tag { display:inline-block; min-width:56px; text-align:center; padding:3px 8px; border-radius:6px; font-size:12px; font-weight:700; letter-spacing:.04em; }
+  .allow { color:var(--green); background:var(--greenbg); }
+  .block { color:var(--red); background:var(--redbg); }
+  code, .mono { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:12.5px; }
+  .rule { color:var(--red); }
+  .path { color:var(--muted); }
+  footer { padding:18px 32px 24px; background:#0b1220; color:#cbd5e1; font-size:13px; }
+  footer b { color:#fff; font-weight:600; }
+  .ok { color:#6ee7b7; } .bad { color:#fca5a5; }
+  .note { padding:14px 32px; color:var(--muted); font-size:12.5px; border-top:1px solid var(--line); }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>AgentAttest <span class="pill">runtime demo</span></h1>
+    <p class="sub">同一个确定性规则层：调用前拦截，调用后存证。下面 7 条来自 <span class="mono">examples/runtime_demo.py</span> 的真实输出。</p>
+  </header>
+  <table>
+    <thead><tr><th style="width:86px">决定</th><th style="width:190px">场景</th><th style="width:170px">工具</th><th>命中规则 / 结果</th></tr></thead>
+    <tbody>
+      <tr><td><span class="tag allow">ALLOW</span></td><td>正常登记工单</td><td class="mono">create_ticket</td><td>工单 T-2001 创建成功</td></tr>
+      <tr><td><span class="tag block">BLOCK</span></td><td>跨课程读成绩</td><td class="mono">get_student_record</td><td class="rule">course_scope · C002 不在 allowed_courses</td></tr>
+      <tr><td><span class="tag block">BLOCK</span></td><td>未知工具（删除）</td><td class="mono">delete_all_files</td><td class="rule">tool_allowlist · 工具不在白名单，执行函数未被调用</td></tr>
+      <tr><td><span class="tag block">BLOCK</span></td><td>非法 issue_type</td><td class="mono">create_ticket</td><td class="rule">issue_type_enum · hack 不在允许值</td></tr>
+      <tr><td><span class="tag block">BLOCK</span></td><td>注入指令后退课</td><td class="mono">refund_course</td><td class="rule">refund_window + untrusted_instruction</td></tr>
+      <tr><td><span class="tag allow">ALLOW</span></td><td>超期退课（有审批）</td><td class="mono">refund_course</td><td>人工审批令牌 MGR-2026-01 通过</td></tr>
+      <tr><td><span class="tag allow">ALLOW</span></td><td>查成绩（手机号脱敏）</td><td class="mono">get_student_record</td><td><span class="mono">phone: 138****8001</span> · 原始值不返回给 Planner</td></tr>
+    </tbody>
+  </table>
+  <div class="note">拦截发生在工具执行之前：第 3 行的 <span class="mono">execute()</span> 被替换成会抛错的函数，实际没有被调用。</div>
+  <footer>
+    <b>ledger.jsonl</b> &nbsp; <span class="ok">ok=true</span> &nbsp; entries=7 &nbsp; integrity=hash_chain_only<br>
+    <b>tampered copy</b> &nbsp; <span class="bad">ok=false</span> &nbsp; line 1: hash mismatch &nbsp; · &nbsp; 改一行就会被哈希链抓住
+  </footer>
+</div>
+</body>
+</html>

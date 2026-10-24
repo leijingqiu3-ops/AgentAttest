@@ -66,6 +66,17 @@ def render_markdown(summary: dict[str, Any], verdicts: list[Verdict], out_path: 
     )
     lines.append("")
 
+    manifest_path = Path(out_path).parent / "manifest.json"
+    if manifest_path.exists():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            lines.append(
+                f"- 证据清单：`manifest.json` root `{manifest.get('root', 'n/a')[:16]}`"
+                f"（{len(manifest.get('files', {}))} 个文件）"
+            )
+        except Exception:
+            pass
+
     lines.append("## 一、结论与口径")
     lines.append("")
     lines.append("本报告把两件事分开，不合并成一个数：")
@@ -99,6 +110,15 @@ def render_markdown(summary: dict[str, Any], verdicts: list[Verdict], out_path: 
     if overall.get("cost_cny_actual") is not None:
         per_run = overall["cost_cny_actual"] / meta["runs"] if meta["runs"] else 0
         lines.append(f"- 本次实际账户扣费 `{overall['cost_cny_actual']:.4f}` 元，折合 `{per_run:.4f}` 元/次。")
+    calibration = summary.get("cost_calibration") or {}
+    if calibration.get("ratio") is not None:
+        verdict = "可用于预算判定" if calibration.get("status") == "ok" else "不可用于判定，预算断言已降级为 advisory"
+        lines.append(
+            f"- 成本表校准：估算 `{calibration['estimated_cny']:.4f}` 元 / 实际 `{calibration['actual_cny']:.4f}` 元，"
+            f"比值 `{calibration['ratio']:.3f}`（容差 {calibration['tolerance'][0]}–{calibration['tolerance'][1]}），{verdict}。"
+        )
+    else:
+        lines.append("- 成本表校准：本次没有拿到账户扣费，无法校准时预算断言按 advisory 处理。")
     selfcheck = meta.get("oracle_selfcheck")
     if selfcheck:
         lines.append(
@@ -159,7 +179,88 @@ def render_markdown(summary: dict[str, Any], verdicts: list[Verdict], out_path: 
     lines.append("正常模式列是**通过率**，故障模式列是**注入后的检出率**。")
     lines.append("")
 
-    lines.append("## 五、正常模式下的误报")
+    lines.append("## 五、审计器自身的测量质量")
+    lines.append("")
+    calibration = summary.get("cost_calibration") or {}
+    lines.append("### 5.1 成本表校准")
+    lines.append("")
+    lines.append("预算断言只有在成本表被账单校准时才允许参与通过/失败；否则只作为告警。")
+    lines.append("")
+    lines.append("| 估算成本 | 实际扣费 | 实际/估算 | 容差 | 状态 | 预算断言 |")
+    lines.append("|---:|---:|---:|---|---|---|")
+    lines.append(
+        f"| {calibration.get('estimated_cny', 0):.4f} | "
+        f"{calibration.get('actual_cny') if calibration.get('actual_cny') is not None else 'n/a'} | "
+        f"{calibration.get('ratio') if calibration.get('ratio') is not None else 'n/a'} | "
+        f"{calibration.get('tolerance', [0.75, 1.33])[0]}–{calibration.get('tolerance', [0.75, 1.33])[1]} | "
+        f"{_cell(calibration.get('status', 'unknown'))} | {_cell(calibration.get('cost_severity', 'blocking'))} |"
+    )
+    lines.append("")
+    lines.append("状态为 `miscalibrated` 时，说明 token 估算与账单不成比例；此时不能拿估算值去判预算超限。")
+    lines.append("")
+
+    consistency = summary.get("root_cause_consistency") or {}
+    lines.append("### 5.2 归因一致性（对照注入目录）")
+    lines.append("")
+    lines.append("| 故障模式 | 应归因 | 注入 run | 失败 run | 一致 | 一致率（95% CI） | 实际分布 |")
+    lines.append("|---|---|---:|---:|---:|---|---|")
+    for fault, item in (consistency.get("by_mode") or {}).items():
+        lines.append(
+            f"| `{fault}` | `{item['expected']}` | {item['injected_runs']} | {item['failed_runs']} | "
+            f"{item['matches']} | {pct_ci(item['consistency'], item.get('consistency_ci'))} | "
+            f"{_cell(json.dumps(item.get('observed_classes', {}), ensure_ascii=False))} |"
+        )
+    if consistency.get("by_mode"):
+        lines.append(
+            f"| **合计** | - | - | {consistency.get('failures', 0)} | {consistency.get('matches', 0)} | "
+            f"{pct_ci(consistency.get('overall_consistency', 0), consistency.get('overall_ci'))} | - |"
+        )
+    lines.append("")
+    if consistency.get("caveat"):
+        lines.append(f"口径：{consistency['caveat']} 这是上限估计，不是独立人工验证。")
+        lines.append("")
+
+    assertion_stats = summary.get("assertions") or {}
+    lines.append("### 5.3 断言级通过率")
+    lines.append("")
+    if assertion_stats:
+        lines.append(
+            f"- Blocking 断言：`{assertion_stats.get('blocking_passed', 0)}/{assertion_stats.get('blocking_total', 0)}` "
+            f"通过（`{pct(assertion_stats.get('blocking_pass_rate'))}`）。"
+        )
+        lines.append(f"- Advisory 断言失败：`{assertion_stats.get('advisory_failures', 0)}` 次（不计入 verdict）。")
+        lines.append("")
+        lines.append("| 断言类型 | 条数 | 通过率 |")
+        lines.append("|---|---:|---:|")
+        for name, values in (assertion_stats.get("by_kind") or {}).items():
+            lines.append(f"| `{name}` | {values['n']} | {pct(values['pass_rate'])} |")
+    lines.append("")
+
+    integrity = (meta.get("oracle_selfcheck") or {}).get("oracle_integrity") or {}
+    lines.append("### 5.4 Oracle 完整性（oracle 自己也被测）")
+    lines.append("")
+    if integrity:
+        lines.append(f"- 检查项：`{integrity.get('checks_passed')}/{integrity.get('checks_total')}` 通过；变异体：`{integrity.get('mutants_detected')}/{integrity.get('mutants_total')}` 被抓住。")
+        lines.append("")
+        lines.append("| 检查 | 结果 | 说明 |")
+        lines.append("|---|---|---|")
+        for name, item in (integrity.get("checks") or {}).items():
+            lines.append(f"| `{name}` | {'通过' if item['passed'] else '失败'} | {_cell(item['detail'])} |")
+        lines.append("")
+        lines.append("| 注入的 oracle 缺陷 | 是否被抓住 | 命中的检查 |")
+        lines.append("|---|---|---|")
+        for item in integrity.get("mutants", []):
+            lines.append(
+                f"| {_cell(item['paper_class'])} | {'是' if item['detected'] else '否'} | "
+                f"{_cell(', '.join(item['failed_checks']) or '-')} |"
+            )
+        lines.append("")
+        lines.append(f"依据：{integrity.get('paper', '')}。{integrity.get('caveat', '')}")
+    else:
+        lines.append("本次没有 oracle 完整性结果。")
+    lines.append("")
+
+    lines.append("## 六、正常模式下的误报")
     lines.append("")
     failed_cases = none.get("failed_cases", [])
     if failed_cases:
@@ -174,7 +275,7 @@ def render_markdown(summary: dict[str, Any], verdicts: list[Verdict], out_path: 
         lines.append("注意：样本只有 40 条、每族 5 条，置信区间很宽；不要把 100% 读成“绝对稳定”。")
         lines.append("")
 
-    lines.append("## 六、失败样例与证据")
+    lines.append("## 七、失败样例与证据")
     lines.append("")
     examples = _failure_examples(verdicts)
     if not examples:
@@ -184,9 +285,14 @@ def render_markdown(summary: dict[str, Any], verdicts: list[Verdict], out_path: 
         lines.append("")
         lines.append(f"- 失败类型：`{verdict.failure_class}`（规则优先级 {verdict.confidence:.2f}，非校准概率）")
         lines.append(f"- 归因：{verdict.rationale}")
+        if verdict.trace_sha256:
+            lines.append(f"- Trace 哈希：`{verdict.trace_sha256[:16]}`")
         failed = [item for item in verdict.assertions if not item.passed]
         for assertion in failed[:3]:
-            lines.append(f"- 断言 `{assertion.name}`：{assertion.detail}")
+            scope = "（advisory，不计入 verdict）" if assertion.severity != "blocking" else ""
+            location = f"，消息 #{assertion.message_index}" if assertion.message_index is not None else ""
+            step = f"，工具步 {assertion.evidence_step}" if assertion.evidence_step is not None else ""
+            lines.append(f"- 断言 `{assertion.name}`{scope}：{assertion.detail}{location}{step}")
         trace = _load_trace(verdict.trace_path)
         if trace:
             calls = trace.get("tool_calls", [])[-2:]
@@ -200,14 +306,15 @@ def render_markdown(summary: dict[str, Any], verdicts: list[Verdict], out_path: 
                 lines.append(f"- 最终输出摘录：`{output}`")
         lines.append("")
 
-    lines.append("## 七、局限")
+    lines.append("## 八、局限")
     lines.append("")
     lines.append("- 被测靶子是可控合成环境，故障是注入的，不代表真实生产 Agent 的故障分布。")
     lines.append("- 用例只覆盖教学平台运维的 8 个场景族，每族 5 条；区间估计很宽，未覆盖长周期任务和多 Agent 协作。")
-    lines.append("- 失败归因是规则映射，置信度是工程优先级，不是统计校准后的概率；尚无人工双标与 κ。")
+    lines.append("- 失败归因是规则映射，置信度是工程优先级，不是统计校准后的概率；归因一致性是对照注入目录，不是独立人工标注。")
+    lines.append("- 成本表与账单不同比例时，预算断言只作告警；token 估算不能替代计费口径。")
     lines.append("- 单模型、单轮实验；扩展到多模型、真实 Agent 和人工双标后，结论才可外推。")
     lines.append("")
-    lines.append("## 八、运行元数据")
+    lines.append("## 九、运行元数据")
     lines.append("")
     lines.append("```json")
     lines.append(

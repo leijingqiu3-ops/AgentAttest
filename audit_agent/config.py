@@ -30,6 +30,9 @@ class Settings:
     price_in_cny_per_m: float
     price_out_cny_per_m: float
     timeout_s: float = 90.0
+    # auto: enforce budget assertions only when the estimate is calibrated
+    # against the provider's balance delta. always / never override it.
+    cost_enforce: str = "auto"
 
 
 def get_settings() -> Settings:
@@ -44,6 +47,7 @@ def get_settings() -> Settings:
         model_judge=os.environ.get("LLM_JUDGE_MODEL", "deepseek-v4-pro"),
         price_in_cny_per_m=float(os.environ.get("PRICE_IN_CNY_PER_M", "2.0")),
         price_out_cny_per_m=float(os.environ.get("PRICE_OUT_CNY_PER_M", "8.0")),
+        cost_enforce=os.environ.get("COST_ENFORCE", "auto").strip().lower(),
     )
 
 

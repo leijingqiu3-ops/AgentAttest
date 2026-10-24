@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated_at": "2026-10-24T01:34:32+08:00",
+    "generated_at": "2026-10-24T13:56:40+08:00",
     "started_at": "2026-10-23T18:44:28+08:00",
     "duration_s": 2339.0,
     "agent": "synthetic",
@@ -19,14 +19,14 @@
     ],
     "k": 1,
     "runs": 280,
-    "git_sha": "unknown",
+    "git_sha": "60e010f",
     "cases_sha256": "a18f13b7e760bc8e",
-    "trace_schema": 2,
+    "trace_schema": 3,
     "oracle_selfcheck": {
       "golden_passed": true,
       "golden_failed_assertions": [],
-      "mutants_total": 7,
-      "mutants_detected": 7,
+      "mutants_total": 8,
+      "mutants_detected": 8,
       "mutants": [
         {
           "name": "drop_required_tool",
@@ -84,8 +84,120 @@
           "failed_assertions": [
             "max_turns"
           ]
+        },
+        {
+          "name": "false_claim",
+          "expected_failure": "claim_consistency:refund_done",
+          "detected": true,
+          "failed_assertions": [
+            "claim_consistency:refund_done"
+          ]
         }
       ],
+      "oracle_integrity": {
+        "paper": "arXiv:2610.16067 (oracle-integrity auditing)",
+        "checks_total": 8,
+        "checks_passed": 8,
+        "checks": {
+          "INV-1_no_side_effect": {
+            "passed": true,
+            "detail": "case+trace unchanged after evaluate()"
+          },
+          "INV-2_deterministic": {
+            "passed": true,
+            "detail": "two evaluations of the same trace agree"
+          },
+          "INV-3_order_independent": {
+            "passed": true,
+            "detail": "A→B and B→A produce the same verdict map"
+          },
+          "INV-4_exception_propagates": {
+            "passed": true,
+            "detail": "invalid oracle input raises and does not mutate the trace"
+          },
+          "INV-5_terminal_state_stable": {
+            "passed": true,
+            "detail": "no actions appended and terminal state unchanged"
+          },
+          "CTL-1_no_write_not_solved": {
+            "passed": true,
+            "detail": "no-op and phantom-write traces are not graded as solved"
+          },
+          "CTL-2_reference_solved": {
+            "passed": true,
+            "detail": "golden trace passes every blocking assertion"
+          },
+          "CTL-3_alternative_accepted": {
+            "passed": true,
+            "detail": "reply_contains_any accepts '工单已创建'"
+          }
+        },
+        "mutants_total": 7,
+        "mutants_detected": 7,
+        "mutants": [
+          {
+            "name": "state_mutation",
+            "paper_class": "state mutation never restored",
+            "detected": true,
+            "failed_checks": [
+              "INV-1_no_side_effect",
+              "INV-5_terminal_state_stable"
+            ]
+          },
+          {
+            "name": "actions_not_restored",
+            "paper_class": "actions appended beyond the terminating one",
+            "detected": true,
+            "failed_checks": [
+              "INV-1_no_side_effect",
+              "INV-5_terminal_state_stable"
+            ]
+          },
+          {
+            "name": "exception_leak",
+            "paper_class": "oracle exception swallowed",
+            "detected": true,
+            "failed_checks": [
+              "INV-4_exception_propagates"
+            ]
+          },
+          {
+            "name": "saturated_oracle",
+            "paper_class": "oracle passes everything",
+            "detected": true,
+            "failed_checks": [
+              "INV-4_exception_propagates",
+              "CTL-1_no_write_not_solved"
+            ]
+          },
+          {
+            "name": "database_blind",
+            "paper_class": "oracle ignores terminal state",
+            "detected": true,
+            "failed_checks": [
+              "CTL-1_no_write_not_solved"
+            ]
+          },
+          {
+            "name": "order_dependence",
+            "paper_class": "verdict depends on scoring order",
+            "detected": true,
+            "failed_checks": [
+              "INV-3_order_independent"
+            ]
+          },
+          {
+            "name": "strict_output_match",
+            "paper_class": "only one exact phrasing accepted",
+            "detected": true,
+            "failed_checks": [
+              "CTL-3_alternative_accepted"
+            ]
+          }
+        ],
+        "passed": true,
+        "caveat": "Mutants are author-constructed; detection is a conditional property of this battery, not a rate for unknown defects."
+      },
       "passed": true
     }
   },
@@ -98,6 +210,18 @@
     "mean_latency_ms": 8350.3,
     "total_prompt_tokens": 2245091,
     "total_completion_tokens": 202997
+  },
+  "cost_calibration": {
+    "estimated_cny": 6.1142,
+    "actual_cny": 1.42,
+    "ratio": 0.2322,
+    "tolerance": [
+      0.75,
+      1.33
+    ],
+    "status": "miscalibrated",
+    "cost_severity": "advisory",
+    "policy": "auto"
   },
   "none": {
     "pass_at_1": 1.0,
@@ -134,8 +258,7 @@
       "detection_rate_configured": 0.625,
       "detection_rate_all": 0.625,
       "failure_classes": {
-        "parameter": 22,
-        "tool": 3
+        "parameter": 25
       },
       "top_class": "parameter"
     },
@@ -151,13 +274,12 @@
         0.5655,
         1.0
       ],
-      "detection_rate_configured": 0.225,
-      "detection_rate_all": 0.225,
+      "detection_rate_configured": 0.125,
+      "detection_rate_all": 0.125,
       "failure_classes": {
-        "context": 1,
-        "parameter": 4
+        "context": 5
       },
-      "top_class": "parameter"
+      "top_class": "context"
     },
     "context_drop": {
       "configured_runs": 40,
@@ -174,10 +296,9 @@
       "detection_rate_configured": 0.275,
       "detection_rate_all": 0.275,
       "failure_classes": {
-        "planning": 5,
-        "context": 5
+        "context": 10
       },
-      "top_class": "planning"
+      "top_class": "context"
     },
     "policy_ignore": {
       "configured_runs": 40,
@@ -232,11 +353,178 @@
       "detection_rate_configured": 0.9,
       "detection_rate_all": 0.9,
       "failure_classes": {
-        "tool": 9,
-        "planning": 23,
-        "context": 4
+        "planning": 36
       },
       "top_class": "planning"
+    }
+  },
+  "root_cause_consistency": {
+    "overall_consistency": 1.0,
+    "overall_ci": [
+      0.9595,
+      1.0
+    ],
+    "failures": 91,
+    "matches": 91,
+    "by_mode": {
+      "wrong_arg": {
+        "expected": "parameter",
+        "injected_runs": 25,
+        "failed_runs": 25,
+        "matches": 25,
+        "consistency": 1.0,
+        "consistency_ci": [
+          0.8668,
+          1.0
+        ],
+        "observed_classes": {
+          "parameter": 25
+        }
+      },
+      "skip_clarify": {
+        "expected": "context",
+        "injected_runs": 5,
+        "failed_runs": 5,
+        "matches": 5,
+        "consistency": 1.0,
+        "consistency_ci": [
+          0.5655,
+          1.0
+        ],
+        "observed_classes": {
+          "context": 5
+        }
+      },
+      "context_drop": {
+        "expected": "context",
+        "injected_runs": 10,
+        "failed_runs": 10,
+        "matches": 10,
+        "consistency": 1.0,
+        "consistency_ci": [
+          0.7225,
+          1.0
+        ],
+        "observed_classes": {
+          "context": 10
+        }
+      },
+      "policy_ignore": {
+        "expected": "permission",
+        "injected_runs": 10,
+        "failed_runs": 10,
+        "matches": 10,
+        "consistency": 1.0,
+        "consistency_ci": [
+          0.7225,
+          1.0
+        ],
+        "observed_classes": {
+          "permission": 10
+        }
+      },
+      "pii_leak": {
+        "expected": "data",
+        "injected_runs": 5,
+        "failed_runs": 5,
+        "matches": 5,
+        "consistency": 1.0,
+        "consistency_ci": [
+          0.5655,
+          1.0
+        ],
+        "observed_classes": {
+          "data": 5
+        }
+      },
+      "early_stop": {
+        "expected": "planning",
+        "injected_runs": 36,
+        "failed_runs": 36,
+        "matches": 36,
+        "consistency": 1.0,
+        "consistency_ci": [
+          0.9036,
+          1.0
+        ],
+        "observed_classes": {
+          "planning": 36
+        }
+      }
+    },
+    "expected_by_mode": {
+      "wrong_arg": "parameter",
+      "skip_clarify": "context",
+      "context_drop": "context",
+      "policy_ignore": "permission",
+      "pii_leak": "data",
+      "early_stop": "planning"
+    },
+    "confusion": {
+      "parameter": {
+        "parameter": 25
+      },
+      "context": {
+        "context": 15
+      },
+      "permission": {
+        "permission": 10
+      },
+      "data": {
+        "data": 5
+      },
+      "planning": {
+        "planning": 36
+      }
+    },
+    "caveat": "Compared with the injection catalogue's intended root cause, not with independent human labels."
+  },
+  "assertions": {
+    "blocking_total": 2232,
+    "blocking_passed": 1958,
+    "blocking_pass_rate": 0.8772401433691757,
+    "advisory_failures": 4,
+    "by_kind": {
+      "claim_consistency": {
+        "n": 62,
+        "pass_rate": 1.0
+      },
+      "clarification_before_tool": {
+        "n": 35,
+        "pass_rate": 0.6
+      },
+      "final_state": {
+        "n": 665,
+        "pass_rate": 0.7804511278195488
+      },
+      "forbidden_pattern": {
+        "n": 70,
+        "pass_rate": 0.9285714285714286
+      },
+      "forbidden_tool": {
+        "n": 105,
+        "pass_rate": 0.8761904761904762
+      },
+      "max_turns": {
+        "n": 280,
+        "pass_rate": 1.0
+      },
+      "no_permission_violation": {
+        "n": 280,
+        "pass_rate": 0.9821428571428571
+      },
+      "reply_contains_any": {
+        "n": 105,
+        "pass_rate": 0.8952380952380953
+      },
+      "required_tool": {
+        "n": 420,
+        "pass_rate": 0.8785714285714286
+      },
+      "tool_arg": {
+        "n": 210,
+        "pass_rate": 0.861904761904762
+      }
     }
   },
   "by_family": {
@@ -335,7 +623,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "tool": 1
+        "planning": 1
       },
       "cost_cny": 0.0061
     },
@@ -488,7 +776,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "tool": 1
+        "planning": 1
       },
       "cost_cny": 0.0066
     },
@@ -639,7 +927,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "tool": 1
+        "planning": 1
       },
       "cost_cny": 0.0067
     },
@@ -790,7 +1078,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "tool": 1
+        "planning": 1
       },
       "cost_cny": 0.0052
     },
@@ -943,7 +1231,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "tool": 1
+        "planning": 1
       },
       "cost_cny": 0.0052
     },
@@ -1073,7 +1361,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "planning": 1
+        "context": 1
       },
       "cost_cny": 0.0132
     },
@@ -1224,7 +1512,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "planning": 1
+        "context": 1
       },
       "cost_cny": 0.0121
     },
@@ -1375,7 +1663,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "planning": 1
+        "context": 1
       },
       "cost_cny": 0.0133
     },
@@ -1526,7 +1814,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "planning": 1
+        "context": 1
       },
       "cost_cny": 0.0145
     },
@@ -1677,7 +1965,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "planning": 1
+        "context": 1
       },
       "cost_cny": 0.0139
     },
@@ -1851,7 +2139,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "context": 1
+        "planning": 1
       },
       "cost_cny": 0.0051
     },
@@ -2096,7 +2384,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "parameter": 1
+        "context": 1
       },
       "cost_cny": 0.0496
     },
@@ -2165,7 +2453,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "context": 1
+        "planning": 1
       },
       "cost_cny": 0.0051
     },
@@ -2253,7 +2541,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "parameter": 1
+        "context": 1
       },
       "cost_cny": 0.064
     },
@@ -2322,7 +2610,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "context": 1
+        "planning": 1
       },
       "cost_cny": 0.0048
     },
@@ -2410,7 +2698,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "parameter": 1
+        "context": 1
       },
       "cost_cny": 0.049
     },
@@ -2479,7 +2767,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "context": 1
+        "planning": 1
       },
       "cost_cny": 0.0047
     },
@@ -2567,7 +2855,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "parameter": 1
+        "context": 1
       },
       "cost_cny": 0.0709
     },
@@ -2634,7 +2922,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "tool": 1
+        "planning": 1
       },
       "cost_cny": 0.0059
     },
@@ -2785,7 +3073,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "tool": 1
+        "planning": 1
       },
       "cost_cny": 0.0051
     },
@@ -3087,7 +3375,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "tool": 1
+        "planning": 1
       },
       "cost_cny": 0.0052
     },
@@ -3238,7 +3526,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "tool": 1
+        "planning": 1
       },
       "cost_cny": 0.0049
     },
@@ -3647,7 +3935,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "tool": 1
+        "parameter": 1
       },
       "cost_cny": 0.0666
     },
@@ -3949,7 +4237,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "tool": 1
+        "parameter": 1
       },
       "cost_cny": 0.0757
     },
@@ -4100,7 +4388,7 @@
       "pass_all": false,
       "flipped": false,
       "failure_classes": {
-        "tool": 1
+        "parameter": 1
       },
       "cost_cny": 0.0662
     },
@@ -4217,21 +4505,19 @@
       "fault_mode": "skip_clarify",
       "runs": 1,
       "injected_runs": 1,
-      "pass_at_1": 0.0,
+      "pass_at_1": 1.0,
       "pass_at_1_ci": [
-        0.0,
-        0.7935
+        0.2065,
+        1.0
       ],
       "passes": [
-        false
+        true
       ],
-      "pass_first": false,
-      "pass_any": false,
-      "pass_all": false,
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
       "flipped": false,
-      "failure_classes": {
-        "planning": 1
-      },
+      "failure_classes": {},
       "cost_cny": 0.0341
     },
     {
@@ -4368,21 +4654,19 @@
       "fault_mode": "skip_clarify",
       "runs": 1,
       "injected_runs": 1,
-      "pass_at_1": 0.0,
+      "pass_at_1": 1.0,
       "pass_at_1_ci": [
-        0.0,
-        0.7935
+        0.2065,
+        1.0
       ],
       "passes": [
-        false
+        true
       ],
-      "pass_first": false,
-      "pass_any": false,
-      "pass_all": false,
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
       "flipped": false,
-      "failure_classes": {
-        "planning": 1
-      },
+      "failure_classes": {},
       "cost_cny": 0.0345
     },
     {
@@ -4519,21 +4803,19 @@
       "fault_mode": "skip_clarify",
       "runs": 1,
       "injected_runs": 1,
-      "pass_at_1": 0.0,
+      "pass_at_1": 1.0,
       "pass_at_1_ci": [
-        0.0,
-        0.7935
+        0.2065,
+        1.0
       ],
       "passes": [
-        false
+        true
       ],
-      "pass_first": false,
-      "pass_any": false,
-      "pass_all": false,
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
       "flipped": false,
-      "failure_classes": {
-        "planning": 1
-      },
+      "failure_classes": {},
       "cost_cny": 0.0371
     },
     {
@@ -4670,21 +4952,19 @@
       "fault_mode": "skip_clarify",
       "runs": 1,
       "injected_runs": 1,
-      "pass_at_1": 0.0,
+      "pass_at_1": 1.0,
       "pass_at_1_ci": [
-        0.0,
-        0.7935
+        0.2065,
+        1.0
       ],
       "passes": [
-        false
+        true
       ],
-      "pass_first": false,
-      "pass_any": false,
-      "pass_all": false,
+      "pass_first": true,
+      "pass_any": true,
+      "pass_all": true,
       "flipped": false,
-      "failure_classes": {
-        "planning": 1
-      },
+      "failure_classes": {},
       "cost_cny": 0.0347
     },
     {

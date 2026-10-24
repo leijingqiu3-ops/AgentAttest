@@ -37,6 +37,8 @@ class Assertion(BaseModel):
     passed: bool
     detail: str = ""
     evidence_step: int | None = None
+    message_index: int | None = None
+    severity: str = "blocking"
 
 
 class Verdict(BaseModel):
@@ -49,6 +51,7 @@ class Verdict(BaseModel):
     confidence: float = 1.0
     rationale: str = ""
     trace_path: str = ""
+    trace_sha256: str = ""
 
 
 class CaseSpec(BaseModel):

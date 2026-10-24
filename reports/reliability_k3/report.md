@@ -1,11 +1,12 @@
 # Agent 验收审计报告
 
-- 生成时间：2026-10-23T19:49:25+08:00
-- 被测对象：教学平台工单 Agent（可控靶子，7 种运行模式，含 baseline）
+- 生成时间：2026-10-24T13:57:17+08:00
+- 被测对象：synthetic
 - 被测模型：`deepseek-flash`（temperature=0.0）；审计判定：确定性断言 + 规则归因
 - 用例数：40；故障模式：1；重复次数 k=3；总运行：120
-- 可复现信息：git `unknown`；用例集 sha256 `a18f13b7e760bc8e`；trace schema v2
+- 可复现信息：git `60e010f`；用例集 sha256 `a18f13b7e760bc8e`；trace schema v3
 
+- 证据清单：`manifest.json` root `f27b4983b98862fa`（122 个文件）
 ## 一、结论与口径
 
 本报告把两件事分开，不合并成一个数：
@@ -18,7 +19,8 @@
 - 单次运行成本：按配置费率估算 `0.0213` 元/次，P95 延迟 `9512.0 ms`。
 - 每个通过用例的累计成本（含 k 次重复）：`0.0638` 元。
 - 本次实际账户扣费 `0.9800` 元，折合 `0.0082` 元/次。
-- Oracle 自检：golden trace `通过`；变异体 `7/7` 被抓住。
+- 成本表校准：估算 `2.5531` 元 / 实际 `0.9800` 元，比值 `0.384`（容差 0.75–1.33），不可用于判定，预算断言已降级为 advisory。
+- Oracle 自检：golden trace `通过`；变异体 `8/8` 被抓住。
 
 ## 二、判定方法
 
@@ -57,23 +59,88 @@
 
 正常模式列是**通过率**，故障模式列是**注入后的检出率**。
 
-## 五、正常模式下的误报
+## 五、审计器自身的测量质量
+
+### 5.1 成本表校准
+
+预算断言只有在成本表被账单校准时才允许参与通过/失败；否则只作为告警。
+
+| 估算成本 | 实际扣费 | 实际/估算 | 容差 | 状态 | 预算断言 |
+|---:|---:|---:|---|---|---|
+| 2.5531 | 0.98 | 0.3839 | 0.75–1.33 | miscalibrated | advisory |
+
+状态为 `miscalibrated` 时，说明 token 估算与账单不成比例；此时不能拿估算值去判预算超限。
+
+### 5.2 归因一致性（对照注入目录）
+
+| 故障模式 | 应归因 | 注入 run | 失败 run | 一致 | 一致率（95% CI） | 实际分布 |
+|---|---|---:|---:|---:|---|---|
+
+口径：Compared with the injection catalogue's intended root cause, not with independent human labels. 这是上限估计，不是独立人工验证。
+
+### 5.3 断言级通过率
+
+- Blocking 断言：`958/958` 通过（`100.0%`）。
+- Advisory 断言失败：`0` 次（不计入 verdict）。
+
+| 断言类型 | 条数 | 通过率 |
+|---|---:|---:|
+| `claim_consistency` | 28 | 100.0% |
+| `clarification_before_tool` | 15 | 100.0% |
+| `final_state` | 285 | 100.0% |
+| `forbidden_pattern` | 30 | 100.0% |
+| `forbidden_tool` | 45 | 100.0% |
+| `max_turns` | 120 | 100.0% |
+| `no_permission_violation` | 120 | 100.0% |
+| `reply_contains_any` | 45 | 100.0% |
+| `required_tool` | 180 | 100.0% |
+| `tool_arg` | 90 | 100.0% |
+
+### 5.4 Oracle 完整性（oracle 自己也被测）
+
+- 检查项：`8/8` 通过；变异体：`7/7` 被抓住。
+
+| 检查 | 结果 | 说明 |
+|---|---|---|
+| `INV-1_no_side_effect` | 通过 | case+trace unchanged after evaluate() |
+| `INV-2_deterministic` | 通过 | two evaluations of the same trace agree |
+| `INV-3_order_independent` | 通过 | A→B and B→A produce the same verdict map |
+| `INV-4_exception_propagates` | 通过 | invalid oracle input raises and does not mutate the trace |
+| `INV-5_terminal_state_stable` | 通过 | no actions appended and terminal state unchanged |
+| `CTL-1_no_write_not_solved` | 通过 | no-op and phantom-write traces are not graded as solved |
+| `CTL-2_reference_solved` | 通过 | golden trace passes every blocking assertion |
+| `CTL-3_alternative_accepted` | 通过 | reply_contains_any accepts '工单已创建' |
+
+| 注入的 oracle 缺陷 | 是否被抓住 | 命中的检查 |
+|---|---|---|
+| state mutation never restored | 是 | INV-1_no_side_effect, INV-5_terminal_state_stable |
+| actions appended beyond the terminating one | 是 | INV-1_no_side_effect, INV-5_terminal_state_stable |
+| oracle exception swallowed | 是 | INV-4_exception_propagates |
+| oracle passes everything | 是 | INV-4_exception_propagates, CTL-1_no_write_not_solved |
+| oracle ignores terminal state | 是 | CTL-1_no_write_not_solved |
+| verdict depends on scoring order | 是 | INV-3_order_independent |
+| only one exact phrasing accepted | 是 | CTL-3_alternative_accepted |
+
+依据：arXiv:2610.16067 (oracle-integrity auditing)。Mutants are author-constructed; detection is a conditional property of this battery, not a rate for unknown defects.
+
+## 六、正常模式下的误报
 
 本轮 40/40 全部通过，误报率为 0。
 
 注意：样本只有 40 条、每族 5 条，置信区间很宽；不要把 100% 读成“绝对稳定”。
 
-## 六、失败样例与证据
+## 七、失败样例与证据
 
 本次运行没有失败样例。
-## 七、局限
+## 八、局限
 
 - 被测靶子是可控合成环境，故障是注入的，不代表真实生产 Agent 的故障分布。
 - 用例只覆盖教学平台运维的 8 个场景族，每族 5 条；区间估计很宽，未覆盖长周期任务和多 Agent 协作。
-- 失败归因是规则映射，置信度是工程优先级，不是统计校准后的概率；尚无人工双标与 κ。
+- 失败归因是规则映射，置信度是工程优先级，不是统计校准后的概率；归因一致性是对照注入目录，不是独立人工标注。
+- 成本表与账单不同比例时，预算断言只作告警；token 估算不能替代计费口径。
 - 单模型、单轮实验；扩展到多模型、真实 Agent 和人工双标后，结论才可外推。
 
-## 八、运行元数据
+## 九、运行元数据
 
 ```json
 {
@@ -85,7 +152,7 @@
   "faults": [
     "none"
   ],
-  "git_sha": "unknown",
+  "git_sha": "60e010f",
   "cases_sha256": "a18f13b7e760bc8e",
   "duration_s": 661.6
 }

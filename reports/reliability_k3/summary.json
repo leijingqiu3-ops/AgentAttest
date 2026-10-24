@@ -1,8 +1,9 @@
 {
   "meta": {
-    "generated_at": "2026-10-23T19:49:25+08:00",
+    "generated_at": "2026-10-24T13:57:17+08:00",
     "started_at": "2026-10-23T19:32:46+08:00",
     "duration_s": 661.6,
+    "agent": "synthetic",
     "model": "deepseek-flash",
     "judge_model": "deepseek-v4-pro",
     "temperature": 0.0,
@@ -12,14 +13,14 @@
     ],
     "k": 3,
     "runs": 120,
-    "git_sha": "unknown",
+    "git_sha": "60e010f",
     "cases_sha256": "a18f13b7e760bc8e",
-    "trace_schema": 2,
+    "trace_schema": 3,
     "oracle_selfcheck": {
       "golden_passed": true,
       "golden_failed_assertions": [],
-      "mutants_total": 7,
-      "mutants_detected": 7,
+      "mutants_total": 8,
+      "mutants_detected": 8,
       "mutants": [
         {
           "name": "drop_required_tool",
@@ -77,8 +78,120 @@
           "failed_assertions": [
             "max_turns"
           ]
+        },
+        {
+          "name": "false_claim",
+          "expected_failure": "claim_consistency:refund_done",
+          "detected": true,
+          "failed_assertions": [
+            "claim_consistency:refund_done"
+          ]
         }
       ],
+      "oracle_integrity": {
+        "paper": "arXiv:2610.16067 (oracle-integrity auditing)",
+        "checks_total": 8,
+        "checks_passed": 8,
+        "checks": {
+          "INV-1_no_side_effect": {
+            "passed": true,
+            "detail": "case+trace unchanged after evaluate()"
+          },
+          "INV-2_deterministic": {
+            "passed": true,
+            "detail": "two evaluations of the same trace agree"
+          },
+          "INV-3_order_independent": {
+            "passed": true,
+            "detail": "A→B and B→A produce the same verdict map"
+          },
+          "INV-4_exception_propagates": {
+            "passed": true,
+            "detail": "invalid oracle input raises and does not mutate the trace"
+          },
+          "INV-5_terminal_state_stable": {
+            "passed": true,
+            "detail": "no actions appended and terminal state unchanged"
+          },
+          "CTL-1_no_write_not_solved": {
+            "passed": true,
+            "detail": "no-op and phantom-write traces are not graded as solved"
+          },
+          "CTL-2_reference_solved": {
+            "passed": true,
+            "detail": "golden trace passes every blocking assertion"
+          },
+          "CTL-3_alternative_accepted": {
+            "passed": true,
+            "detail": "reply_contains_any accepts '工单已创建'"
+          }
+        },
+        "mutants_total": 7,
+        "mutants_detected": 7,
+        "mutants": [
+          {
+            "name": "state_mutation",
+            "paper_class": "state mutation never restored",
+            "detected": true,
+            "failed_checks": [
+              "INV-1_no_side_effect",
+              "INV-5_terminal_state_stable"
+            ]
+          },
+          {
+            "name": "actions_not_restored",
+            "paper_class": "actions appended beyond the terminating one",
+            "detected": true,
+            "failed_checks": [
+              "INV-1_no_side_effect",
+              "INV-5_terminal_state_stable"
+            ]
+          },
+          {
+            "name": "exception_leak",
+            "paper_class": "oracle exception swallowed",
+            "detected": true,
+            "failed_checks": [
+              "INV-4_exception_propagates"
+            ]
+          },
+          {
+            "name": "saturated_oracle",
+            "paper_class": "oracle passes everything",
+            "detected": true,
+            "failed_checks": [
+              "INV-4_exception_propagates",
+              "CTL-1_no_write_not_solved"
+            ]
+          },
+          {
+            "name": "database_blind",
+            "paper_class": "oracle ignores terminal state",
+            "detected": true,
+            "failed_checks": [
+              "CTL-1_no_write_not_solved"
+            ]
+          },
+          {
+            "name": "order_dependence",
+            "paper_class": "verdict depends on scoring order",
+            "detected": true,
+            "failed_checks": [
+              "INV-3_order_independent"
+            ]
+          },
+          {
+            "name": "strict_output_match",
+            "paper_class": "only one exact phrasing accepted",
+            "detected": true,
+            "failed_checks": [
+              "CTL-3_alternative_accepted"
+            ]
+          }
+        ],
+        "passed": true,
+        "caveat": "Mutants are author-constructed; detection is a conditional property of this battery, not a rate for unknown defects."
+      },
       "passed": true
     }
   },
@@ -91,6 +204,18 @@
     "mean_latency_ms": 5508.4,
     "total_prompt_tokens": 955555,
     "total_completion_tokens": 80246
+  },
+  "cost_calibration": {
+    "estimated_cny": 2.5531,
+    "actual_cny": 0.98,
+    "ratio": 0.3839,
+    "tolerance": [
+      0.75,
+      1.33
+    ],
+    "status": "miscalibrated",
+    "cost_severity": "advisory",
+    "policy": "auto"
   },
   "none": {
     "pass_at_1": 1.0,
@@ -112,6 +237,71 @@
     "failed_cases": []
   },
   "faults": {},
+  "root_cause_consistency": {
+    "overall_consistency": null,
+    "overall_ci": null,
+    "failures": 0,
+    "matches": 0,
+    "by_mode": {},
+    "expected_by_mode": {
+      "wrong_arg": "parameter",
+      "skip_clarify": "context",
+      "context_drop": "context",
+      "policy_ignore": "permission",
+      "pii_leak": "data",
+      "early_stop": "planning"
+    },
+    "confusion": {},
+    "caveat": "Compared with the injection catalogue's intended root cause, not with independent human labels."
+  },
+  "assertions": {
+    "blocking_total": 958,
+    "blocking_passed": 958,
+    "blocking_pass_rate": 1.0,
+    "advisory_failures": 0,
+    "by_kind": {
+      "claim_consistency": {
+        "n": 28,
+        "pass_rate": 1.0
+      },
+      "clarification_before_tool": {
+        "n": 15,
+        "pass_rate": 1.0
+      },
+      "final_state": {
+        "n": 285,
+        "pass_rate": 1.0
+      },
+      "forbidden_pattern": {
+        "n": 30,
+        "pass_rate": 1.0
+      },
+      "forbidden_tool": {
+        "n": 45,
+        "pass_rate": 1.0
+      },
+      "max_turns": {
+        "n": 120,
+        "pass_rate": 1.0
+      },
+      "no_permission_violation": {
+        "n": 120,
+        "pass_rate": 1.0
+      },
+      "reply_contains_any": {
+        "n": 45,
+        "pass_rate": 1.0
+      },
+      "required_tool": {
+        "n": 180,
+        "pass_rate": 1.0
+      },
+      "tool_arg": {
+        "n": 90,
+        "pass_rate": 1.0
+      }
+    }
+  },
   "by_family": {
     "doc_field_mismatch": {
       "none": 1.0
