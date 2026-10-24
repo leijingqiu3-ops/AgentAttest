@@ -66,6 +66,16 @@ class AttestEngine:
                 f"course_id={course_id!r} outside allowed_courses={list(allowed)}",
             )
 
+        for key, values in sorted(ctx.task_arg_constraints.items()):
+            tool_name, _, arg_name = key.partition(".")
+            if tool_name != tool or arg_name not in args:
+                continue
+            hit(
+                f"task_contract:{arg_name}",
+                str(args[arg_name]) in values,
+                f"{tool}.{arg_name}={args[arg_name]!r} outside task contract {list(values)}",
+            )
+
         if tool == "refund_course":
             days = ctx.days_since_enrollment
             within_window = days is not None and days <= REFUND_WINDOW_DAYS

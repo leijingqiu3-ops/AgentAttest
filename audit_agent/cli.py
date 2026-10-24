@@ -140,6 +140,15 @@ def cmd_manifest(args: argparse.Namespace) -> None:
         raise SystemExit(1)
 
 
+def cmd_prevention(args: argparse.Namespace) -> None:
+    from attest.replay import write_replay
+
+    path = write_replay(args.run, args.suite)
+    data = json.loads(path.read_text(encoding="utf-8"))
+    print(json.dumps({"totals": data["totals"], "by_mode": data["by_mode"]}, ensure_ascii=False, indent=2))
+    print(f"written: {path}")
+
+
 def cmd_selfcheck(args: argparse.Namespace) -> None:
     from .selfcheck import run_selfcheck
 
@@ -180,6 +189,11 @@ def main(argv: list[str] | None = None) -> None:
     recalc.add_argument("--run", default=str(ROOT / "reports" / "latest"))
     recalc.add_argument("--suite", default=str(ROOT / "cases" / "seed_cases.jsonl"))
     recalc.set_defaults(func=cmd_recompute)
+
+    prevent = sub.add_parser("prevention", help="把已有 trace 回放进 attest 层，估算执行前拦截率")
+    prevent.add_argument("--run", default=str(ROOT / "reports" / "latest"))
+    prevent.add_argument("--suite", default=str(ROOT / "cases" / "seed_cases.jsonl"))
+    prevent.set_defaults(func=cmd_prevention)
 
     check = sub.add_parser("selfcheck", help="用 known-answer 与变异体验证 oracle 自身")
     check.set_defaults(func=cmd_selfcheck)

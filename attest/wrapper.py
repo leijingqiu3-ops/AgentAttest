@@ -2,20 +2,14 @@ from __future__ import annotations
 
 import hashlib
 import json
-import re
 from typing import Any, Callable
 
+from .dlp import redact_pii, screen_outbound
 from .engine import AttestEngine
 from .ledger import HashChainLedger
 from .models import AttestContext
 
-PHONE_RE = re.compile(r"1[3-9]\d{9}")
-ID_CARD_RE = re.compile(r"\d{17}[\dXx]")
-
-
-def redact_pii(text: str) -> str:
-    text = PHONE_RE.sub(lambda m: m.group(0)[:3] + "****" + m.group(0)[-4:], text)
-    return ID_CARD_RE.sub(lambda m: m.group(0)[:6] + "********" + m.group(0)[-4:], text)
+__all__ = ["guarded_call", "redact_pii"]
 
 
 def _hash(text: str) -> str:
@@ -31,16 +25,30 @@ def guarded_call(
     execute: Callable[[], str],
     resource_course: str | None = None,
 ) -> str:
-    """Check, execute (or block), redact, and append an evidence entry."""
+    """Check, execute (or block), redact, and append an evidence entry.
+
+    Outbound replies are screened before they leave: a masked copy is what gets
+    sent and what gets hashed, so the ledger never stores the raw identifier.
+    """
+    dlp: list[str] = []
+    if tool == "send_reply" and isinstance(args.get("text"), str):
+        screen = screen_outbound(args["text"])
+        if screen.leaked:
+            args = {**args, "text": screen.text}
+            dlp = list(screen.findings)
+
     decision = engine.check(tool, args, ctx, resource_course=resource_course)
+    canonical = json.dumps(args, ensure_ascii=False, sort_keys=True)
     entry: dict[str, Any] = {
         "tool": tool,
-        "args_preview": redact_pii(json.dumps(args, ensure_ascii=False, sort_keys=True))[:500],
-        "args_hash": _hash(json.dumps(args, ensure_ascii=False, sort_keys=True)),
+        "args_preview": redact_pii(canonical)[:500],
+        "args_hash": _hash(canonical),
         "decision": "allow" if decision.allow else "deny",
         "blocked_by": decision.blocked_by,
         "injection_flags": decision.injection_flags,
     }
+    if dlp:
+        entry["dlp"] = dlp
     if not decision.allow:
         result = json.dumps(
             {

@@ -6,6 +6,7 @@ const raw = JSON.parse(fs.readFileSync(path.join(ROOT, 'reports/dashboard_data.j
 const matrixSummary = JSON.parse(fs.readFileSync(path.join(ROOT, 'reports/full_matrix/summary.json'), 'utf8'));
 const injectedDetected = Object.values(matrixSummary.faults)
   .reduce(function (a, f) { return a + (f.detected || 0); }, 0);
+const prevention = JSON.parse(fs.readFileSync(path.join(ROOT, 'reports/full_matrix/prevention.json'), 'utf8'));
 const seeds = fs.readFileSync(path.join(ROOT, 'cases/seed_cases.jsonl'), 'utf8')
   .split(/\r?\n/).filter(Boolean).map(function (l) { return JSON.parse(l); });
 const seedById = new Map(seeds.map(function (s) { return [s.id, s]; }));
@@ -619,6 +620,7 @@ const ATTRIB = '<section id="attrib" class="wrap sec">' +
   '<p class="sub">每条失败只打一个主标签：按顺序看证据，先撞上哪条就算哪条。规则先写死，再找人照着标，防止事后解释。</p></div>' +
   '<div class="attr rv">' +
     '<div class="acard"><h4 class="mini" style="margin:0 0 4px;letter-spacing:.12em;text-transform:uppercase">失败类型分布 · 共 ' + attrSum + ' 条</h4>' + '<div class="mini" style="margin:0 0 12px">' + attrSum + ' = ' + injectedDetected + ' 次弄坏后抓住 + ' + selfFailures + ' 条没塞进去、但 Agent 自己出错</div>' + attrHtml +
+      '<div class="note" style="margin-top:16px"><span>◒</span><div>同一套规则回放到这 ' + prevention.totals.runs + ' 条 trace：' + prevention.totals.prevented + ' 条失败能在执行前拦下或出口脱敏，' + prevention.totals.false_positives + ' 条误伤。提前收工和丢上下文拦不住——它们没有违规调用，只能靠离线断言。</div></div>' +
       '<div class="note" style="margin-top:16px"><span>◒</span><div>最容易混的是「没做完」和「用错工具」：动作都合理、只是停下来了，算没做完；乱试、选错工具，才算用错工具。这条写进第二版规则后，κ 从 0.52 到 0.80。</div></div></div>' +
     '<div class="acard"><h4 class="mini" style="margin:0 0 6px;letter-spacing:.12em">规则和人工，能对上多少（κ）</h4>' +
       '<div class="kbig">' + kappa.k.toFixed(2) + '</div>' +

@@ -1,6 +1,8 @@
 {
-  "generated_at": "2026-10-24T13:56:41+08:00",
+  "generated_at": "2026-10-24T14:03:26+08:00",
   "files": {
+    "prevention.json": "0f5700d5da7386cc948030626c641c7f6b8b5f69afd81d2cd8baa0eef1b8ccda",
+    "prevention.md": "4bf46bd24eea3b0e29ab34affd4adb6dd48c9bdb936022279ba643f1427632ef",
     "summary.json": "a614516ae8527530397a7e2702bd265280b1587530153bb18a12d93da01c5cd1",
     "traces/CHART-001__context_drop__r0.json": "279ee5cdd174e119df31ebdec592045576dce9fa32b73065dfb24bca8f15b54e",
     "traces/CHART-001__early_stop__r0.json": "44e835fa0794fa07bf7c19b4b2f779ae37a0a8e178ea21ce842e81377c98999d",
@@ -284,5 +286,5 @@
     "traces/POLICY-005__wrong_arg__r0.json": "fe21f57e72f0073ec7262dd0dfb366d61e2da299856eda711b780424b2bc4a86",
     "verdicts.jsonl": "7c0b4644c0f4133627814bb0f8b79da123d630018d7a0f80ac8d78b9825a4cb7"
   },
-  "root": "149a6eac30870eb28b58f19644fdde9700c9a3f974ce9ad728751ce891c2542f"
+  "root": "a292e6b42da8e425ad52cb70dc62ed1b0f0dc4af1003e0b1964fe89e1354b4e0"
 }

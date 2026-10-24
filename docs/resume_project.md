@@ -22,6 +22,7 @@ Python 3.11 / OpenAI 兼容 API（DeepSeek）/ Pydantic / pytest / Markdown + HT
 - 给 oracle 自己做体检：5 条不变量 + 3 条 known-answer 控制 + 7 类 oracle 缺陷注入；当前 8/8 检查通过、7/7 变异体被抓住。
 - 增加完成声明核验：把"已创建工单 / 已退款 / 已重开"与工具调用和终态对照；现有 62 条声明全部有证据，变异体"空口退款"被抓住。
 - 增加证据清单：`manifest.json` 记录 summary、verdicts、全部 trace 的 SHA-256；`manifest --verify` 可发现任何改动。
+- 把运行时策略回放到 280 条已存 trace（不调模型）：44/93 的失败可在执行前拦下或出口脱敏，187 条通过的 trace 误伤 0；并区分出结构性拦不住的两类（提前收工、丢上下文）。
 
 ## 结果
 
@@ -39,6 +40,13 @@ Python 3.11 / OpenAI 兼容 API（DeepSeek）/ Pydantic / pytest / Markdown + HT
 - LangGraph ReAct 对同一批 40 条用例：`pass^3 = 100%` [91.2, 100.0]，翻转 0%，说明验收器与框架解耦，同时暴露用例饱和。
 - 失败分布（93 条，成本校准后）：parameter 25、tool 0、context 15、planning 38、permission 10、data 5。
 - 其中 91 条是实际注入并失败的轨迹；另外 2 条是故障不适用场景族的自然失败。91/91 的归因与注入目录预期根因一致（对照注入目录，不是独立人工标注）。
+
+**C. 在线拦截回放（counterfactual）**
+
+- 280 条 trace 回放：失败 93，执行前拦下 39，出口脱敏 5，合计 44（47.3%）；通过的 187 条误伤 0。
+- 分模式：`wrong_arg` 25/25、`policy_ignore` 10/11、`skip_clarify` 4/5、`pii_leak` 5/5（出口）、`context_drop` 0/11、`early_stop` 0/36。
+- 结论：确定性策略能挡住"可判定的越界"，挡不住"什么都没做错、但任务没完成"；两类机制必须并存。
+- 口径：拦截只说明调用没发出去，不说明被拒后 Agent 会做对，所以是上限而非任务成功率。
 - 成本表校准：估算 6.1142 元 vs 实际 1.42 元，比值 0.232，判定为 miscalibrated；4 条预算误判降级为 advisory，失败总数从 97 修正为 93。
 
 **C. Oracle 自检**
